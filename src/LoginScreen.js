@@ -23,8 +23,11 @@ export default class LoginScreen extends Component {
         <Item last>
           <Input placeholder='Contraseña' value={this.state.password} onChangeText={(text)=>{this.setState({password: text})}} />
         </Item>
+        <Button light full onPress={()=>{Actions.mainAdmin()}}>
+          <Text style={{color: 'black'}}>Continuar gestor</Text>
+        </Button>
         <Button light full onPress={()=>{Actions.mainWorker()}}>
-          <Text style={{color: 'black'}}>Continuar</Text>
+          <Text style={{color: 'black'}}>Continuar trabajador</Text>
         </Button>
       </Form>
     </View>
