@@ -7,14 +7,11 @@ export default class DrawerContent extends Component {
   render() {
     return (
     <View style={{flex: 1, backgroundColor: 'black'}}>
-      <Button full dark onPress={()=>{Actions.login()}}>
-        <Text>Item1</Text>
+      <Button block light onPress={()=>{Actions.manageActivities()}}>
+        <Text>Gestionar actividades</Text>
       </Button>
-      <Button full dark>
-        <Text>Item2</Text>
-      </Button>
-      <Button full dark>
-        <Text>Item3</Text>
+      <Button block light>
+        <Text>Crear difusión</Text>
       </Button>
     </View>
     );

@@ -10,16 +10,16 @@ export default class AnalysisView extends Component {
   render() {
     return (
     <View style={{flex: 1}}>
-      <Button block dark style={styles.btn}>
+      <Button block light style={styles.btn} onPress={()=>{Actions.ordersChart()}}>
         <Text>Actividad diaria</Text>
       </Button>
-      <Button block dark style={styles.btn}>
+      <Button block light style={styles.btn} onPress={()=>{Actions.ordersChart()}}>
         <Text>Pedidos</Text>
       </Button>
-      <Button block dark style={styles.btn}>
+      <Button block light style={styles.btn} onPress={()=>{Actions.ordersChart()}}>
         <Text>Recogida</Text>
       </Button>
-      <Button block dark style={styles.btn}>
+      <Button block light style={styles.btn} onPress={()=>{Actions.ordersChart()}}>
         <Text>Ingresos</Text>
       </Button>
     </View>
