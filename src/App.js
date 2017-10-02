@@ -6,6 +6,7 @@ import PendingActivityDetailsScreen from './PendingActivityDetailsScreen';
 import MainAdminView from './MainAdminView';
 import ManageActivitiesView from './ManageActivitiesView';
 import OrdersChartView from './OrdersChartView';
+import ManageUsersView from './ManageUsersView';
 export default class App extends Component {
   render() {
 
@@ -19,6 +20,7 @@ export default class App extends Component {
                     <Scene key='ordersChart' component={OrdersChartView} title='Pedidos - Tiempo'  />
                     <Scene key='manageActivities' component={ManageActivitiesView} title='Gestionar actividades'  />
                     <Scene key='pendingActivityDetails' component={PendingActivityDetailsScreen}  />
+                    <Scene key='manageUsers' component={ManageUsersView}  />
                   </Scene>
               </Scene>
       </Router>

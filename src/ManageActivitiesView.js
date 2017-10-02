@@ -105,15 +105,14 @@ export default class ManageActivitiesView extends Component {
       <View style={{flex: 1}}>
         <View style={{flexDirection:'row', alignSelf:'center', marginVertical:5}}>
           <Text>Trabajador: </Text>
-          <ModalDropdown textStyle={{fontSize:15}}  style={{marginHorizontal: 5}} options={this.state.workers} defaultValue='Alvaro' onSelect={(idx,value)=>{asignedWorker = value}}/>
+          <ModalDropdown textStyle={{fontSize:15}}  style={{marginHorizontal: 5}} options={this.state.workers} defaultValue='Trabajador...' onSelect={(idx,value)=>{asignedWorker = value}}/>
         </View>
         <View style={{flexDirection:'row',alignSelf:'center', marginVertical: 5}}>
           <Text>Actividad: </Text>
-          <ModalDropdown textStyle={{fontSize:15}} style={{marginHorizontal: 5}} options={this.state.activitiesOptions} defaultValue='Regar' onSelect={(idx,value)=>{asignedActivity = value}}/>
+          <ModalDropdown textStyle={{fontSize:15}} style={{marginHorizontal: 5}} options={this.state.activitiesOptions} defaultValue='Actividad...' onSelect={(idx,value)=>{asignedActivity = value}}/>
         </View>
         <DialogButton text='Aceptar' onPress={()=>{
             this.asignActivity(asignedWorker, asignedActivity)
-            DialogManager.dismiss();
             }}/>
       </View>
     ),
@@ -122,15 +121,18 @@ export default class ManageActivitiesView extends Component {
   });
   }
   asignActivity(worker,activity){
-    let currentActivities = this.state.activities;
-    currentActivities.push({
-                          id: 9,
-                          activity: activity,
-                          worker: worker,
-                          location: 'Unknown',
-                          state: 'Pendiente'
-                          })
-    this.setState({activities: currentActivities});
+    if(worker != undefined && activity != undefined){
+      let currentActivities = this.state.activities;
+      currentActivities.push({
+                            id: 9,
+                            activity: activity,
+                            worker: worker,
+                            location: 'Unknown',
+                            state: 'Pendiente'
+                            })
+      this.setState({activities: currentActivities});
+      DialogManager.dismiss();
+    }
   }
   render() {
     return (
