@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import {StyleSheet,View} from 'react-native';
 import {Actions} from 'react-native-router-flux';
-import { Button,Icon, Text, Form, Item, Input,List, ListItem } from 'native-base';
-import Header from './Header';
+import SearchBar from 'react-native-searchbar'
+import { Button,Icon, Text, Form, Item, Input,List, ListItem,Header } from 'native-base';
+import MyHeader from './Header';
 export default class MainWorkerView extends Component {
+
 
   constructor(props){
     super(props)
@@ -17,11 +19,19 @@ export default class MainWorkerView extends Component {
         name: 'Recoger',
         worker: 'Yo',
         zone: 'Telde'
-      }]
+      }],
+      results: []
     }
   }
+  componentWillMount(){
+    this.setState({results: this.state.pendingActivities});
+  }
+  _handleResults= (e) => {
+      this.setState({results: e }, ()=>{console.log(this.state.results)});
+
+  }
   mapPendingActivities(){
-    return this.state.pendingActivities.map((activity)=>{
+    return this.state.results.map((activity)=>{
       return(
         <ListItem onPress={()=>{Actions.pendingActivityDetails({content: activity})}}>
           <View style={{flexDirection: 'column'}}>
@@ -33,9 +43,23 @@ export default class MainWorkerView extends Component {
     })
   }
   render() {
+
     return (
     <View style={{flex: 1}}>
-      <Header title={this.props.title}/>
+      <MyHeader title={this.props.title}/>
+      <Header>
+        <SearchBar
+          ref={(ref) => this.searchBar = ref}
+          data={this.state.pendingActivities}
+          handleResults={this._handleResults}
+          showOnLoad
+          allDataOnEmptySearch
+          autoCapitalize
+          placeholder='Trabajador, finca, actividad...'
+          hideBack
+          style={{flex: 1}}
+        />
+      </Header>
       <List style={{flex: 1}}>
         {this.mapPendingActivities()}
       </List>

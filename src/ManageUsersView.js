@@ -89,7 +89,7 @@ export default class ManageUsersView extends Component {
             <Item>
               <Input  placeholder='Nombre...'  value={asignedWorker} onChangeText={(text)=> asignedWorker = text}/>
             </Item>
-              <ModalDropdown textStyle={{fontSize:15}}  style={{marginVertical: 10 }} options={this.state.locations} defaultValue='Zona...' onSelect={(idx,value)=>{asignedZone = value}}/>
+              <ModalDropdown textStyle={{fontSize:15}}  style={{marginVertical: 10, marginHorizontal: 17 }} options={this.state.locations} defaultValue='Zona...' onSelect={(idx,value)=>{asignedZone = value}}/>
           </Form>
         <DialogButton text='Aceptar' onPress={()=>{
             this.newWorker(asignedZone, asignedWorker)
