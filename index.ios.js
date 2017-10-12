@@ -8,6 +8,6 @@
    AppRegistry,
  } from 'react-native';
 
- import App from './src/App';
+ import Platalog from './src/App';
 
 AppRegistry.registerComponent('Platalog', () => Platalog);

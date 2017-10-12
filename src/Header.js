@@ -14,7 +14,13 @@ renderLeftIcon(){
     </Left>
     )
   }else{
-    return <Left/>;
+    return (
+      <Left>
+        <Button transparent onPress={this.props.showMenu}>
+          <Icon name='logo-apple'/>
+        </Button>
+      </Left>
+      )
   }
 
 }
