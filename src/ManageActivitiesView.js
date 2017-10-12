@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import {StyleSheet,View, ScrollView} from 'react-native';
 import {Actions} from 'react-native-router-flux';
-import { Button,Icon, Text, Form, Item, Input,List, ListItem, Drawer, Right, Left } from 'native-base';
-import Header from './Header';
+import { Button,Icon, Text, Form, Item, Input,List, ListItem, Drawer, Right, Left,Title,Header } from 'native-base';
+import SearchBar from 'react-native-searchbar'
 import ActionButton from 'react-native-action-button';
 import ModalDropdown from 'react-native-modal-dropdown';
 import DialogManager, { SlideAnimation, DialogContent, DialogButton } from 'react-native-dialog-component';
@@ -70,11 +70,43 @@ export default class ManageActivitiesView extends Component {
                   }
                 ],
       workers: ['Alvaro','Daniel','Carlos','Pedro'],
+      results: [],
       activitiesOptions: ['Regar','Sembrar','Recoger','Deshijar']
     }
   }
+  componentWillMount(){
+    this.setState({results: this.state.activities}, ()=>{console.log(this.state.results)});
+  }
+  _handleResults= (e) => {
+      this.setState({results: e }, ()=>{console.log(this.state.results)});
+
+  }
+  renderHeader= () =>{
+    return(
+      <Header>
+          <Left/>
+          <Title style={{alignSelf: 'center'}}>
+            {this.props.title}
+          </Title>
+        <SearchBar
+          ref={(ref) => this.searchBar = ref}
+          data={this.state.activities}
+          handleResults={this._handleResults}
+          allDataOnEmptySearch
+          autoCapitalize
+          placeholder='Localización, actividad, estado...'
+          style={{flex: 1}}
+        />
+      <Right>
+        <Button transparent onPress={()=> this.searchBar.show()}>
+          <Icon name='search'/>
+        </Button>
+      </Right>
+      </Header>
+      )
+}
   mapActivities(){
-    return this.state.activities.map((activity)=>{
+    return this.state.results.map((activity)=>{
       return(
         <ListItem onPress={()=>{}}>
           <Left>
@@ -137,7 +169,7 @@ export default class ManageActivitiesView extends Component {
   render() {
     return (
       <View style={{flex: 1}}>
-        <Header title={this.props.title}/>
+        {this.renderHeader()}
         <ScrollView style={{flex: 1}}>
           <List>
             {this.mapActivities()}

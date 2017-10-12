@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import {StyleSheet,View, ScrollView} from 'react-native';
 import {Actions} from 'react-native-router-flux';
-import { Button,Icon, Text, Form, Item, Input,List, ListItem, Drawer, Right, Left } from 'native-base';
-import Header from './Header';
+import { Button,Icon, Text, Form, Item, Input,List, ListItem, Drawer, Right, Left, Title, Header } from 'native-base';
+import SearchBar from 'react-native-searchbar';
 import ActionButton from 'react-native-action-button';
 import ModalDropdown from 'react-native-modal-dropdown';
 import DialogManager, { SlideAnimation, DialogContent, DialogButton } from 'react-native-dialog-component';
@@ -54,10 +54,42 @@ export default class ManageUsersView extends Component {
                   }
                 ],
       locations: ['Finca1','Finca2','Finca3'],
+      results:[],
     }
   }
+  componentWillMount(){
+    this.setState({results: this.state.workerList}, ()=>{console.log(this.state.results)});
+  }
+  _handleResults= (e) => {
+      this.setState({results: e }, ()=>{console.log(this.state.results)});
+
+  }
+  renderHeader= () =>{
+    return(
+      <Header>
+          <Left/>
+          <Title style={{alignSelf: 'center'}}>
+            {this.props.title}
+          </Title>
+        <SearchBar
+          ref={(ref) => this.searchBar = ref}
+          data={this.state.workerList}
+          handleResults={this._handleResults}
+          allDataOnEmptySearch
+          autoCapitalize
+          placeholder='Localización,trabajador...'
+          style={{flex: 1}}
+        />
+      <Right>
+        <Button transparent onPress={()=> this.searchBar.show()}>
+          <Icon name='search'/>
+        </Button>
+      </Right>
+      </Header>
+      )
+}
   mapWorkers(){
-    return this.state.workerList.map((worker)=>{
+    return this.state.results.map((worker)=>{
       return(
         <ListItem onPress={()=>{}}>
           <Left>
@@ -115,7 +147,7 @@ export default class ManageUsersView extends Component {
   render() {
     return (
       <View style={{flex: 1}}>
-        <Header title={this.props.title}/>
+        {this.renderHeader()}
         <ScrollView style={{flex: 1}}>
           <List>
             {this.mapWorkers()}
