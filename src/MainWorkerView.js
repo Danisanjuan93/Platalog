@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {StyleSheet,View} from 'react-native';
 import {Actions} from 'react-native-router-flux';
 import SearchBar from 'react-native-searchbar'
-import { Button,Icon, Text, Form, Item, Input,List, ListItem,Header, Right } from 'native-base';
+import { Button,Icon, Text, Form, Item, Input,List, ListItem,Header, Right, Title, Body,Left } from 'native-base';
 import MyHeader from './Header';
 export default class MainWorkerView extends Component {
 
@@ -35,33 +35,42 @@ export default class MainWorkerView extends Component {
       return(
         <ListItem onPress={()=>{Actions.pendingActivityDetails({content: activity})}}>
           <View style={{flexDirection: 'column'}}>
-            <Text style={{alignSelf:'flex-start'}}>{activity.name+'-'+activity.zone}</Text>
-            <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{activity.worker}</Text>
+            <Text style={{alignSelf:'flex-start', fontSize: 17}}>{activity.name}</Text>
+            <Text style={{fontWeight: 'bold', alignSelf:'flex-start', fontSize: 11 }}>{activity.zone}</Text>
           </View>
         </ListItem>
       )
     })
   }
-  render() {
-
-    return (
-    <View style={{flex: 1}}>
-      <Header title={this.props.title}>
+  renderHeader= () =>{
+    return(
+      <Header>
+          <Left/>
+          <Title style={{alignSelf: 'center'}}>
+            {this.props.title}
+          </Title>
         <SearchBar
           ref={(ref) => this.searchBar = ref}
           data={this.state.pendingActivities}
           handleResults={this._handleResults}
-          showOnLoad
           allDataOnEmptySearch
           autoCapitalize
-          placeholder='Trabajador, finca, actividad...'
-          hideBack
+          placeholder='Localización, actividad...'
           style={{flex: 1}}
         />
       <Right>
-
+        <Button transparent onPress={()=> this.searchBar.show()}>
+          <Icon name='search'/>
+        </Button>
       </Right>
       </Header>
+      )
+}
+  render() {
+
+    return (
+    <View style={{flex: 1}}>
+      {this.renderHeader()}
       <List style={{flex: 1}}>
         {this.mapPendingActivities()}
       </List>
