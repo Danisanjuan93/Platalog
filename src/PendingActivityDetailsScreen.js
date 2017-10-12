@@ -7,19 +7,21 @@ export default class pendingActivityDetailsScreen extends Component {
 
   render() {
     return (
-    <View style={{flex: 1}}>
+    <View style={{flex: 1, justifyContent: 'center', alignContent: 'center'}}>
       <Header title={this.props.content.name}/>
-      <Text>{this.props.content.name}</Text>
-      <Text>{this.props.content.worker}</Text>
-      <Text>{this.props.content.zone}</Text>
-      <View style={{flexDirection: 'row'}}>
-        <Button success style={{flex:1, marginHorizontal: 5, justifyContent: 'center'}}>
-          <Text>Finalizar</Text>
-        </Button>
-        <Button danger style={{flex:1, marginHorizontal: 5, justifyContent: 'center'}}>
-          <Text>Incidencia</Text>
-        </Button>
-      </View>
+        <View style={{flex: 1, marginVertical: 20}}>
+          <Text style={{marginHorizontal: 10}}>Actividad: {this.props.content.name}</Text>
+          <Text style={{marginHorizontal: 10}}>Zona: {this.props.content.zone}</Text>
+          <View style={{flexDirection: 'row', marginVertical: 10}}>
+            <Button success style={{flex:1, marginHorizontal: 7, justifyContent: 'center'}}>
+              <Text>Finalizar</Text>
+            </Button>
+            <Button danger style={{flex:1, marginHorizontal: 7, justifyContent: 'center'}}>
+              <Text>Incidencia</Text>
+            </Button>
+          </View>
+        </View>
+
     </View>
     );
   }
