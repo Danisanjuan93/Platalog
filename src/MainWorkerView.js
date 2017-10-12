@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {StyleSheet,View} from 'react-native';
 import {Actions} from 'react-native-router-flux';
 import SearchBar from 'react-native-searchbar'
-import { Button,Icon, Text, Form, Item, Input,List, ListItem,Header } from 'native-base';
+import { Button,Icon, Text, Form, Item, Input,List, ListItem,Header, Right } from 'native-base';
 import MyHeader from './Header';
 export default class MainWorkerView extends Component {
 
@@ -46,8 +46,7 @@ export default class MainWorkerView extends Component {
 
     return (
     <View style={{flex: 1}}>
-      <MyHeader title={this.props.title}/>
-      <Header>
+      <Header title={this.props.title}>
         <SearchBar
           ref={(ref) => this.searchBar = ref}
           data={this.state.pendingActivities}
@@ -59,6 +58,9 @@ export default class MainWorkerView extends Component {
           hideBack
           style={{flex: 1}}
         />
+      <Right>
+
+      </Right>
       </Header>
       <List style={{flex: 1}}>
         {this.mapPendingActivities()}
