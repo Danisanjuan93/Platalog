@@ -19,6 +19,11 @@ export default class LoginScreen extends Component {
     }
   }
 
+  async componentDidMount() {
+    await AsyncStorage.removeItem(STORAGE_KEY);
+    formBody = [];
+  }
+
   checkuser(){
     var self = this;
     const user = {
@@ -58,7 +63,6 @@ export default class LoginScreen extends Component {
 
   async storageValues(item, selectedValue){
     try  {
-      console.log('Estoy guardando');
       await AsyncStorage.setItem(item, selectedValue);
     } catch (error) {
       console.log('AsyncStorage error: ' + error.message);

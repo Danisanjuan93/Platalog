@@ -4,6 +4,7 @@ import {Actions} from 'react-native-router-flux';
 import {Button, Text} from 'native-base';
 
 export default class DrawerContent extends Component {
+
   render() {
     return (
     <View style={{flex: 1, backgroundColor: 'black'}}>
@@ -22,6 +23,9 @@ export default class DrawerContent extends Component {
         </Button>
         <Button block light style={styles.btn} onPress={()=>{Actions.manageUsers()}}>
           <Text>Gestionar trabajadores</Text>
+        </Button>
+        <Button block light style={styles.btn} onPress={()=>{Actions.root()}}>
+          <Text>Log Out</Text>
         </Button>
       </View>
     </View>

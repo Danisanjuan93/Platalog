@@ -13,12 +13,15 @@ export default class MainAdminView extends Component {
   constructor(props){
     super(props)
   }
+
   closeDrawer = () => {
     this.drawer._root.close()
   };
+
   openDrawer = () => {
     this.drawer._root.open()
   };
+
   render() {
     return (
     <Drawer
