@@ -77,6 +77,7 @@ export default class ManageActivitiesView extends Component {
   componentWillMount(){
     this.setState({results: this.state.activities}, ()=>{console.log(this.state.results)});
   }
+
   _handleResults= (e) => {
       this.setState({results: e }, ()=>{console.log(this.state.results)});
 

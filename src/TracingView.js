@@ -13,11 +13,15 @@ export default class TracingView extends Component {
   constructor(props){
     super(props)
     this.state={
-      fincas: ''
+      fincas: []
     }
   }
 
-  async mapFincas(){
+  componentWillMount(){
+    this.getFincas();
+  }
+
+  async getFincas(){
     const self = this;
     const token = await AsyncStorage.getItem(STORAGE_KEY);
     const user = JSON.parse(await AsyncStorage.getItem(STORAGE_USER));
@@ -30,10 +34,7 @@ export default class TracingView extends Component {
     })
     .then(function (response) {
       self.setState({fincas: response.data})
-      AlertIOS.alert(
-        "Correcto",
-        JSON.stringify(self.state.fincas[0].finca.id)
-      )
+      return true;
     })
     .catch(function (error) {
       AlertIOS.alert(
@@ -43,21 +44,30 @@ export default class TracingView extends Component {
     })
   }
 
+  mapFincas(){
+    return this.state.fincas.map((finca)=>{
+      return(
+        <ListItem onPress={()=>{}}>
+          <Left>
+            <View style={{flexDirection: 'column', flex:1}}>
+              <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{finca.finca.fincaName}</Text>
+              <Text style={{alignSelf:'flex-start', size: 5 }}>-{finca.finca.id}</Text>
+            </View>
+          </Left>
+          <Right>
+            <View style={{flex: 1}}>
+              <Progress.Circle size={50} progress={40/100} showsText={true} formatText={()=>40+'%'}/>
+            </View>
+          </Right>
+        </ListItem>
+      )
+    })
+  }
   render() {
     return (
-      <View>
-        <Button light style={styles.loginBtn} full onPress={() => this.mapFincas()}>
-          <Text style={{color: 'black'}}>{JSON.stringify(this.state.fincas[0].finca.id)}</Text>
-        </Button>
-        <List>
-          <FlatList data={this.state.fincas} renderItem={({ item }) => (
-            <ListItem
-              title={item.finca.id}
-              subTitle="Copiado"
-            />
-          )}/>
-        </List>
-      </View>
+    <List style={{flex: 1}}>
+      {this.mapFincas()}
+    </List>
     );
   }
 }
