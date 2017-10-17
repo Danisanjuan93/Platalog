@@ -15,6 +15,7 @@ import axios from 'axios';
 
 const STORAGE_FINCAID = 'fincaID';
 const STORAGE_KEY = 'access_token';
+const STORAGE_USER = 'user_data';
 
 export default class MainAdminView extends Component {
 
@@ -31,7 +32,7 @@ export default class MainAdminView extends Component {
       irrigationType: '',
       plantVariety: '',
       location: '',
-      fincaName: ''
+      fincaName: '',
     }
   }
 
@@ -91,6 +92,7 @@ export default class MainAdminView extends Component {
   async postFincaRequest(){
     var self = this;
     const token = await AsyncStorage.getItem(STORAGE_KEY);
+    const user = await AsyncStorage.getItem(STORAGE_USER);
     axios({
       method: 'post',
       url: 'http://127.0.0.1:8000/api/fincas',
@@ -107,12 +109,20 @@ export default class MainAdminView extends Component {
       }
     })
     .then(function (response) {
-      AlertIOS.alert("Datos de Finca"),
-      JSON.stringify(response)
+      self.storageValues('fincaID', JSON.stringify(response.data.fincaID));
+      DialogManager.dismiss();
     })
     .catch(function (error) {
       console.log(error);
     })
+  }
+
+  async storageValues(item, selectedValue){
+    try  {
+      await AsyncStorage.setItem(item, selectedValue);
+    } catch (error) {
+      console.log('AsyncStorage error: ' + error.message);
+    }
   }
 
   render() {

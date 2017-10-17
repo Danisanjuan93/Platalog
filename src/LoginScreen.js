@@ -45,7 +45,7 @@ export default class LoginScreen extends Component {
     })
     .then(function (response) {
       self.storageValues(STORAGE_KEY, response.data.access_token);
-      self.getUserData(self);
+      self.getUserData(self, response.data.access_token);
     })
     .catch(function (error) {
       console.log(error);
@@ -69,8 +69,7 @@ export default class LoginScreen extends Component {
     }
   }
 
-  async getUserData(self){
-    const token = await AsyncStorage.getItem(STORAGE_KEY);
+  async getUserData(self, token){
     axios({
       method: 'get',
       url: 'http://127.0.0.1:8000/api/users',
@@ -87,7 +86,10 @@ export default class LoginScreen extends Component {
       }
     })
     .catch(function (error) {
-      console.log(error);
+      AlertIOS.alert(
+        "Error",
+        JSON.stringify(error)
+      )
     })
   }
 
