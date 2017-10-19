@@ -27,8 +27,8 @@ export default class LoginScreen extends Component {
   checkuser(){
     var self = this;
     const user = {
-      username: 'dani.sanjuan.93',
-      password: 'dani.sanjuan.93',
+      username: 'dani.san',
+      password: 'dani.san',
       client_id: '1_4w6d1xmib56okkco0w0oogoscsccoggk48cgsss404ccs4ksow',
       client_secret: '5re0as1q8so4ks4k0kww844o0c0gk8g0k0k4wkkss8k844cw4w',
       grant_type: 'password'
