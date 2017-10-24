@@ -73,7 +73,6 @@ export default class MainWorkerView extends Component {
           <Left>
             <View style={{flexDirection: 'column', flex:1}}>
               <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{activity.id}</Text>
-              <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{activity.name}</Text>
             </View>
           </Left>
         </ListItem>
@@ -104,15 +103,14 @@ export default class MainWorkerView extends Component {
         </Button>
       </Right>
       </Header>
-      )
-}
-  render() {
+    )
+  }
 
+  render() {
     return (
     <View style={{flex: 1}}>
-
-      {this.mapActivities()}
       {this.renderHeader()}
+      {this.mapActivities()}
     </View>
     );
   }
