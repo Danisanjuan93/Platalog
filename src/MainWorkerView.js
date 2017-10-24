@@ -15,16 +15,6 @@ export default class MainWorkerView extends Component {
   constructor(props){
     super(props)
     this.state={
-      pendingActivities: [{
-        name: 'Regar',
-        worker: 'Yo',
-        zone: 'Tafira'
-      },
-      {
-        name: 'Recoger',
-        worker: 'Yo',
-        zone: 'Telde'
-      }],
       results: [],
       fincas: [],
       activities: []
@@ -32,8 +22,8 @@ export default class MainWorkerView extends Component {
   }
   componentWillMount(){
     this.getFincas();
-    this.mapPendingActivities();
   }
+
   _handleResults= (e) => {
       this.setState({results: e }, ()=>{console.log(this.state.results)});
   }
@@ -51,62 +41,45 @@ export default class MainWorkerView extends Component {
     })
     .then(function (response) {
       self.setState({fincas: response.data})
+      self.getActivities()
     })
     .catch(function (error) {
-      AlertIOS.alert(
-        "Error",
-        JSON.stringify(error)
-      )
     })
   }
 
-  async getActivities(finca){
+  async getActivities(){
     const self = this;
     const token = await AsyncStorage.getItem(STORAGE_KEY);
-    axios({
-      method: 'get',
-      url: 'http://127.0.0.1:8000/api/activities/' + finca.finca.id,
-      headers :{
-        'Authorization': 'Bearer ' + token,
-      }
-    })
-    .then(function (response) {
-      AlertIOS.alert(
-        "Actividad",
-        JSON.stringify(response)
-      )
-    })
-    .catch(function (error) {
-      AlertIOS.alert(
-        "Error",
-        JSON.stringify(error)
-      )
+    this.state.fincas.map((finca) => {
+      axios({
+        method: 'get',
+        url: 'http://127.0.0.1:8000/api/activities/' + finca.finca.id,
+        headers :{
+          'Authorization': 'Bearer ' + token,
+        }
+      })
+      .then(function (response) {
+        self.setState({activities: self.state.activities.concat(response.data)})
+      })
+      .catch(function (error) {
+      })
     })
   }
 
-  async mapPendingActivities(){
-    const self = this;
-    const token = await AsyncStorage.getItem(STORAGE_KEY);
-    axios({
-      method: 'get',
-      url: 'http://127.0.0.1:8000/api/activities/1',
-      headers :{
-        'Authorization': 'Bearer ' + token,
-      }
-    })
-    .then(function (response) {
-      self.setState({activities: response.data})
-      AlertIOS.alert(
-        "Success",
-        JSON.stringify(response.data)
-      )
-    })
-    .catch(function (error) {
-      AlertIOS.alert(
-        "Error",
-        JSON.stringify(error)
-      )
-    })
+  mapActivities(){
+    return(
+      <List dataArray={this.state.activities} renderRow={(activity) =>
+        <ListItem onPress={()=>{}}>
+          <Left>
+            <View style={{flexDirection: 'column', flex:1}}>
+              <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{activity.id}</Text>
+              <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{activity.name}</Text>
+            </View>
+          </Left>
+        </ListItem>
+        }>
+      </List>
+    );
   }
 
   renderHeader= () =>{
@@ -118,10 +91,10 @@ export default class MainWorkerView extends Component {
           </Title>
         <SearchBar
           ref={(ref) => this.searchBar = ref}
-          data={this.state.pendingActivities}
+          data={this.state.activities}
           handleResults={this._handleResults}
           allDataOnEmptySearch
-          autoCapitalize
+          autoCapitalize = 'none'
           placeholder='Localización, actividad...'
           style={{flex: 1}}
         />
@@ -137,6 +110,8 @@ export default class MainWorkerView extends Component {
 
     return (
     <View style={{flex: 1}}>
+
+      {this.mapActivities()}
       {this.renderHeader()}
     </View>
     );
