@@ -60,6 +60,7 @@ export default class MainWorkerView extends Component {
       })
       .then(function (response) {
         self.setState({activities: self.state.activities.concat(response.data)})
+        self.setState({results: self.state.results.concat(response.data)})
       })
       .catch(function (error) {
       })
@@ -68,7 +69,7 @@ export default class MainWorkerView extends Component {
 
   mapActivities(){
     return(
-      <List dataArray={this.state.activities} renderRow={(activity) =>
+      <List dataArray={this.state.results} renderRow={(activity) =>
         <ListItem onPress={()=>{}}>
           <Left>
             <View style={{flexDirection: 'column', flex:1}}>

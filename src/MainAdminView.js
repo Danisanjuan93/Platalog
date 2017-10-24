@@ -101,11 +101,11 @@ export default class MainAdminView extends Component {
         'Content-Type': 'application/json'
       },
       data: {
-        estateType: 'this.state.estateType',
-        irrigationType: 'this.state.irrigationType',
-        plantVariety: 'this.state.plantVariety',
-        location: 'this.state.location',
-        fincaName: 'this.state.fincaName'
+        estateType: this.state.estateType,
+        irrigationType: this.state.irrigationType,
+        plantVariety: this.state.plantVariety,
+        location: this.state.location,
+        fincaName: this.state.fincaName
       }
     })
     .then(function (response) {
