@@ -20,8 +20,24 @@ export default class MainWorkerView extends Component {
       activities: []
     }
   }
+
   componentWillMount(){
     this.getFincas();
+  }
+
+  shouldComponentUpdate(nextProps, nextState){
+    AlertIOS.alert(
+      "Updated!"
+    )
+    return true;
+  }
+
+  componentDidReceiveProps(props) {
+    this.setState({results: [], activities: []})
+    this.getActivities();
+    AlertIOS.alert(
+      "Updated!"
+    )
   }
 
   _handleResults= (e) => {
@@ -67,13 +83,18 @@ export default class MainWorkerView extends Component {
     })
   }
 
+  onClickActivity(activity){
+    Actions.pendingActivityDetails({activity: activity})
+  }
+
   mapActivities(){
     return(
       <List dataArray={this.state.results} renderRow={(activity) =>
-        <ListItem onPress={()=>{}}>
+        <ListItem onPress={() => {this.onClickActivity(activity)}}>
           <Left>
             <View style={{flexDirection: 'column', flex:1}}>
-              <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{activity.id}</Text>
+              <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{activity.name}</Text>
+              <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{activity.location}</Text>
             </View>
           </Left>
         </ListItem>

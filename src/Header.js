@@ -4,29 +4,30 @@ import {Actions} from 'react-native-router-flux';
 import { Button,Icon, Header,Left,Right,Text,Body, Form, Item, Input,Title } from 'native-base';
 export default class MyHeader extends Component {
 
-renderLeftIcon(){
-  if(this.props.menu){
-    return(
-    <Left>
-      <Button transparent onPress={this.props.showMenu}>
-        <Icon name='menu'/>
-      </Button>
-    </Left>
-    )
-  }else{
-    return (
-      <Left>
-        <Button transparent onPress={this.props.showMenu}>
-          <Icon name='logo-apple'/>
-        </Button>
-      </Left>
+  renderLeftIcon(){
+    if(this.props.menu){
+      return(
+        <Left>
+          <Button transparent onPress={this.props.showMenu}>
+            <Icon name='menu'/>
+          </Button>
+        </Left>
       )
+    }else if (this.props.backArrow){
+      return (
+        <Left>
+          <Button transparent onPress={() => Actions.pop({refresh: {results: [], activities: []}})}>
+            <Icon name='ios-arrow-back-outline'/>
+          </Button>
+        </Left>
+      )
+    }
   }
 
-}
-renderRightIcon(){
-  return <Right/>;
-}
+  renderRightIcon(){
+    return <Right/>;
+  }
+
   render() {
     return (
       <Header>
