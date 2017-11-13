@@ -25,21 +25,6 @@ export default class MainWorkerView extends Component {
     this.getFincas();
   }
 
-  shouldComponentUpdate(nextProps, nextState){
-    AlertIOS.alert(
-      "Updated!"
-    )
-    return true;
-  }
-
-  componentDidReceiveProps(props) {
-    this.setState({results: [], activities: []})
-    this.getActivities();
-    AlertIOS.alert(
-      "Updated!"
-    )
-  }
-
   _handleResults= (e) => {
       this.setState({results: e }, ()=>{console.log(this.state.results)});
   }
@@ -50,7 +35,7 @@ export default class MainWorkerView extends Component {
     const user = JSON.parse(await AsyncStorage.getItem(STORAGE_USER));
     axios({
       method: 'get',
-      url: 'http://127.0.0.1:8000/api/fincas/' + user.User.id,
+      url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/fincas/' + user.User.id,
       headers :{
         'Authorization': 'Bearer ' + token,
       }
@@ -69,7 +54,7 @@ export default class MainWorkerView extends Component {
     this.state.fincas.map((finca) => {
       axios({
         method: 'get',
-        url: 'http://127.0.0.1:8000/api/activities/' + finca.finca.id,
+        url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/activities/' + finca.finca.id,
         headers :{
           'Authorization': 'Bearer ' + token,
         }

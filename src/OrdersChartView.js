@@ -82,7 +82,7 @@ export default class OrdersChartView extends Component {
   render() {
     return (
     <View style={{flex: 1}}>
-      <Header title={this.props.title}/>
+      <Header backArrow title={this.props.title}/>
       <Bar data={this.state.data} options={this.state.options} accessorKey='v'/>
     </View>
     );

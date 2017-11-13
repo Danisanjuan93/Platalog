@@ -36,14 +36,6 @@ export default class MainAdminView extends Component {
     }
   }
 
-  componentDidMount() {
-    estateType = '';
-    irrigationType = '';
-    plantVariety = '';
-    location = '';
-    fincaName = '';
-  }
-
   closeDrawer = () => {
     this.drawer._root.close()
   };
@@ -95,7 +87,7 @@ export default class MainAdminView extends Component {
     const user = await AsyncStorage.getItem(STORAGE_USER);
     axios({
       method: 'post',
-      url: 'http://127.0.0.1:8000/api/fincas',
+      url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/fincas',
       headers :{
         'Authorization': 'Bearer ' + token,
         'Content-Type': 'application/json'
