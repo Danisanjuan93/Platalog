@@ -5,6 +5,7 @@ import { Button,Icon, Text, Form, Item, Input,List, ListItem, Right,Left } from 
 import * as Progress from 'react-native-progress';
 import axios from 'axios';
 
+const STORAGE_FINCAS_USER = 'fincas_user';
 const STORAGE_KEY = 'access_token';
 const STORAGE_USER = 'user_data';
 
@@ -13,7 +14,8 @@ export default class TracingView extends Component {
   constructor(props){
     super(props)
     this.state={
-      fincas: []
+      fincas: [],
+      ids: []
     }
   }
 
@@ -34,6 +36,7 @@ export default class TracingView extends Component {
     })
     .then(function (response) {
       self.setState({fincas: response.data})
+      self.storageValues(STORAGE_FINCAS_USER, JSON.stringify(self.state.fincas))
     })
     .catch(function (error) {
       AlertIOS.alert(
@@ -41,6 +44,14 @@ export default class TracingView extends Component {
         JSON.stringify(error)
       )
     })
+  }
+
+  async storageValues(item, selectedValue){
+    try  {
+      await AsyncStorage.setItem(item, selectedValue);
+    } catch (error) {
+      console.log('AsyncStorage error: ' + error.message);
+    }
   }
 
   mapFincas(){

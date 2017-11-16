@@ -1,87 +1,62 @@
 import React, { Component } from 'react';
-import {StyleSheet,View, ScrollView} from 'react-native';
-import {Actions} from 'react-native-router-flux';
-import { Button,Icon, Text, Form, Item, Input,List, ListItem, Drawer, Right, Left,Title,Header } from 'native-base';
+import { StyleSheet, View, ScrollView, AsyncStorage, AlertIOS } from 'react-native';
+import { Actions } from 'react-native-router-flux';
+import { Button, Icon, Text, Form, Item, Input, List, ListItem, Drawer, Right, Left, Title, Header } from 'native-base';
 import SearchBar from 'react-native-searchbar'
 import ActionButton from 'react-native-action-button';
 import ModalDropdown from 'react-native-modal-dropdown';
 import DialogManager, { SlideAnimation, DialogContent, DialogButton } from 'react-native-dialog-component';
+import axios from 'axios';
+
+const STORAGE_KEY = 'access_token';
+const STORAGE_FINCAS_USER = 'fincas_user';
+
 export default class ManageActivitiesView extends Component {
 
   constructor(props){
     super(props)
     this.state={
-      activities:[
-                  {
-                    id: 1,
-                    activity: 'Regar',
-                    worker: 'Daniel',
-                    location: 'Finca1',
-                    state: 'Finalizado'
-                  },
-                  {
-                    id: 2,
-                    activity: 'Regar',
-                    worker: 'Daniel',
-                    location: 'Finca1',
-                    state: 'Pendiente'
-                  },
-                  {
-                    id: 3,
-                    activity: 'Regar',
-                    worker: 'Daniel',
-                    location: 'Finca1',
-                    state: 'Pendiente'
-                  }
-,                  {
-                    id: 4,
-                    activity: 'Regar',
-                    worker: 'Daniel',
-                    location: 'Finca1',
-                    state: 'Pendiente'
-                  }
-,                  {
-                    id: 5,
-                    activity: 'Regar',
-                    worker: 'Daniel',
-                    location: 'Finca1',
-                    state: 'Finalizado'
-                  }
-,                  {
-                    id: 6,
-                    activity: 'Regar',
-                    worker: 'Daniel',
-                    location: 'Finca1',
-                    state: 'Pendiente'
-                  }
-,                  {
-                    id: 7,
-                    activity: 'Regar',
-                    worker: 'Daniel',
-                    location: 'Finca1',
-                    state: 'Finalizado'
-                  }
-,                  {
-                    id: 8,
-                    activity: 'Regar',
-                    worker: 'Daniel',
-                    location: 'Finca1',
-                    state: 'Pendiente'
-                  }
-                ],
-      workers: ['Alvaro','Daniel','Carlos','Pedro'],
+      activities:[],
+      workers: [],
       results: [],
+      fincas: [],
       activitiesOptions: ['Regar','Sembrar','Recoger','Deshijar']
     }
   }
-  componentWillMount(){
-    this.setState({results: this.state.activities}, ()=>{console.log(this.state.results)});
+  async componentWillMount(){
+    this.setState({
+      fincas: JSON.parse(await AsyncStorage.getItem(STORAGE_FINCAS_USER))
+    })
+    this.getWorkers();
   }
 
   _handleResults= (e) => {
       this.setState({results: e }, ()=>{console.log(this.state.results)});
-
   }
+
+  async getWorkers(){
+    const self = this;
+    const token = await AsyncStorage.getItem(STORAGE_KEY);
+    const listFinca = this.state.fincas.map((finca) =>
+      axios({
+        method: 'get',
+        url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/users/' + finca.finca.id + '/workers',
+        headers :{
+          'Authorization': 'Bearer ' + token,
+        }
+      })
+      .then(function (response) {
+        self.setState({workers: self.state.workers.concat(response.data)})
+      })
+      .catch(function (error) {
+        AlertIOS.alert(
+          "Error",
+          JSON.stringify(error)
+        )
+      })
+    );
+  }
+
   renderHeader= () =>{
     return(
       <Header>
@@ -105,26 +80,8 @@ export default class ManageActivitiesView extends Component {
       </Right>
       </Header>
       )
-}
-  mapActivities(){
-    return this.state.results.map((activity)=>{
-      return(
-        <ListItem onPress={()=>{}}>
-          <Left>
-            <View style={{flexDirection: 'column'}}>
-              <Text style={{alignSelf:'flex-start'}}>{activity.activity+'-'+activity.worker}</Text>
-              <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{activity.location}</Text>
-            </View>
-          </Left>
-          <Right>
-            <View style={activity.state == 'Finalizado' ? styles.finishedActivity : styles.pendingActivity}>
-              <Text style={{color: 'white', fontSize: 10, alignSelf: 'center'}}>{activity.state}</Text>
-            </View>
-          </Right>
-        </ListItem>
-      )
-    })
-  }
+    }
+
   showAddActivityDialog(){
     let asignedWorker;
     let asignedActivity;
@@ -153,29 +110,27 @@ export default class ManageActivitiesView extends Component {
     console.log('callback - show');
   });
   }
-  asignActivity(worker,activity){
-    if(worker != undefined && activity != undefined){
-      let currentActivities = this.state.activities;
-      currentActivities.push({
-                            id: 9,
-                            activity: activity,
-                            worker: worker,
-                            location: 'Unknown',
-                            state: 'Pendiente'
-                            })
-      this.setState({activities: currentActivities});
-      DialogManager.dismiss();
-    }
+
+  mapActivities(){
+    return(
+      <List dataArray={this.state.workers} renderRow={(worker) =>
+        <ListItem onPress={()=>{}}>
+          <Left>
+            <View style={{flexDirection: 'column', flex:1}}>
+              <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{worker.users.username}</Text>
+            </View>
+          </Left>
+        </ListItem>
+        }>
+      </List>
+    );
   }
+
   render() {
     return (
       <View style={{flex: 1}}>
         {this.renderHeader()}
-        <ScrollView style={{flex: 1}}>
-          <List>
-            {this.mapActivities()}
-          </List>
-        </ScrollView>
+        {this.mapActivities()}
         <ActionButton buttonColor="blue" onPress={()=>{this.showAddActivityDialog()}}/>
       </View>
     );
