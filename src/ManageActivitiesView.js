@@ -10,6 +10,7 @@ import axios from 'axios';
 
 const STORAGE_KEY = 'access_token';
 const STORAGE_FINCAS_USER = 'fincas_user';
+let WORKERS = [];
 
 export default class ManageActivitiesView extends Component {
 
@@ -55,6 +56,7 @@ export default class ManageActivitiesView extends Component {
         )
       })
     );
+
   }
 
   renderHeader= () =>{
@@ -112,12 +114,17 @@ export default class ManageActivitiesView extends Component {
   }
 
   mapActivities(){
+    const listFinca = this.state.workers.map((worker) =>
+      WORKERS = uniquenombres.concat(worker.users.username)
+    )
+    WORKERS = Array.from(new Set(WORKERS))
+
     return(
-      <List dataArray={this.state.workers} renderRow={(worker) =>
+      <List dataArray={WORKERS} renderRow={(worker) =>
         <ListItem onPress={()=>{}}>
           <Left>
             <View style={{flexDirection: 'column', flex:1}}>
-              <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{worker.users.username}</Text>
+              <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{worker}</Text>
             </View>
           </Left>
         </ListItem>
