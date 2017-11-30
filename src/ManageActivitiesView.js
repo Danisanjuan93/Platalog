@@ -11,6 +11,8 @@ import axios from 'axios';
 const STORAGE_KEY = 'access_token';
 const STORAGE_FINCAS_USER = 'fincas_user';
 let WORKERS = [];
+let FINCAS = [];
+let LOCATIONS = [];
 
 export default class ManageActivitiesView extends Component {
 
@@ -56,7 +58,32 @@ export default class ManageActivitiesView extends Component {
         )
       })
     );
+  }
 
+  async asignActivity(asignedWorker, asignedActivity, asignedFinca, asignedLocation){
+    const self = this;
+    const token = await AsyncStorage.getItem(STORAGE_KEY);
+    axios({
+      method: 'post',
+      url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/activities',
+      headers :{
+        'Authorization': 'Bearer ' + token,
+      },
+      data: {
+        name: asignedActivity,
+        location: asignedLocation,
+        worker: asignedWorker,
+        finca: asignedFinca,
+      }
+    })
+    .then(function (response) {
+    })
+    .catch(function (error) {
+      AlertIOS.alert(
+        "Error",
+        JSON.stringify(error)
+      )
+    })
   }
 
   renderHeader= () =>{
@@ -87,35 +114,49 @@ export default class ManageActivitiesView extends Component {
   showAddActivityDialog(){
     let asignedWorker;
     let asignedActivity;
+    let asignedFinca;
+    let asignedLocation;
     DialogManager.show({
-    title: 'Asignar actividad',
-    titleAlign: 'center',
-    animationDuration: 200,
-    height: 200,
-    dialogAnimation: new SlideAnimation({slideFrom: 'bottom'}),
-    children: (
-      <View style={{flex: 1}}>
-        <View style={{flexDirection:'row', alignSelf:'center', marginVertical:5}}>
-          <Text>Trabajador: </Text>
-          <ModalDropdown textStyle={{fontSize:15}}  style={{marginHorizontal: 5}} options={this.state.workers} defaultValue='Trabajador...' onSelect={(idx,value)=>{asignedWorker = value}}/>
+      title: 'Asignar actividad',
+      titleAlign: 'center',
+      animationDuration: 200,
+      height: 200,
+      dialogAnimation: new SlideAnimation({slideFrom: 'bottom'}),
+      children: (
+        <View style={{flex: 1}}>
+          <View style={{flexDirection:'row', alignSelf:'center', marginVertical:5}}>
+            <Text>Trabajador: </Text>
+            <ModalDropdown textStyle={{fontSize:15}}  style={{marginHorizontal: 5}} options={WORKERS} defaultValue='Trabajador...' onSelect={(idx,value)=>{asignedWorker = value}}/>
+          </View>
+          <View style={{flexDirection:'row',alignSelf:'center', marginVertical: 5}}>
+            <Text>Actividad: </Text>
+            <ModalDropdown textStyle={{fontSize:15}} style={{marginHorizontal: 5}} options={this.state.activitiesOptions} defaultValue='Actividad...' onSelect={(idx,value)=>{asignedActivity = value}}/>
+          </View>
+          <View style={{flexDirection:'row',alignSelf:'center', marginVertical: 5}}>
+            <Text>Finca: </Text>
+            <ModalDropdown textStyle={{fontSize:15}} style={{marginHorizontal: 5}} options={FINCAS} defaultValue='Finca...' onSelect={(idx,value)=>{asignedFinca = value, asignedLocation=LOCATIONS[idx]}}/>
+          </View>
+          <DialogButton text='Aceptar' onPress={()=>{
+              this.asignActivity(asignedWorker, asignedActivity, asignedFinca, asignedLocation)
+              }}/>
         </View>
-        <View style={{flexDirection:'row',alignSelf:'center', marginVertical: 5}}>
-          <Text>Actividad: </Text>
-          <ModalDropdown textStyle={{fontSize:15}} style={{marginHorizontal: 5}} options={this.state.activitiesOptions} defaultValue='Actividad...' onSelect={(idx,value)=>{asignedActivity = value}}/>
-        </View>
-        <DialogButton text='Aceptar' onPress={()=>{
-            this.asignActivity(asignedWorker, asignedActivity)
-            }}/>
-      </View>
-    ),
-  }, () => {
+      ),
+    }, () => {
     console.log('callback - show');
-  });
+    });
   }
 
   mapActivities(){
-    const listFinca = this.state.workers.map((worker) =>
-      WORKERS = uniquenombres.concat(worker.users.username)
+    const mapFinca = this.state.fincas.map((finca) =>
+      FINCAS = FINCAS.concat(finca.finca.id)
+    )
+
+    const mapLocation = this.state.fincas.map((finca) =>
+      LOCATIONS = LOCATIONS.concat(finca.finca.location)
+    )
+
+    const mapWorker = this.state.workers.map((worker) =>
+      WORKERS = WORKERS.concat(worker.users.id)
     )
     WORKERS = Array.from(new Set(WORKERS))
 
