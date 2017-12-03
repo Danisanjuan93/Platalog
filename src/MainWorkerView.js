@@ -21,8 +21,9 @@ export default class MainWorkerView extends Component {
     }
   }
 
-  componentWillMount(){
+  omponentWillMount(){
     this.getFincas();
+    this.getActivities();
   }
 
   _handleResults= (e) => {
@@ -42,7 +43,6 @@ export default class MainWorkerView extends Component {
     })
     .then(function (response) {
       self.setState({fincas: response.data})
-      self.getActivities()
     })
     .catch(function (error) {
     })

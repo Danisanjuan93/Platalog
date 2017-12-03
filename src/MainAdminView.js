@@ -33,6 +33,7 @@ export default class MainAdminView extends Component {
       plantVariety: '',
       location: '',
       fincaName: '',
+      reload: false
     }
   }
 
