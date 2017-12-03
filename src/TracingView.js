@@ -36,7 +36,7 @@ export default class TracingView extends Component {
     })
     .then(function (response) {
       self.setState({fincas: response.data})
-      self.storageValues(STORAGE_FINCAS_USER, JSON.stringify(self.state.fincas))
+      self.storageValues(STORAGE_FINCAS_USER, JSON.stringify(response.data))
     })
     .catch(function (error) {
       AlertIOS.alert(

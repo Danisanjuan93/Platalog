@@ -1,69 +1,90 @@
 import React, { Component } from 'react';
-import {StyleSheet,View, ScrollView} from 'react-native';
-import {Actions} from 'react-native-router-flux';
-import { Button,Icon, Text, Form, Item, Input,List, ListItem, Drawer, Right, Left, Title, Header } from 'native-base';
+import { StyleSheet, View, ScrollView, AsyncStorage, AlertIOS } from 'react-native';
+import { Actions } from 'react-native-router-flux';
+import { Button, Icon, Text, Form, Item, Input, List, ListItem, Drawer, Right, Left, Title, Header } from 'native-base';
 import SearchBar from 'react-native-searchbar';
 import ActionButton from 'react-native-action-button';
 import ModalDropdown from 'react-native-modal-dropdown';
 import DialogManager, { SlideAnimation, DialogContent, DialogButton } from 'react-native-dialog-component';
+import axios from 'axios';
+
+const STORAGE_KEY = 'access_token';
+const STORAGE_FINCAS_USER = 'fincas_user';
+let WORKERS = [];
+let WORKERSID = [];
+let LOCATIONS = [];
+let EMPLOYEES = [];
+
 export default class ManageUsersView extends Component {
 
   constructor(props){
     super(props)
     this.state={
-      workerList:[
-                  {
-                    id: 1,
-                    location: 'Finca1',
-                    worker: 'Daniel',
-                  },
-                  {
-                    id: 2,
-                    location: 'Finca2',
-                    worker: 'Eduardo',
-                  },
-                  {
-                    id: 3,
-                    location: 'Finca2',
-                    worker: 'Alvaro',
-                  }
-,                  {
-                    id: 4,
-                    location: 'Finca3',
-                    worker: 'Manuel',
-                  }
-,                  {
-                    id: 5,
-                    location: 'Finca1',
-                    worker: 'Suso',
-                  }
-,                  {
-                    id: 6,
-                    location: 'Finca2',
-                    worker: 'Mario',
-                  }
-,                  {
-                    id: 7,
-                    location: 'Finca1',
-                    worker: 'Raquel',
-                  }
-,                  {
-                    id: 8,
-                    location: 'Finca2',
-                    worker: 'Pedro',
-                  }
-                ],
-      locations: ['Finca1','Finca2','Finca3'],
+      workerList: [],
+      locations: [],
       results:[],
+      fincas: []
     }
   }
-  componentWillMount(){
-    this.setState({results: this.state.workerList}, ()=>{console.log(this.state.results)});
+
+  async componentWillMount(){
+    this.setState({
+      fincas: JSON.parse(await AsyncStorage.getItem(STORAGE_FINCAS_USER))
+    })
+    this.getWorkers();
   }
+
   _handleResults= (e) => {
       this.setState({results: e }, ()=>{console.log(this.state.results)});
 
   }
+
+  async getWorkers(){
+    const self = this;
+    const token = await AsyncStorage.getItem(STORAGE_KEY);
+    const map = self.state.fincas.map((finca) =>
+      axios({
+        method: 'get',
+        url: 'http://127.0.0.1:8000/api/users/' + finca.finca.id + '/workers',
+        headers :{
+          'Authorization': 'Bearer ' + token,
+        }
+      })
+      .then(function (response) {
+        self.setState({workerList: self.state.workerList.concat(response.data)})
+        self.setState({locations: self.state.locations.concat(response.data)})
+        self.setData();
+      })
+      .catch(function (error) {
+      })
+    );
+  }
+
+  setData(){
+    WORKERS = [];
+    WORKERSID = [];
+    LOCATIONS = [];
+    EMPLOYEES = [];
+    const mapWorker = this.state.workerList.map((worker) =>
+      WORKERS = WORKERS.concat(worker.users.username)
+    )
+    WORKERS = Array.from(new Set(WORKERS))
+
+    const mapWorkerID = this.state.workerList.map((worker) =>
+      WORKERSID = WORKERSID.concat(worker.users.id)
+    )
+    WORKERSID = Array.from(new Set(WORKERSID))
+
+    const mapLocation = this.state.locations.map((finca) =>
+      LOCATIONS = LOCATIONS.concat(finca.finca.location)
+    )
+    LOCATIONS = Array.from(new Set(LOCATIONS))
+
+    for (let i = 0; i < WORKERS.length; i++){
+      EMPLOYEES = EMPLOYEES.concat({id: WORKERSID[i], name: WORKERS[i], location: LOCATIONS[i]})
+    }
+  }
+
   renderHeader= () =>{
     return(
       <Header>
@@ -87,14 +108,15 @@ export default class ManageUsersView extends Component {
       </Right>
       </Header>
       )
-}
+  }
+
   mapWorkers(){
-    return this.state.results.map((worker)=>{
-      return(
+    return(
+      <List dataArray={EMPLOYEES} renderRow={(worker) =>
         <ListItem onPress={()=>{}}>
           <Left>
-            <View style={{flexDirection: 'column'}}>
-              <Text style={{alignSelf:'flex-start'}}>{worker.worker}</Text>
+            <View style={{flexDirection: 'column', flex:1}}>
+              <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{worker.name}</Text>
             </View>
           </Left>
           <Right>
@@ -103,61 +125,79 @@ export default class ManageUsersView extends Component {
             </View>
           </Right>
         </ListItem>
-      )
-    })
+        }>
+      </List>
+    );
   }
+
   showAddActivityDialog(){
     let asignedZone;
     let asignedWorker;
     DialogManager.show({
-    title: 'Asignar actividad',
-    titleAlign: 'center',
-    animationDuration: 200,
-    height: 200,
-    dialogAnimation: new SlideAnimation({slideFrom: 'bottom'}),
-    children: (
-      <View style={{flex: 1}}>
-          <Form style={{flex: 1}}>
-            <Item>
-              <Input  placeholder='Nombre...'  value={asignedWorker} onChangeText={(text)=> asignedWorker = text}/>
-            </Item>
-              <ModalDropdown textStyle={{fontSize:15}}  style={{marginVertical: 10, marginHorizontal: 17 }} options={this.state.locations} defaultValue='Zona...' onSelect={(idx,value)=>{asignedZone = value}}/>
-          </Form>
-        <DialogButton text='Aceptar' onPress={()=>{
-            this.newWorker(asignedZone, asignedWorker)
-            }}/>
-      </View>
-    ),
-  }, () => {
-    console.log('callback - show');
-  });
+      title: 'Asignar actividad',
+      titleAlign: 'center',
+      animationDuration: 200,
+      height: 200,
+      dialogAnimation: new SlideAnimation({slideFrom: 'bottom'}),
+      children: (
+        <View style={{flex: 1}}>
+            <Form style={{flex: 1}}>
+              <Item>
+                <ModalDropdown textStyle={{fontSize:15}}  style={{marginVertical: 10, marginHorizontal: 17 }} options={WORKERS} defaultValue='Trabajador...' onSelect={(idx,value)=>{asignedWorker = WORKERSID[idx]}}/>
+              </Item>
+              <Item>
+                <ModalDropdown textStyle={{fontSize:15}}  style={{marginVertical: 10, marginHorizontal: 17 }} options={LOCATIONS} defaultValue='Zona...' onSelect={(idx,value)=>{asignedZone = value}}/>
+              </Item>
+            </Form>
+          <DialogButton text='Aceptar' onPress={()=>{
+              this.newWorker(asignedZone, asignedWorker)
+              }}/>
+        </View>
+      ),
+    }, () => {
+      console.log('callback - show');
+    });
   }
-  newWorker(zone,worker){
+
+  newWorker(zone, worker){
     if(worker != undefined && zone != undefined){
-      let currentWorkers = this.state.workerList;
-      currentWorkers.push({
-                            id: 9,
-                            worker: worker,
-                            location: zone
-                            })
-      this.setState({workerList: currentWorkers});
-      DialogManager.dismiss();
+      var self = this;
+      const token = await AsyncStorage.getItem(STORAGE_KEY);
+      axios({
+        method: 'post',
+        url: 'http://127.0.0.1:8000/api/fincas',
+        headers :{
+          'Authorization': 'Bearer ' + token,
+          'Content-Type': 'application/json'
+        },
+        data: {
+          firstname: this.state.estateType,
+          lastname: this.state.irrigationType,
+          password: this.state.plantVariety,
+          email: this.state.location,
+          rol: this.state.fincaName
+        }
+      })
+      .then(function (response) {
+        DialogManager.dismiss();
+      })
+      .catch(function (error) {
+        console.log(error);
+      })
     }
   }
+
   render() {
     return (
       <View style={{flex: 1}}>
         {this.renderHeader()}
-        <ScrollView style={{flex: 1}}>
-          <List>
-            {this.mapWorkers()}
-          </List>
-        </ScrollView>
+        {this.mapWorkers()}
         <ActionButton buttonColor="blue" onPress={()=>{this.showAddActivityDialog()}}/>
       </View>
     );
   }
 }
+
 const styles = StyleSheet.create({
   finishedActivity: {
     backgroundColor: 'green',

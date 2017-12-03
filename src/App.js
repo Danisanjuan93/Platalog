@@ -20,7 +20,7 @@ export default class App extends Component {
                     <Scene key='ordersChart' component={OrdersChartView} title='Pedidos - Tiempo'  />
                     <Scene key='manageActivities' component={ManageActivitiesView} title='Gestionar actividades'  />
                     <Scene key='pendingActivityDetails' component={PendingActivityDetailsScreen}/>
-                    <Scene key='manageUsers' component={ManageUsersView}  />
+                    <Scene key='manageUsers' component={ManageUsersView} title='Gestionar Trabajadores' />
                   </Scene>
               </Scene>
       </Router>

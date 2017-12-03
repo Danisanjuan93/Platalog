@@ -35,6 +35,7 @@ export default class ManageActivitiesView extends Component {
     })
     this.getActivities();
   }
+
   async componentDidUpdate(){
     if (this.state.reload){
       WORKERS = [];
