@@ -17,12 +17,17 @@ export default class MainWorkerView extends Component {
     this.state={
       results: [],
       fincas: [],
-      activities: []
+      activities: [],
+      reload: false
     }
   }
 
-  omponentWillMount(){
-    this.getFincas();
+  componentWillReceiveProps(nextProps){
+    this.setState({activities: [], results: []});
+    this.getActivities();
+  }
+
+  async componentWillMount(){
     this.getActivities();
   }
 
@@ -30,41 +35,22 @@ export default class MainWorkerView extends Component {
       this.setState({results: e }, ()=>{console.log(this.state.results)});
   }
 
-  async getFincas(){
+  async getActivities(){
     const self = this;
     const token = await AsyncStorage.getItem(STORAGE_KEY);
-    const user = JSON.parse(await AsyncStorage.getItem(STORAGE_USER));
+    const worker = JSON.parse(await AsyncStorage.getItem(STORAGE_USER))
     axios({
       method: 'get',
-      url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/fincas/' + user.User.id,
+      url: 'http://127.0.0.1:8000/api/activities/' + worker.User.id + '/activity',
       headers :{
         'Authorization': 'Bearer ' + token,
       }
     })
     .then(function (response) {
-      self.setState({fincas: response.data})
+      self.setState({activities: self.state.activities.concat(response.data)})
+      self.setState({results: self.state.results.concat(response.data)})
     })
     .catch(function (error) {
-    })
-  }
-
-  async getActivities(){
-    const self = this;
-    const token = await AsyncStorage.getItem(STORAGE_KEY);
-    this.state.fincas.map((finca) => {
-      axios({
-        method: 'get',
-        url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/activities/' + finca.finca.id,
-        headers :{
-          'Authorization': 'Bearer ' + token,
-        }
-      })
-      .then(function (response) {
-        self.setState({activities: self.state.activities.concat(response.data)})
-        self.setState({results: self.state.results.concat(response.data)})
-      })
-      .catch(function (error) {
-      })
     })
   }
 

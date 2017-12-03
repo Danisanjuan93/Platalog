@@ -53,7 +53,7 @@ export default class ManageActivitiesView extends Component {
     const token = await AsyncStorage.getItem(STORAGE_KEY);
     axios({
       method: 'get',
-      url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/users/' + finca + '/workers',
+      url: 'http://127.0.0.1:8000/api/users/' + finca + '/workers',
       headers :{
         'Authorization': 'Bearer ' + token,
       }
@@ -75,7 +75,7 @@ export default class ManageActivitiesView extends Component {
     const token = await AsyncStorage.getItem(STORAGE_KEY);
     axios({
       method: 'post',
-      url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/activities',
+      url: 'http://127.0.0.1:8000/api/activities',
       headers :{
         'Authorization': 'Bearer ' + token,
       },
@@ -104,7 +104,7 @@ export default class ManageActivitiesView extends Component {
     const listFinca = this.state.fincas.map((finca) =>
       axios({
         method: 'get',
-        url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/activities/' + finca.finca.id,
+        url: 'http://127.0.0.1:8000/api/activities/' + finca.finca.id,
         headers :{
           'Authorization': 'Bearer ' + token,
         }
