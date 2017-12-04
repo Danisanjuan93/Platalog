@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, ScrollView, AsyncStorage, AlertIOS } from 'react-native';
 import { Actions } from 'react-native-router-flux';
-import { Button, Icon, Text, Form, Item, Input, List, ListItem, Drawer, Right, Left, Title, Header } from 'native-base';
+import { Button, Icon, Text, Form, Item, Input, List, ListItem, Drawer, Right, Left, Title, Header, Label } from 'native-base';
 import SearchBar from 'react-native-searchbar';
 import ActionButton from 'react-native-action-button';
 import ModalDropdown from 'react-native-modal-dropdown';
@@ -14,6 +14,7 @@ let WORKERS = [];
 let WORKERSID = [];
 let LOCATIONS = [];
 let EMPLOYEES = [];
+let FINCAS = [];
 
 export default class ManageUsersView extends Component {
 
@@ -23,7 +24,13 @@ export default class ManageUsersView extends Component {
       workerList: [],
       locations: [],
       results:[],
-      fincas: []
+      fincas: [],
+      firstname: '',
+      lastname: '',
+      password: '',
+      email: '',
+      reload: false,
+      userID: ''
     }
   }
 
@@ -32,6 +39,13 @@ export default class ManageUsersView extends Component {
       fincas: JSON.parse(await AsyncStorage.getItem(STORAGE_FINCAS_USER))
     })
     this.getWorkers();
+  }
+
+  async componentDidUpdate(){
+    if (this.state.reload){
+      this.setState({reload:false, workerList: [], locations: []})
+      this.getWorkers();
+    }
   }
 
   _handleResults= (e) => {
@@ -65,6 +79,7 @@ export default class ManageUsersView extends Component {
     WORKERSID = [];
     LOCATIONS = [];
     EMPLOYEES = [];
+    FINCAS = [];
     const mapWorker = this.state.workerList.map((worker) =>
       WORKERS = WORKERS.concat(worker.users.username)
     )
@@ -79,6 +94,10 @@ export default class ManageUsersView extends Component {
       LOCATIONS = LOCATIONS.concat(finca.finca.location)
     )
     LOCATIONS = Array.from(new Set(LOCATIONS))
+
+    const mapFinca = this.state.fincas.map((finca) =>
+      FINCAS = FINCAS.concat(finca.finca.id)
+    )
 
     for (let i = 0; i < WORKERS.length; i++){
       EMPLOYEES = EMPLOYEES.concat({id: WORKERSID[i], name: WORKERS[i], location: LOCATIONS[i]})
@@ -130,72 +149,127 @@ export default class ManageUsersView extends Component {
     );
   }
 
-  showAddActivityDialog(){
-    let asignedZone;
-    let asignedWorker;
+  // showAddActivityDialog(){
+  //   let asignedZone;
+  //   let asignedWorker;
+  //   DialogManager.show({
+  //     title: 'Asignar actividad',
+  //     titleAlign: 'center',
+  //     animationDuration: 200,
+  //     height: 200,
+  //     dialogAnimation: new SlideAnimation({slideFrom: 'bottom'}),
+  //     children: (
+  //       <View style={{flex: 1}}>
+  //           <Form style={{flex: 1}}>
+  //             <Item>
+  //               <ModalDropdown textStyle={{fontSize:15}}  style={{marginVertical: 10, marginHorizontal: 17 }} options={WORKERS} defaultValue='Trabajador...' onSelect={(idx,value)=>{asignedWorker = WORKERSID[idx]}}/>
+  //             </Item>
+              // <Item>
+              //   <ModalDropdown textStyle={{fontSize:15}}  style={{marginVertical: 10, marginHorizontal: 17 }} options={LOCATIONS} defaultValue='Zona...' onSelect={(idx,value)=>{asignedZone = value}}/>
+              // </Item>
+  //           </Form>
+  //         <DialogButton text='Aceptar' onPress={()=>{
+  //             this.newWorker(asignedZone, asignedWorker)
+  //             }}/>
+  //       </View>
+  //     ),
+  //   }, () => {
+  //     console.log('callback - show');
+  //   });
+  // }
+  showAddWorkerDialog(){
+    let asignedFinca;
     DialogManager.show({
-      title: 'Asignar actividad',
-      titleAlign: 'center',
-      animationDuration: 200,
-      height: 200,
-      dialogAnimation: new SlideAnimation({slideFrom: 'bottom'}),
-      children: (
-        <View style={{flex: 1}}>
-            <Form style={{flex: 1}}>
-              <Item>
-                <ModalDropdown textStyle={{fontSize:15}}  style={{marginVertical: 10, marginHorizontal: 17 }} options={WORKERS} defaultValue='Trabajador...' onSelect={(idx,value)=>{asignedWorker = WORKERSID[idx]}}/>
-              </Item>
-              <Item>
-                <ModalDropdown textStyle={{fontSize:15}}  style={{marginVertical: 10, marginHorizontal: 17 }} options={LOCATIONS} defaultValue='Zona...' onSelect={(idx,value)=>{asignedZone = value}}/>
-              </Item>
-            </Form>
-          <DialogButton text='Aceptar' onPress={()=>{
-              this.newWorker(asignedZone, asignedWorker)
-              }}/>
+    title: 'Nuevo Trabajador',
+    titleAlign: 'center',
+    animationDuration: 200,
+    height: 420,
+    dialogAnimation: new SlideAnimation({slideFrom: 'bottom'}),
+    children: (
+      <View style={{flex: 1}}>
+        <View>
+          <Item floatingLabel>
+            <Label style={{padding: '2%'}}>Nombre</Label>
+            <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({firstname: text})}}/>
+          </Item>
+          <Item floatingLabel>
+            <Label style={{padding: '2%'}}>Apellidos</Label>
+            <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({lastname: text})}}/>
+          </Item>
+          <Item floatingLabel>
+            <Label style={{padding: '2%'}}>Email</Label>
+            <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({email: text})}}/>
+          </Item>
+          <Item floatingLabel>
+            <Label style={{padding: '2%'}}>Contraseña</Label>
+            <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({password: text})}}/>
+          </Item>
+          <Item>
+            <ModalDropdown textStyle={{fontSize:15}}  style={{marginVertical: 10, marginHorizontal: 17 }} options={FINCAS} defaultValue='Zona...' onSelect={(idx,value)=>{asignedFinca = value}}/>
+          </Item>
         </View>
-      ),
-    }, () => {
-      console.log('callback - show');
+        <DialogButton text='Aceptar' onPress={() => {this.newWorker(asignedFinca)}}/>
+      </View>
+      )
     });
   }
 
-  newWorker(zone, worker){
-    if(worker != undefined && zone != undefined){
+  async newWorker(finca){
       var self = this;
       const token = await AsyncStorage.getItem(STORAGE_KEY);
       axios({
         method: 'post',
-        url: 'http://127.0.0.1:8000/api/fincas',
+        url: 'http://127.0.0.1:8000/api/users/registers',
         headers :{
           'Authorization': 'Bearer ' + token,
           'Content-Type': 'application/json'
         },
         data: {
-          firstname: this.state.estateType,
-          lastname: this.state.irrigationType,
-          password: this.state.plantVariety,
-          email: this.state.location,
-          rol: this.state.fincaName
+          firstName: this.state.firstname,
+          lastName: this.state.lastname,
+          password: this.state.password,
+          email: this.state.email,
+          rol: "0"
         }
       })
       .then(function (response) {
-        DialogManager.dismiss();
+        self.setState({userID: response.data.userID})
+        self.patchFinca(finca, response.data.userID);
       })
       .catch(function (error) {
         console.log(error);
       })
     }
-  }
 
-  render() {
-    return (
-      <View style={{flex: 1}}>
-        {this.renderHeader()}
-        {this.mapWorkers()}
-        <ActionButton buttonColor="blue" onPress={()=>{this.showAddActivityDialog()}}/>
-      </View>
-    );
-  }
+    async patchFinca(finca, worker){
+      var self = this;
+      const token = await AsyncStorage.getItem(STORAGE_KEY);
+      axios({
+        method: 'patch',
+        url: 'http://127.0.0.1:8000/api/users/' + finca + '/fincas/' + worker,
+        headers :{
+          'Authorization': 'Bearer ' + token,
+          'Content-Type': 'application/json'
+        },
+      })
+      .then(function (response) {
+        self.setState({reload: true});
+        DialogManager.dismiss();
+      })
+      .catch(function (error) {
+        console.log(error);
+      })
+      }
+
+    render() {
+      return (
+        <View style={{flex: 1}}>
+          {this.renderHeader()}
+          {this.mapWorkers()}
+          <ActionButton buttonColor="blue" onPress={()=>{this.showAddWorkerDialog()}}/>
+        </View>
+      );
+    }
 }
 
 const styles = StyleSheet.create({
