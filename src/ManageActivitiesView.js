@@ -113,6 +113,7 @@ export default class ManageActivitiesView extends Component {
       .then(function (response) {
         if (response.status == 200){
           self.setState({activities: self.state.activities.concat(response.data)})
+          self.setState({results: self.state.results.concat(response.data)})
         }else{
         }
       })
@@ -221,7 +222,7 @@ export default class ManageActivitiesView extends Component {
     )
 
     return(
-      <List dataArray={this.state.activities} renderRow={(activity) =>
+      <List dataArray={this.state.results} renderRow={(activity) =>
         <ListItem onPress={()=>{}}>
           <Left>
             <View style={{flexDirection: 'column', flex:1}}>

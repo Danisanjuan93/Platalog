@@ -18,8 +18,8 @@ export default class DrawerContent extends Component {
         <Button block light style={styles.firstBtn} onPress={()=>{Actions.manageActivities()}}>
           <Text>Gestionar actividades</Text>
         </Button>
-        <Button block light style={styles.btn}>
-          <Text>Crear difusión</Text>
+        <Button block light style={styles.btn} onPress={()=>{Actions.manageOrders()}}>
+          <Text>Gestionar Pedidos</Text>
         </Button>
         <Button block light style={styles.btn} onPress={()=>{Actions.manageUsers()}}>
           <Text>Gestionar trabajadores</Text>

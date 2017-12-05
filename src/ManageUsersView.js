@@ -66,6 +66,7 @@ export default class ManageUsersView extends Component {
       })
       .then(function (response) {
         self.setState({workerList: self.state.workerList.concat(response.data)})
+        self.setState({results: self.state.results.concat(response.data)})
         self.setState({locations: self.state.locations.concat(response.data)})
         self.setData();
       })
@@ -149,34 +150,6 @@ export default class ManageUsersView extends Component {
     );
   }
 
-  // showAddActivityDialog(){
-  //   let asignedZone;
-  //   let asignedWorker;
-  //   DialogManager.show({
-  //     title: 'Asignar actividad',
-  //     titleAlign: 'center',
-  //     animationDuration: 200,
-  //     height: 200,
-  //     dialogAnimation: new SlideAnimation({slideFrom: 'bottom'}),
-  //     children: (
-  //       <View style={{flex: 1}}>
-  //           <Form style={{flex: 1}}>
-  //             <Item>
-  //               <ModalDropdown textStyle={{fontSize:15}}  style={{marginVertical: 10, marginHorizontal: 17 }} options={WORKERS} defaultValue='Trabajador...' onSelect={(idx,value)=>{asignedWorker = WORKERSID[idx]}}/>
-  //             </Item>
-              // <Item>
-              //   <ModalDropdown textStyle={{fontSize:15}}  style={{marginVertical: 10, marginHorizontal: 17 }} options={LOCATIONS} defaultValue='Zona...' onSelect={(idx,value)=>{asignedZone = value}}/>
-              // </Item>
-  //           </Form>
-  //         <DialogButton text='Aceptar' onPress={()=>{
-  //             this.newWorker(asignedZone, asignedWorker)
-  //             }}/>
-  //       </View>
-  //     ),
-  //   }, () => {
-  //     console.log('callback - show');
-  //   });
-  // }
   showAddWorkerDialog(){
     let asignedFinca;
     DialogManager.show({

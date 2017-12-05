@@ -7,6 +7,8 @@ import MainAdminView from './MainAdminView';
 import ManageActivitiesView from './ManageActivitiesView';
 import OrdersChartView from './OrdersChartView';
 import ManageUsersView from './ManageUsersView';
+import ManageOrdersView from './ManageOrdersView';
+
 export default class App extends Component {
   render() {
 
@@ -21,6 +23,7 @@ export default class App extends Component {
                     <Scene key='manageActivities' component={ManageActivitiesView} title='Gestionar actividades'  />
                     <Scene key='pendingActivityDetails' component={PendingActivityDetailsScreen}/>
                     <Scene key='manageUsers' component={ManageUsersView} title='Gestionar Trabajadores' />
+                    <Scene key='manageOrders' component={ManageOrdersView} title='Gestionar Pedidos' />
                   </Scene>
               </Scene>
       </Router>

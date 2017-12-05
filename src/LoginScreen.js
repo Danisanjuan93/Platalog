@@ -110,7 +110,7 @@ export default class LoginScreen extends Component {
           <Input placeholder='Usuario' autoCapitalize = 'none' value={this.state.username} onChangeText={(text)=>{this.setState({username: text})}}/>
         </Item>
         <Item last>
-          <Input placeholder='Contraseña' autoCapitalize = 'none' value={this.state.password} onChangeText={(text)=>{this.setState({password: text})}} />
+          <Input secureTextEntry placeholder='Contraseña' autoCapitalize = 'none' value={this.state.password} onChangeText={(text)=>{this.setState({password: text})}} />
         </Item>
         <Button light style={styles.loginBtn} full onPress={() => this.checkuser()}>
           <Text style={{color: 'black'}}>Continuar</Text>
