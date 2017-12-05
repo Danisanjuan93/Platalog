@@ -13,6 +13,7 @@ const STORAGE_KEY = 'access_token';
 const STORAGE_USER = 'user_data';
 const STORAGE_FINCAS_USER = 'fincas_user';
 let FINCAS = [];
+
 export default class ManageOrdersView extends Component {
 
 
@@ -21,12 +22,14 @@ export default class ManageOrdersView extends Component {
     this.state={
       results: [],
       orders: [],
-      reload: true
+      reload: false
     }
   }
 
   componentWillReceiveProps(nextProps){
-
+    this.setState({reload: false, orders: [], results: []})
+    this.setData();
+    this.getOrders();
   }
 
   async componentWillMount(){
@@ -99,6 +102,10 @@ export default class ManageOrdersView extends Component {
     )
   }
 
+  onClickOrder(order){
+    Actions.pendingOrderDetailsScreen({order: order})
+  }
+
   showAddOrderDialog(){
     let asignedFinca;
     DialogManager.show({
@@ -130,12 +137,12 @@ export default class ManageOrdersView extends Component {
 
   mapOrders(){
     return(
-      <List dataArray={this.state.results} renderRow={(activity) =>
-        <ListItem onPress={() => {}}>
+      <List dataArray={this.state.results} renderRow={(order) =>
+        <ListItem onPress={() => {this.onClickOrder(order)}}>
           <Left>
             <View style={{flexDirection: 'column', flex:1}}>
-              <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{activity.receiver}</Text>
-              <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{activity.weight}</Text>
+              <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{order.receiver}</Text>
+              <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{order.weight}</Text>
             </View>
           </Left>
         </ListItem>

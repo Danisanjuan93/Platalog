@@ -16,7 +16,7 @@ export default class MyHeader extends Component {
     }else if (this.props.backArrow){
       return (
         <Left>
-          <Button transparent onPress={() => Actions.pop({refresh: {results: [], activities: []}})}>
+          <Button transparent onPress={() => Actions.pop({refresh: {reload: Math.random(), results: [], activities: []}})}>
             <Icon name='ios-arrow-back-outline'/>
           </Button>
         </Left>
