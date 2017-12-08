@@ -1,38 +1,22 @@
 import React, { Component } from 'react';
-import {StyleSheet,View} from 'react-native';
-import {Actions} from 'react-native-router-flux';
-import { Button,Text } from 'native-base';
+import {StyleSheet, View, AsyncStorage, AlertIOS } from 'react-native';
+import { Actions } from 'react-native-router-flux';
+import { Button, Text } from 'native-base';
 import { Bar } from 'react-native-pathjs-charts';
 import Header from './Header';
+import axios from 'axios';
+
+const STORAGE_KEY = 'access_token';
+const STORAGE_USER = 'user_data';
+
 export default class OrdersChartView extends Component {
 
   constructor(props){
     super(props)
-  this.state={
-    data : [
-        [{
-          "v": 49,
-          "name": "20/07/2017"
-        }, {
-          "v": 42,
-          "name": "25/07/2017"
-        },
-        {
-          "v": 69,
-          "name": "2/08/2017"
-        }, {
-          "v": 62,
-          "name": "10/08/2017"
-        },
-        {
-          "v": 29,
-          "name": "20/09/2017"
-        }, {
-          "v": 15,
-          "name": "25/09/2017"
-        }]
-      ],
-       options: {
+    this.state={
+      Data: [],
+      graphic: [],
+      options: {
         width: 300,
         height: 300,
         margin: {
@@ -76,14 +60,59 @@ export default class OrdersChartView extends Component {
             fill: '#34495E'
           }
         }
-      }
+      },
+      orders: []
     }
   }
+
+  async componentWillMount(){
+    this.getOrders();
+  }
+
+  async getOrders(){
+    const self = this;
+    const token = await AsyncStorage.getItem(STORAGE_KEY);
+    axios({
+      method: 'get',
+      url: 'http://127.0.0.1:8000/api/orders/graphic',
+      headers :{
+        'Authorization': 'Bearer ' + token,
+      }
+    })
+    .then(function (response) {
+      self.setState({orders: [response.data]});
+      self.countOrders();
+    })
+    .catch(function (error) {
+      AlertIOS.alert("Error", JSON.stringify(error))
+    })
+  }
+
+  countOrders(){
+    let pos;
+    let count = 0;
+    let key;
+    for (let i = 0; i < this.state.orders[0].length; i++){
+      key = this.state.orders[0][i];
+      for (let j = i; j < this.state.orders[0].length; j++){
+        if (key.deleted_at.split('-')[1] == this.state.orders[0][j].deleted_at.split('-')[1]){
+          count = count + 1;
+          pos = j;
+        }
+      }
+      this.setState({Data: this.state.Data.concat({v: count, name: this.state.orders[0][i].deleted_at.split('-')[0] + '-' + this.state.orders[0][i].deleted_at.split('-')[1]})});
+      count = 0;
+      i = pos;
+    }
+    this.setState({graphic: [this.state.Data]});
+    AlertIOS.alert("Aqui", JSON.stringify(this.state.graphic))
+  }
+
   render() {
     return (
     <View style={{flex: 1}}>
       <Header backArrow title={this.props.title}/>
-      <Bar data={this.state.data} options={this.state.options} accessorKey='v'/>
+      <Bar data={this.state.graphic} options={this.state.options} accessorKey='v'/>
     </View>
     );
   }
