@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {StyleSheet, View, Image, Platform, AsyncStorage, AlertIOS} from 'react-native';
+import {StyleSheet, View, Image, Platform, AsyncStorage, AlertIOS,StatusBar} from 'react-native';
 import {Actions} from 'react-native-router-flux';
 import { Button,Icon, Text, Form, Item, Input } from 'native-base';
 import Header from './Header';
@@ -97,7 +97,8 @@ export default class LoginScreen extends Component {
   render() {
     return (
     <View style={{flex: 1}}>
-      <Header title={this.props.title}/>
+    <StatusBar hidden={true} />
+      <Header title={this.props.title} doShadow/>
       <View style={{flex:1}}>
         <Image
           style={{flex:1}}
@@ -112,8 +113,8 @@ export default class LoginScreen extends Component {
         <Item last>
           <Input placeholder='Contraseña' autoCapitalize = 'none' value={this.state.password} onChangeText={(text)=>{this.setState({password: text})}} />
         </Item>
-        <Button light style={styles.loginBtn} full onPress={() => this.checkuser()}>
-          <Text style={{color: 'black'}}>Continuar</Text>
+        <Button rounded style={styles.loginBtn} onPress={() => this.checkuser()}>
+          <Text style={{color: 'white'}}>Continuar</Text>
         </Button>
       </Form>
     </View>
@@ -123,6 +124,10 @@ export default class LoginScreen extends Component {
 const styles = StyleSheet.create({
   loginBtn:{
     marginHorizontal: 5,
-    marginVertical: 10
+    marginVertical: 10,
+    backgroundColor: '#29A55E',
+    alignContent: 'center',
+    justifyContent: 'center',
+    width: '100%'
   }
 });

@@ -30,7 +30,7 @@ export default class MyHeader extends Component {
 
   render() {
     return (
-      <Header>
+      <Header style={this.props.doShadow ? styles.container_shadow : styles.container}>
         {this.renderLeftIcon()}
         <Body>
           <Title>{this.props.title}</Title>
@@ -40,3 +40,15 @@ export default class MyHeader extends Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container:{
+    backgroundColor: '#2FBF6D',
+    shadowOffset: {height: 0, width: 0},
+    shadowOpacity: 0,
+    elevation: 0
+  },
+  container_shadow:{
+    backgroundColor: '#2FBF6D',
+  }
+});

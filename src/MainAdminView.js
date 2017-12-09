@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {StyleSheet, View, AlertIOS, AsyncStorage} from 'react-native';
+import {StyleSheet, View, AlertIOS, AsyncStorage,StatusBar} from 'react-native';
 import {Actions} from 'react-native-router-flux';
 import { Button,Icon, Text, Form, Item, Input,List, ListItem, Drawer, Label } from 'native-base';
 import Header from './Header';
@@ -123,16 +123,18 @@ export default class MainAdminView extends Component {
       ref={(ref) => { this.drawer = ref; }}
       content={<DrawerContent navigator={this.navigator} />}
       onClose={() => this.closeDrawer()}>
+      <StatusBar hidden={true} />
       <View style={{flex: 1}}>
         <Header title={this.props.title} menu showMenu={()=>this.openDrawer()}/>
-        <ScrollableTabView>
+        <ScrollableTabView tabBarBackgroundColor='#2FBF6D' tabBarActiveTextColor='white' tabBarInactiveTextColor='white' tabBarUnderlineStyle={{backgroundColor: 'white'}}>
           <TracingView tabLabel='Seguimiento'/>
           <AnalysisView tabLabel='Analisis'/>
           <HistoricView tabLabel='Historial'/>
         </ScrollableTabView>
-        <ActionButton buttonColor="blue" onPress={()=>{this.showAddFincaDialog()}}/>
+        <ActionButton buttonColor="#29A55E" onPress={()=>{this.showAddFincaDialog()}}/>
       </View>
     </Drawer>
     );
   }
 }
+

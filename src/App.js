@@ -14,9 +14,9 @@ export default class App extends Component {
       <Router hideNavBar>
               <Scene key="modal" modal>
                   <Scene key='root' hideNavBar>
-                    <Scene key='login' component={LoginScreen} title='Login'  initial = 'true'/>
+                    <Scene key='login' component={LoginScreen} title='Login' />
                     <Scene key='mainWorker' component={MainWorkerView} title='Pendiente'  />
-                    <Scene key='mainAdmin' component={MainAdminView} title='Admin'  />
+                    <Scene key='mainAdmin' component={MainAdminView} title='Admin' initial = 'true' />
                     <Scene key='ordersChart' component={OrdersChartView} title='Pedidos - Tiempo'  />
                     <Scene key='manageActivities' component={ManageActivitiesView} title='Gestionar actividades'  />
                     <Scene key='pendingActivityDetails' component={PendingActivityDetailsScreen}/>
