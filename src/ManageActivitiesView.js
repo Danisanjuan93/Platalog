@@ -124,7 +124,7 @@ export default class ManageActivitiesView extends Component {
 
   renderHeader= () =>{
     return(
-      <Header>
+      <Header style={{backgroundColor: '#008080'}}>
         <Left>
           <Button transparent onPress={() => Actions.pop({refresh: {reload: true}})}>
             <Icon name='ios-arrow-back-outline'/>

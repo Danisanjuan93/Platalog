@@ -9,7 +9,7 @@ export default class MyHeader extends Component {
       return(
         <Left>
           <Button transparent onPress={this.props.showMenu}>
-            <Icon name='menu'/>
+            <Icon style={{color: "black"}} name='menu'/>
           </Button>
         </Left>
       )
@@ -21,6 +21,15 @@ export default class MyHeader extends Component {
           </Button>
         </Left>
       )
+    }else if (this.props.logo && Platform.OS == 'ios'){
+      return (
+        <Left>
+          <Button transparent>
+            <Icon name='logo-apple'/>
+          </Button>
+        </Left>
+      )
+
     }
   }
 
@@ -30,7 +39,7 @@ export default class MyHeader extends Component {
 
   render() {
     return (
-      <Header>
+      <Header style={{backgroundColor: '#008080'}}>
         {this.renderLeftIcon()}
         <Body>
           <Title>{this.props.title}</Title>

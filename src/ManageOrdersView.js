@@ -172,7 +172,7 @@ export default class ManageOrdersView extends Component {
   renderHeader= () =>{
 
     return(
-      <Header>
+      <Header style={{backgroundColor: '#008080'}}>
           {this.showLoadBackArrow()}
           <Title style={{alignSelf: 'center'}}>
             {this.props.title}

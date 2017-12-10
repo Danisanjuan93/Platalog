@@ -22,14 +22,14 @@ export default class App extends Component {
                     <Scene key='login' component={LoginScreen} title='Login'  initial = 'true'/>
                     <Scene key='mainWorker' component={MainWorkerView} title='Pendiente'  />
                     <Scene key='mainAdmin' component={MainAdminView} title='Admin'  />
-                    <Scene key='ordersChart' component={OrdersChartView} title='Pedidos - Tiempo'  />
+                    <Scene key='ordersChart' component={OrdersChartView} title='Pedidos'  />
                     <Scene key='manageActivities' component={ManageActivitiesView} title='Gestionar actividades'  />
                     <Scene key='pendingActivityDetails' component={PendingActivityDetailsScreen}/>
                     <Scene key='manageUsers' component={ManageUsersView} title='Gestionar Trabajadores' />
                     <Scene key='manageOrders' component={ManageOrdersView} title='Gestionar Pedidos' />
                     <Scene key='pendingOrderDetailsScreen' component={PendingOrderDetailsScreen}/>
-                    <Scene key='activitiesChart' component={ActivitiesChartView} title='Actividades - Tiempo'  />
-                    <Scene key='benefitsChart' component={BenefitsChartView} title='Ingresos - Tiempo'  />
+                    <Scene key='activitiesChart' component={ActivitiesChartView} title='Actividades'  />
+                    <Scene key='benefitsChart' component={BenefitsChartView} title='Ingresos'  />
                   </Scene>
               </Scene>
       </Router>

@@ -120,7 +120,7 @@ export default class ManageUsersView extends Component {
 
   renderHeader= () =>{
     return(
-      <Header>
+      <Header style={{backgroundColor: '#008080'}}>
           {this.showLoadBackArrow()}
           <Left/>
           <Title style={{alignSelf: 'center'}}>

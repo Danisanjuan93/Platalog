@@ -48,12 +48,14 @@ export default class MainAdminView extends Component {
   showAddFincaDialog(){
     DialogManager.show({
     title: 'Nueva Finca',
+    titleTextStyle: styles.colorTitle,
     titleAlign: 'center',
     animationDuration: 200,
     height: 420,
+    dialogStyle: styles.colorToModal,
     dialogAnimation: new SlideAnimation({slideFrom: 'bottom'}),
     children: (
-      <View style={{flex: 1}}>
+      <View style={{flex: 1, backgroundColor: '#e6ffff'}}>
         <View>
           <Item floatingLabel>
             <Label style={{padding: '2%'}}>Tipo de Finca</Label>
@@ -137,3 +139,16 @@ export default class MainAdminView extends Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  loginBtn:{
+    marginHorizontal: 5,
+    marginVertical: 10
+  },
+  colorToModal:{
+    backgroundColor: '#008080',
+  },
+  colorTitle:{
+    color: 'black'
+  }
+});

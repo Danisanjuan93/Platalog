@@ -11,13 +11,13 @@ export default class AnalysisView extends Component {
     return (
     <View style={{flex: 1}}>
       <Button block light style={styles.btn} onPress={()=>{Actions.activitiesChart()}}>
-        <Text>Actividad diaria</Text>
+        <Text style={styles.textBold}>Actividad diaria</Text>
       </Button>
       <Button block light style={styles.btn} onPress={()=>{Actions.ordersChart()}}>
-        <Text>Pedidos</Text>
+        <Text style={styles.textBold}>Pedidos</Text>
       </Button>
       <Button block light style={styles.btn} onPress={()=>{Actions.benefitsChart()}}>
-        <Text>Ingresos</Text>
+        <Text style={styles.textBold}>Ingresos</Text>
       </Button>
     </View>
     );
@@ -26,5 +26,8 @@ export default class AnalysisView extends Component {
 const styles = StyleSheet.create({
   btn: {
       marginVertical: 15
+    },
+    textBold: {
+      fontWeight: 'bold'
     }
 });

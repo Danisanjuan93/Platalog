@@ -122,7 +122,6 @@ export default class TracingView extends Component {
                 <Left>
                   <View style={{flexDirection: 'column', flex:1}}>
                     <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{finca.finca.finca_name}</Text>
-                    <Text style={{alignSelf:'flex-start'}}>-{finca.finca.id}</Text>
                   </View>
                 </Left>
                 <Right>
