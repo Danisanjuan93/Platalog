@@ -88,7 +88,7 @@ export default class LoginScreen extends Component {
     })
     .catch(function (error) {
       AlertIOS.alert(
-        "Error",
+        "Aqui",
         JSON.stringify(error)
       )
     })

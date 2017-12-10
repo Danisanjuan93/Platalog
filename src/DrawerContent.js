@@ -18,10 +18,10 @@ export default class DrawerContent extends Component {
               <Text style={styles.btnText}>Gestionar actividades</Text>
             </View>
           </Button>
-          <Button transparent style={styles.btn}>
+          <Button transparent style={styles.btn} onPress={()=>{Actions.manageOrders()}}>
             <View style={{ flex: 1, flexDirection: 'row' }}>
-              <Icon name='menu' style={styles.btnIcon} />
-              <Text style={styles.btnText} >Crear difusión</Text>
+              <Icon name='menu' style={styles.btnIcon}/>
+              <Text style={styles.btnText} >Gestionar Pedidos</Text>
             </View>
           </Button>
           <Button transparent style={styles.btn} onPress={() => { Actions.manageUsers() }}>
@@ -30,33 +30,13 @@ export default class DrawerContent extends Component {
               <Text style={styles.btnText}>Gestionar trabajadores</Text>
             </View>
           </Button>
-          <View
-            style={{
-              borderBottomColor: 'black',
-              borderBottomWidth: 1,
-            }}
-          />
+          <View style={{borderBottomColor: 'black', borderBottomWidth: 1}}/>
           <Button transparent style={styles.btn} onPress={() => { Actions.root() }}>
             <View style={{ flex: 1, flexDirection: 'row' }}>
               <Icon name='menu' style={styles.btnIcon} />
               <Text style={styles.btnText}>Log Out</Text>
             </View>
           </Button>
-        </View>
-      </View>
-      <View style={{flex:2}}>
-        <Button block light style={styles.firstBtn} onPress={()=>{Actions.manageActivities()}}>
-          <Text>Gestionar actividades</Text>
-        </Button>
-        <Button block light style={styles.btn} onPress={()=>{Actions.manageOrders()}}>
-          <Text>Gestionar Pedidos</Text>
-        </Button>
-        <Button block light style={styles.btn} onPress={()=>{Actions.manageUsers()}}>
-          <Text>Gestionar trabajadores</Text>
-        </Button>
-        <Button block light style={styles.btn} onPress={()=>{Actions.root()}}>
-          <Text>Log Out</Text>
-        </Button>
       </View>
     </View>
     );

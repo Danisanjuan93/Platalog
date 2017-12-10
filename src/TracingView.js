@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import {StyleSheet, View, AlertIOS, AsyncStorage, Dimensions } from 'react-native';
+import {StyleSheet, View, AlertIOS, AsyncStorage, Dimensions, Platform } from 'react-native';
 import {Actions} from 'react-native-router-flux';
-import { Button, Icon, Text, Form, Item, Input, List, ListItem, Right, Left, Label, Platform } from 'native-base';
+import { Button, Icon, Text, Form, Item, Input, List, ListItem, Right, Left, Label } from 'native-base';
 import DialogManager, { SlideAnimation, DialogContent, DialogButton } from 'react-native-dialog-component';
 import ActionButton from 'react-native-action-button';
 import DatePicker from 'react-native-datepicker';
@@ -35,7 +35,7 @@ export default class TracingView extends Component {
       markerLatitude: LATITUDE + SPACE,
       markerLongitude: LONGITUDE + SPACE,
       marker1: true,
-      markers: [{ latitude: LATITUDE, longitude: LONGITUDE, key: 1 }]
+      markers: [{ latitude: LATITUDE, longitude: LONGITUDE, key: 1 }],
       ids: [],
       date: new Date(),
       reload: false
@@ -49,18 +49,8 @@ export default class TracingView extends Component {
     }
   }
 
-  componentWillMount() {
-    //this.getFincas();
-    this.setState({
-      fincas: [
-        {
-          finca: {
-            finca_name: 'prueba',
-            id: '1'
-          }
-        }
-      ]
-    });
+  async componentWillMount() {
+    this.getFincas();
   }
 
   async getFincas() {
@@ -215,32 +205,64 @@ export default class TracingView extends Component {
   }
 
   mapFincas(){
-    let one_day=1000*60*60*24;
-        let startDate = new Date();
-        let endDate = new Date();
-        endDate.setMonth(startDate.getMonth() + 9);
-        let untilDate = ((endDate.getTime() - startDate.getTime())/one_day) - ((endDate.getTime() - startDate.getTime())/one_day) + 1;
-        let totalDays = ((endDate.getTime() - startDate.getTime())/one_day) + 1;
-          return(
-            <List dataArray={this.state.fincas} renderRow={(finca) =>
-              <ListItem onLongPress={()=>{this.showDialog(finca)}}>
-                <Left>
-                  <View style={{flexDirection: 'column', flex:1}}>
-                    <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{finca.finca.finca_name}</Text>
-                  </View>
-                </Left>
-                <Right>
-                  <View style={{flex: 1}}>
-                    <Progress.Circle size={50} progress={1/(((new Date(finca.finca.limit_date.split('T')[0]).setMonth(new Date(finca.finca.limit_date.split('T')[0]).getMonth() + 9) - startDate.getTime())/one_day) + 1)} showsText={true}
-                    formatText={()=>((1*100)/(((new Date(finca.finca.limit_date.split('T')[0]).setMonth(new Date(finca.finca.limit_date.split('T')[0]).getMonth() + 9) - startDate.getTime())/one_day) + 1)).toFixed(2)+'%'}
-                    valueFormatter= '#'/>
-                  </View>
-                </Right>
-              </ListItem>
-              }>
-            </List>
+    if (Platform.OS != 'ios'){
+      return (
+        <List dataArray={this.state.fincas} renderRow={(finca) =>
+          <ListItem onPress={() => { }}>
+            <View style={{ flex: 1, flexDirection: 'row' }}>
+              <View style={{ flex: 2, flexDirection: 'column' }}>
+              <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{finca.finca.finca_name}</Text>
+                <MapView
+                  initialRegion={this.state.region}
+                  onPress={(e) => this.onMapPress(e)}
+                  style={styles.map}
+                >
+                  {this.state.markers.map(marker => (
+                    <MapView.Marker
+                      key={marker.key}
+                      coordinate={{
+                        latitude: LATITUDE,
+                        longitude: LONGITUDE
+                      }}
+                      centerOffset={{ x: -18, y: -60 }}
+                      anchor={{ x: 0.69, y: 1 }}
+                    />
+                  ))}
+                </MapView>
+              </View>
+            </View>
+          </ListItem>
+        }>
+        </List>
       );
-     }
+    }else{
+      let one_day=1000*60*60*24;
+      let startDate = new Date();
+      let endDate = new Date();
+      endDate.setMonth(startDate.getMonth() + 9);
+      let untilDate = ((endDate.getTime() - startDate.getTime())/one_day) - ((endDate.getTime() - startDate.getTime())/one_day) + 1;
+      let totalDays = ((endDate.getTime() - startDate.getTime())/one_day) + 1;
+        return(
+          <List dataArray={this.state.fincas} renderRow={(finca) =>
+            <ListItem onLongPress={()=>{this.showDialog(finca)}}>
+              <Left>
+                <View style={{flexDirection: 'column', flex:1}}>
+                  <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{finca.finca.finca_name}</Text>
+                </View>
+              </Left>
+              <Right>
+                <View style={{flex: 1}}>
+                  <Progress.Circle size={50} progress={1/(((new Date(finca.finca.limit_date.split('T')[0]).setMonth(new Date(finca.finca.limit_date.split('T')[0]).getMonth() + 9) - startDate.getTime())/one_day) + 1)} showsText={true}
+                  formatText={()=>((1*100)/(((new Date(finca.finca.limit_date.split('T')[0]).setMonth(new Date(finca.finca.limit_date.split('T')[0]).getMonth() + 9) - startDate.getTime())/one_day) + 1)).toFixed(2)+'%'}
+                  valueFormatter= '#'/>
+                </View>
+              </Right>
+            </ListItem>
+            }>
+          </List>
+        );
+      }
+    }
 
   render() {
     return (

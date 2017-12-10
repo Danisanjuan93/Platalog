@@ -42,7 +42,7 @@ export default class HistoricView extends Component {
         <ListItem onPress={() => {}}>
           <View style={{flexDirection: 'column'}}>
             <Text style={{alignSelf:'flex-start'}}>{activity.finca.finca_name + ': ' + activity.worker.username + ' realizó la tarea ' + activity.name}</Text>
-            <Text style={{fontWeight: 'bold', alignSelf:'flex-start', size: 5 }}>"activity.date"</Text>
+            <Text style={{fontWeight: 'bold', alignSelf:'flex-start', size: 5 }}>{activity.deleted_at.split('T')[0]}</Text>
           </View>
         </ListItem>
         }>
