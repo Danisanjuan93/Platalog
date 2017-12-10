@@ -44,6 +44,21 @@ export default class DrawerContent extends Component {
           </Button>
         </View>
       </View>
+      <View style={{flex:2}}>
+        <Button block light style={styles.firstBtn} onPress={()=>{Actions.manageActivities()}}>
+          <Text>Gestionar actividades</Text>
+        </Button>
+        <Button block light style={styles.btn} onPress={()=>{Actions.manageOrders()}}>
+          <Text>Gestionar Pedidos</Text>
+        </Button>
+        <Button block light style={styles.btn} onPress={()=>{Actions.manageUsers()}}>
+          <Text>Gestionar trabajadores</Text>
+        </Button>
+        <Button block light style={styles.btn} onPress={()=>{Actions.root()}}>
+          <Text>Log Out</Text>
+        </Button>
+      </View>
+    </View>
     );
   }
 }

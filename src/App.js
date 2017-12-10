@@ -7,6 +7,11 @@ import MainAdminView from './MainAdminView';
 import ManageActivitiesView from './ManageActivitiesView';
 import OrdersChartView from './OrdersChartView';
 import ManageUsersView from './ManageUsersView';
+import ManageOrdersView from './ManageOrdersView';
+import PendingOrderDetailsScreen from './PendingOrderDetailsScreen';
+import ActivitiesChartView from './ActivitiesChartView';
+import BenefitsChartView from './BenefitsChartView';
+
 export default class App extends Component {
   render() {
 
@@ -16,11 +21,15 @@ export default class App extends Component {
                   <Scene key='root' hideNavBar>
                     <Scene key='login' component={LoginScreen} title='Login' />
                     <Scene key='mainWorker' component={MainWorkerView} title='Pendiente'  />
-                    <Scene key='mainAdmin' component={MainAdminView} title='Admin' initial = 'true' />
-                    <Scene key='ordersChart' component={OrdersChartView} title='Pedidos - Tiempo'  />
+                    <Scene key='mainAdmin' component={MainAdminView} title='Admin'  />
+                    <Scene key='ordersChart' component={OrdersChartView} title='Pedidos'  />
                     <Scene key='manageActivities' component={ManageActivitiesView} title='Gestionar actividades'  />
                     <Scene key='pendingActivityDetails' component={PendingActivityDetailsScreen}/>
                     <Scene key='manageUsers' component={ManageUsersView} title='Gestionar Trabajadores' />
+                    <Scene key='manageOrders' component={ManageOrdersView} title='Gestionar Pedidos' />
+                    <Scene key='pendingOrderDetailsScreen' component={PendingOrderDetailsScreen}/>
+                    <Scene key='activitiesChart' component={ActivitiesChartView} title='Actividades'  />
+                    <Scene key='benefitsChart' component={BenefitsChartView} title='Ingresos'  />
                   </Scene>
               </Scene>
       </Router>

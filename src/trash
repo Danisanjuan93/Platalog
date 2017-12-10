@@ -1,0 +1,35 @@
+return (
+  <List dataArray={this.state.fincas} renderRow={(finca) =>
+    <ListItem onPress={() => { }}>
+      <View style={{ flex: 1, flexDirection: 'row' }}>
+        <View style={{ flex: 1, flexDirection: 'row'}}>
+          <View style={{ flex: 1, flexDirection: 'column' }}>
+            <Progress.Circle size={75} progress={40 / 100} showsText={true} formatText={() => 40 + '%'} color='#29A55E'/>
+            <Text style={{ alignSelf: 'flex-start',   fontWeight: 'bold', fontSize: 14, marginLeft: 15 }} >Pruebita</Text>
+            <Text style={{ alignSelf: 'flex-start', fontSize: 11, marginLeft: 15 }} >Pruebita</Text>
+          </View>
+        </View>
+        <View style={{ flex: 2, flexDirection: 'column' }}>
+          <MapView
+            initialRegion={this.state.region}
+            onPress={(e) => this.onMapPress(e)}
+            style={styles.map}
+          >
+            {this.state.markers.map(marker => (
+              <MapView.Marker
+                key={marker.key}
+                coordinate={{
+                  latitude: LATITUDE,
+                  longitude: LONGITUDE
+                }}
+                centerOffset={{ x: -18, y: -60 }}
+                anchor={{ x: 0.69, y: 1 }}
+              />
+            ))}
+          </MapView>
+        </View>
+      </View>
+    </ListItem>
+  }>
+  </List>
+);

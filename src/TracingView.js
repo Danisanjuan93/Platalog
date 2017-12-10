@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, AlertIOS, AsyncStorage, Dimensions } from 'react-native';
-import { Actions } from 'react-native-router-flux';
-import { Button, Icon, Text, Form, Item, Input, List, ListItem, Right, Left } from 'native-base';
+import {StyleSheet, View, AlertIOS, AsyncStorage, Dimensions } from 'react-native';
+import {Actions} from 'react-native-router-flux';
+import { Button, Icon, Text, Form, Item, Input, List, ListItem, Right, Left, Label, Platform } from 'native-base';
+import DialogManager, { SlideAnimation, DialogContent, DialogButton } from 'react-native-dialog-component';
+import ActionButton from 'react-native-action-button';
+import DatePicker from 'react-native-datepicker';
 import * as Progress from 'react-native-progress';
 import MapView from 'react-native-maps';
 import { PROVIDER_GOOGLE, PROVIDER_DEFAULT } from 'react-native-maps';
@@ -33,6 +36,16 @@ export default class TracingView extends Component {
       markerLongitude: LONGITUDE + SPACE,
       marker1: true,
       markers: [{ latitude: LATITUDE, longitude: LONGITUDE, key: 1 }]
+      ids: [],
+      date: new Date(),
+      reload: false
+    }
+  }
+
+  async componentDidUpdate(){
+    if (this.state.reload){
+      this.setState({reload:false})
+      this.getFincas();
     }
   }
 
@@ -57,7 +70,7 @@ export default class TracingView extends Component {
     axios({
       method: 'get',
       url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/fincas/' + user.User.id,
-      headers: {
+      headers :{
         'Authorization': 'Bearer ' + token,
       }
     })
@@ -79,48 +92,161 @@ export default class TracingView extends Component {
     }];
     this.setState({ markers: newMarker });
   }
-  mapFincas() {
-    console.log(this.state.markers)
-    return (
-      <List dataArray={this.state.fincas} renderRow={(finca) =>
-        <ListItem onPress={() => { }}>
-          <View style={{ flex: 1, flexDirection: 'row' }}>
-            <View style={{ flex: 1, flexDirection: 'row'}}>
-              <View style={{ flex: 1, flexDirection: 'column' }}>
-                <Progress.Circle size={75} progress={40 / 100} showsText={true} formatText={() => 40 + '%'} color='#29A55E'/>
-                <Text style={{ alignSelf: 'flex-start',   fontWeight: 'bold', fontSize: 14, marginLeft: 15 }} >Pruebita</Text>
-                <Text style={{ alignSelf: 'flex-start', fontSize: 11, marginLeft: 15 }} >Pruebita</Text>
-              </View>
-            </View>
-            <View style={{ flex: 2, flexDirection: 'column' }}>
-              <MapView
-                initialRegion={this.state.region}
-                onPress={(e) => this.onMapPress(e)}
-                style={styles.map}
-              >
-                {this.state.markers.map(marker => (
-                  <MapView.Marker
-                    key={marker.key}
-                    coordinate={{
-                      latitude: LATITUDE,
-                      longitude: LONGITUDE
-                    }}
-                    centerOffset={{ x: -18, y: -60 }}
-                    anchor={{ x: 0.69, y: 1 }}
-                  />
-                ))}
-              </MapView>
-            </View>
-          </View>
-        </ListItem>
-      }>
-      </List>
-    );
+
+  async onDateChange(date, fincaID){
+    const self = this;
+    const token = await AsyncStorage.getItem(STORAGE_KEY);
+    const user = JSON.parse(await AsyncStorage.getItem(STORAGE_USER));
+    axios({
+      method: 'patch',
+      url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/fincas/' + fincaID + '/limitdates/' + date,
+      headers :{
+        'Authorization': 'Bearer ' + token,
+      }
+    })
+    .then(function (response) {
+      self.getFincas();
+      DialogManager.dismiss();
+    })
+    .catch(function (error) {
+    })
   }
+
+  showAddFincaDialog(){
+    DialogManager.show({
+    title: 'Nueva Finca',
+    titleTextStyle: styles.colorTitle,
+    titleAlign: 'center',
+    animationDuration: 200,
+    height: 420,
+    dialogStyle: styles.colorToModal,
+    dialogAnimation: new SlideAnimation({slideFrom: 'bottom'}),
+    children: (
+      <View style={{flex: 1, backgroundColor: '#e6ffff'}}>
+        <View>
+          <Item floatingLabel>
+            <Label style={{padding: '2%'}}>Tipo de Finca</Label>
+            <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({estateType: text})}}/>
+          </Item>
+          <Item floatingLabel>
+            <Label style={{padding: '2%'}}>Tipo de Riego</Label>
+            <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({irrigationType: text})}}/>
+          </Item>
+          <Item floatingLabel>
+            <Label style={{padding: '2%'}}>Tipo de Planta</Label>
+            <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({plantVariety: text})}}/>
+          </Item>
+          <Item floatingLabel>
+            <Label style={{padding: '2%'}}>Localizacion</Label>
+            <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({location: text})}}/>
+          </Item>
+          <Item floatingLabel>
+            <Label style={{padding: '2%'}}>Nombre</Label>
+            <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({fincaName: text})}}/>
+          </Item>
+        </View>
+        <DialogButton text='Aceptar' onPress={() => {this.postFincaRequest()}}/>
+      </View>
+      )
+    });
+  }
+
+  async postFincaRequest(){
+    var self = this;
+    const token = await AsyncStorage.getItem(STORAGE_KEY);
+    const user = await AsyncStorage.getItem(STORAGE_USER);
+    axios({
+      method: 'post',
+      url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/fincas',
+      headers :{
+        'Authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      },
+      data: {
+        estateType: this.state.estateType,
+        irrigationType: this.state.irrigationType,
+        plantVariety: this.state.plantVariety,
+        location: this.state.location,
+        fincaName: this.state.fincaName
+      }
+    })
+    .then(function (response) {
+      self.storageValues('fincaID', JSON.stringify(response.data.fincaID));
+      self.setState({reload: true});
+      DialogManager.dismiss();
+    })
+    .catch(function (error) {
+      console.log(error);
+    })
+  }
+
+
+  showDialog(finca){
+    DialogManager.show({
+    title: 'Nueva Finca',
+    titleAlign: 'center',
+    animationDuration: 200,
+    height: 200,
+    dialogAnimation: new SlideAnimation({slideFrom: 'bottom'}),
+    children: (
+      <View style={{flex: 1}}>
+        <View>
+          <Item inlineLabel>
+            <Label style={{padding: '2%'}}>Finalizacion:</Label>
+            <Label style={{padding: '2%'}}>{finca.finca.limit_date.split('T')[0]}</Label>
+          </Item>
+          <Item inlineLabel>
+            <Label style={{padding: '2%'}}>Nueva Fecha:</Label>
+            <DatePicker
+                 style={{width: 200}}
+                 mode="date"
+                 placeholder="select date"
+                 format="YYYY-MM-DD"
+                 maxDate="2018-01-31"
+                 confirmBtnText="Confirm"
+                 cancelBtnText="Cancel"
+                 onDateChange={(date) => {this.onDateChange(date, finca.finca.id)}}
+            />
+          </Item>
+        </View>
+      </View>
+      )
+    });
+  }
+
+  mapFincas(){
+    let one_day=1000*60*60*24;
+        let startDate = new Date();
+        let endDate = new Date();
+        endDate.setMonth(startDate.getMonth() + 9);
+        let untilDate = ((endDate.getTime() - startDate.getTime())/one_day) - ((endDate.getTime() - startDate.getTime())/one_day) + 1;
+        let totalDays = ((endDate.getTime() - startDate.getTime())/one_day) + 1;
+          return(
+            <List dataArray={this.state.fincas} renderRow={(finca) =>
+              <ListItem onLongPress={()=>{this.showDialog(finca)}}>
+                <Left>
+                  <View style={{flexDirection: 'column', flex:1}}>
+                    <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{finca.finca.finca_name}</Text>
+                  </View>
+                </Left>
+                <Right>
+                  <View style={{flex: 1}}>
+                    <Progress.Circle size={50} progress={1/(((new Date(finca.finca.limit_date.split('T')[0]).setMonth(new Date(finca.finca.limit_date.split('T')[0]).getMonth() + 9) - startDate.getTime())/one_day) + 1)} showsText={true}
+                    formatText={()=>((1*100)/(((new Date(finca.finca.limit_date.split('T')[0]).setMonth(new Date(finca.finca.limit_date.split('T')[0]).getMonth() + 9) - startDate.getTime())/one_day) + 1)).toFixed(2)+'%'}
+                    valueFormatter= '#'/>
+                  </View>
+                </Right>
+              </ListItem>
+              }>
+            </List>
+      );
+     }
+
   render() {
     return (
-      <View>
+      <View style={{flex: 1}}>
         {this.mapFincas()}
+        <ActionButton buttonColor="blue" onPress={() => {this.showAddFincaDialog()}}/>
       </View>
     );
   }

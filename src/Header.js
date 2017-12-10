@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import {StyleSheet,View} from 'react-native';
-import {Actions} from 'react-native-router-flux';
+import { StyleSheet, View, Platform } from 'react-native';
+import { Actions } from 'react-native-router-flux';
 import { Button,Icon, Header,Left,Right,Text,Body, Form, Item, Input,Title } from 'native-base';
 export default class MyHeader extends Component {
 
@@ -9,18 +9,27 @@ export default class MyHeader extends Component {
       return(
         <Left>
           <Button transparent onPress={this.props.showMenu}>
-            <Icon name='menu'/>
+            <Icon style={{color: "black"}} name='menu'/>
           </Button>
         </Left>
       )
-    }else if (this.props.backArrow){
+    }else if (this.props.backArrow && Platform.OS == 'ios'){
       return (
         <Left>
-          <Button transparent onPress={() => Actions.pop({refresh: {results: [], activities: []}})}>
+          <Button transparent onPress={() => Actions.pop({refresh: {reload: Math.random(), results: [], activities: []}})}>
             <Icon name='ios-arrow-back-outline'/>
           </Button>
         </Left>
       )
+    }else if (this.props.logo && Platform.OS == 'ios'){
+      return (
+        <Left>
+          <Button transparent>
+            <Icon name='logo-apple'/>
+          </Button>
+        </Left>
+      )
+
     }
   }
 

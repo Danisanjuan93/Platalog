@@ -41,7 +41,7 @@ export default class MainWorkerView extends Component {
     const worker = JSON.parse(await AsyncStorage.getItem(STORAGE_USER))
     axios({
       method: 'get',
-      url: 'http://127.0.0.1:8000/api/activities/' + worker.User.id + '/activity',
+      url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/activities/' + worker.User.id + '/activity',
       headers :{
         'Authorization': 'Bearer ' + token,
       }

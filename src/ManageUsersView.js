@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, ScrollView, AsyncStorage, AlertIOS } from 'react-native';
+import { StyleSheet, View, ScrollView, AsyncStorage, AlertIOS, Platform } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { Button, Icon, Text, Form, Item, Input, List, ListItem, Drawer, Right, Left, Title, Header, Label } from 'native-base';
 import SearchBar from 'react-native-searchbar';
@@ -59,13 +59,14 @@ export default class ManageUsersView extends Component {
     const map = self.state.fincas.map((finca) =>
       axios({
         method: 'get',
-        url: 'http://127.0.0.1:8000/api/users/' + finca.finca.id + '/workers',
+        url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/users/' + finca.finca.id + '/workers',
         headers :{
           'Authorization': 'Bearer ' + token,
         }
       })
       .then(function (response) {
         self.setState({workerList: self.state.workerList.concat(response.data)})
+        self.setState({results: self.state.results.concat(response.data)})
         self.setState({locations: self.state.locations.concat(response.data)})
         self.setData();
       })
@@ -104,9 +105,23 @@ export default class ManageUsersView extends Component {
     }
   }
 
+  showLoadBackArrow(){
+    if (Platform.OS == 'ios'){
+      return (
+        <Left>
+          <Button transparent onPress={() => Actions.pop()}>
+            <Icon name='ios-arrow-back-outline'/>
+          </Button>
+        </Left>
+    )}else{
+      return ( <Left></Left> )
+    }
+  }
+
   renderHeader= () =>{
     return(
-      <Header>
+      <Header style={{backgroundColor: '#008080'}}>
+          {this.showLoadBackArrow()}
           <Left/>
           <Title style={{alignSelf: 'center'}}>
             {this.props.title}
@@ -149,34 +164,6 @@ export default class ManageUsersView extends Component {
     );
   }
 
-  // showAddActivityDialog(){
-  //   let asignedZone;
-  //   let asignedWorker;
-  //   DialogManager.show({
-  //     title: 'Asignar actividad',
-  //     titleAlign: 'center',
-  //     animationDuration: 200,
-  //     height: 200,
-  //     dialogAnimation: new SlideAnimation({slideFrom: 'bottom'}),
-  //     children: (
-  //       <View style={{flex: 1}}>
-  //           <Form style={{flex: 1}}>
-  //             <Item>
-  //               <ModalDropdown textStyle={{fontSize:15}}  style={{marginVertical: 10, marginHorizontal: 17 }} options={WORKERS} defaultValue='Trabajador...' onSelect={(idx,value)=>{asignedWorker = WORKERSID[idx]}}/>
-  //             </Item>
-              // <Item>
-              //   <ModalDropdown textStyle={{fontSize:15}}  style={{marginVertical: 10, marginHorizontal: 17 }} options={LOCATIONS} defaultValue='Zona...' onSelect={(idx,value)=>{asignedZone = value}}/>
-              // </Item>
-  //           </Form>
-  //         <DialogButton text='Aceptar' onPress={()=>{
-  //             this.newWorker(asignedZone, asignedWorker)
-  //             }}/>
-  //       </View>
-  //     ),
-  //   }, () => {
-  //     console.log('callback - show');
-  //   });
-  // }
   showAddWorkerDialog(){
     let asignedFinca;
     DialogManager.show({
@@ -219,7 +206,7 @@ export default class ManageUsersView extends Component {
       const token = await AsyncStorage.getItem(STORAGE_KEY);
       axios({
         method: 'post',
-        url: 'http://127.0.0.1:8000/api/users/registers',
+        url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/users/registers',
         headers :{
           'Authorization': 'Bearer ' + token,
           'Content-Type': 'application/json'
@@ -246,7 +233,7 @@ export default class ManageUsersView extends Component {
       const token = await AsyncStorage.getItem(STORAGE_KEY);
       axios({
         method: 'patch',
-        url: 'http://127.0.0.1:8000/api/users/' + finca + '/fincas/' + worker,
+        url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/users/' + finca + '/fincas/' + worker,
         headers :{
           'Authorization': 'Bearer ' + token,
           'Content-Type': 'application/json'

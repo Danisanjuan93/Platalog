@@ -9,7 +9,7 @@ import axios from 'axios';
 const STORAGE_KEY = 'access_token';
 const STORAGE_USER = 'user_data';
 
-export default class OrdersChartView extends Component {
+export default class ActivitiesChartView extends Component {
 
   constructor(props){
     super(props)
@@ -61,46 +61,46 @@ export default class OrdersChartView extends Component {
           }
         }
       },
-      orders: []
+      activities: []
     }
   }
 
   async componentWillMount(){
-    this.getOrders();
+    this.getActivities();
   }
 
-  async getOrders(){
+  async getActivities(){
     const self = this;
     const token = await AsyncStorage.getItem(STORAGE_KEY);
     axios({
       method: 'get',
-      url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/orders/graphic',
+      url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/activities/finished',
       headers :{
         'Authorization': 'Bearer ' + token,
       }
     })
     .then(function (response) {
-      self.setState({orders: [response.data]});
-      self.countOrders();
+      self.setState({activities: [response.data]});
+      self.countActivities();
     })
     .catch(function (error) {
       AlertIOS.alert("No hay datos que mostrar")
     })
   }
 
-  countOrders(){
+  countActivities(){
     let pos;
     let count = 0;
     let key;
-    for (let i = 0; i < this.state.orders[0].length; i++){
-      key = this.state.orders[0][i];
-      for (let j = i; j < this.state.orders[0].length; j++){
-        if (key.deleted_at.split('-')[1] == this.state.orders[0][j].deleted_at.split('-')[1]){
+    for (let i = 0; i < this.state.activities[0].length; i++){
+      key = this.state.activities[0][i];
+      for (let j = i; j < this.state.activities[0].length; j++){
+        if (key.deleted_at.split('-')[1] == this.state.activities[0][j].deleted_at.split('-')[1]){
           count = count + 1;
           pos = j;
         }
       }
-      this.setState({Data: this.state.Data.concat({v: count, name: this.state.orders[0][i].deleted_at.split('-')[0] + '-' + this.state.orders[0][i].deleted_at.split('-')[1]})});
+      this.setState({Data: this.state.Data.concat({v: count, name: this.state.activities[0][i].deleted_at.split('-')[0] + '-' + this.state.activities[0][i].deleted_at.split('-')[1]})});
       count = 0;
       i = pos;
     }

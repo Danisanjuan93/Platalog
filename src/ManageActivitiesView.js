@@ -54,7 +54,7 @@ export default class ManageActivitiesView extends Component {
     const token = await AsyncStorage.getItem(STORAGE_KEY);
     axios({
       method: 'get',
-      url: 'http://127.0.0.1:8000/api/users/' + finca + '/workers',
+      url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/users/' + finca + '/workers',
       headers :{
         'Authorization': 'Bearer ' + token,
       }
@@ -76,7 +76,7 @@ export default class ManageActivitiesView extends Component {
     const token = await AsyncStorage.getItem(STORAGE_KEY);
     axios({
       method: 'post',
-      url: 'http://127.0.0.1:8000/api/activities',
+      url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/activities',
       headers :{
         'Authorization': 'Bearer ' + token,
       },
@@ -105,7 +105,7 @@ export default class ManageActivitiesView extends Component {
     const listFinca = this.state.fincas.map((finca) =>
       axios({
         method: 'get',
-        url: 'http://127.0.0.1:8000/api/activities/' + finca.finca.id,
+        url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/activities/' + finca.finca.id,
         headers :{
           'Authorization': 'Bearer ' + token,
         }
@@ -113,6 +113,7 @@ export default class ManageActivitiesView extends Component {
       .then(function (response) {
         if (response.status == 200){
           self.setState({activities: self.state.activities.concat(response.data)})
+          self.setState({results: self.state.results.concat(response.data)})
         }else{
         }
       })
@@ -123,7 +124,7 @@ export default class ManageActivitiesView extends Component {
 
   renderHeader= () =>{
     return(
-      <Header>
+      <Header style={{backgroundColor: '#008080'}}>
         <Left>
           <Button transparent onPress={() => Actions.pop({refresh: {reload: true}})}>
             <Icon name='ios-arrow-back-outline'/>
@@ -221,7 +222,7 @@ export default class ManageActivitiesView extends Component {
     )
 
     return(
-      <List dataArray={this.state.activities} renderRow={(activity) =>
+      <List dataArray={this.state.results} renderRow={(activity) =>
         <ListItem onPress={()=>{}}>
           <Left>
             <View style={{flexDirection: 'column', flex:1}}>

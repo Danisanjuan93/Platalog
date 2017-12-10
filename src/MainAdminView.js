@@ -45,71 +45,6 @@ export default class MainAdminView extends Component {
     this.drawer._root.open()
   };
 
-  showAddFincaDialog(){
-    DialogManager.show({
-    title: 'Nueva Finca',
-    titleAlign: 'center',
-    animationDuration: 200,
-    height: 420,
-    dialogAnimation: new SlideAnimation({slideFrom: 'bottom'}),
-    children: (
-      <View style={{flex: 1}}>
-        <View>
-          <Item floatingLabel>
-            <Label style={{padding: '2%'}}>Tipo de Finca</Label>
-            <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({estateType: text})}}/>
-          </Item>
-          <Item floatingLabel>
-            <Label style={{padding: '2%'}}>Tipo de Riego</Label>
-            <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({irrigationType: text})}}/>
-          </Item>
-          <Item floatingLabel>
-            <Label style={{padding: '2%'}}>Tipo de Planta</Label>
-            <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({plantVariety: text})}}/>
-          </Item>
-          <Item floatingLabel>
-            <Label style={{padding: '2%'}}>Localizacion</Label>
-            <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({location: text})}}/>
-          </Item>
-          <Item floatingLabel>
-            <Label style={{padding: '2%'}}>Nombre</Label>
-            <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({fincaName: text})}}/>
-          </Item>
-        </View>
-        <DialogButton text='Aceptar' onPress={() => {this.postFincaRequest()}}/>
-      </View>
-      )
-    });
-  }
-
-  async postFincaRequest(){
-    var self = this;
-    const token = await AsyncStorage.getItem(STORAGE_KEY);
-    const user = await AsyncStorage.getItem(STORAGE_USER);
-    axios({
-      method: 'post',
-      url: 'http://127.0.0.1:8000/api/fincas',
-      headers :{
-        'Authorization': 'Bearer ' + token,
-        'Content-Type': 'application/json'
-      },
-      data: {
-        estateType: this.state.estateType,
-        irrigationType: this.state.irrigationType,
-        plantVariety: this.state.plantVariety,
-        location: this.state.location,
-        fincaName: this.state.fincaName
-      }
-    })
-    .then(function (response) {
-      self.storageValues('fincaID', JSON.stringify(response.data.fincaID));
-      DialogManager.dismiss();
-    })
-    .catch(function (error) {
-      console.log(error);
-    })
-  }
-
   async storageValues(item, selectedValue){
     try  {
       await AsyncStorage.setItem(item, selectedValue);
@@ -132,10 +67,22 @@ export default class MainAdminView extends Component {
           <AnalysisView tabLabel='Analisis'/>
           <HistoricView tabLabel='Historial'/>
         </ScrollableTabView>
-        <ActionButton buttonColor="#29A55E" onPress={()=>{this.showAddFincaDialog()}}/>
+
       </View>
     </Drawer>
     );
   }
 }
 
+const styles = StyleSheet.create({
+  loginBtn:{
+    marginHorizontal: 5,
+    marginVertical: 10
+  },
+  colorToModal:{
+    backgroundColor: '#008080',
+  },
+  colorTitle:{
+    color: 'black'
+  }
+});
