@@ -9,7 +9,7 @@ import axios from 'axios';
 const STORAGE_KEY = 'access_token';
 const STORAGE_USER = 'user_data';
 
-export default class OrdersChartView extends Component {
+export default class BenefitsChartView extends Component {
 
   constructor(props){
     super(props)
@@ -66,10 +66,10 @@ export default class OrdersChartView extends Component {
   }
 
   async componentWillMount(){
-    this.getOrders();
+    this.getBenefits();
   }
 
-  async getOrders(){
+  async getBenefits(){
     const self = this;
     const token = await AsyncStorage.getItem(STORAGE_KEY);
     axios({
@@ -81,14 +81,14 @@ export default class OrdersChartView extends Component {
     })
     .then(function (response) {
       self.setState({orders: [response.data]});
-      self.countOrders();
+      self.countBenefits();
     })
     .catch(function (error) {
       AlertIOS.alert("Error", JSON.stringify(error))
     })
   }
 
-  countOrders(){
+  countBenefits(){
     let pos;
     let count = 0;
     let key;
@@ -96,7 +96,7 @@ export default class OrdersChartView extends Component {
       key = this.state.orders[0][i];
       for (let j = i; j < this.state.orders[0].length; j++){
         if (key.deleted_at.split('-')[1] == this.state.orders[0][j].deleted_at.split('-')[1]){
-          count = count + 1;
+          count = count + this.state.orders[0][j].benefits;
           pos = j;
         }
       }

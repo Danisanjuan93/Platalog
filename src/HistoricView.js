@@ -24,7 +24,7 @@ export default class HistoricView extends Component {
     const token = await AsyncStorage.getItem(STORAGE_KEY);
     axios({
       method: 'get',
-      url: 'http://127.0.0.1:8000/api/activity/finished',
+      url: 'http://127.0.0.1:8000/api/activities/finished',
       headers :{
         'Authorization': 'Bearer ' + token,
       }

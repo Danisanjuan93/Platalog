@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, ScrollView, AsyncStorage, AlertIOS } from 'react-native';
+import { StyleSheet, View, ScrollView, AsyncStorage, AlertIOS, Platform } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { Button, Icon, Text, Form, Item, Input, List, ListItem, Drawer, Right, Left, Title, Header, Label } from 'native-base';
 import SearchBar from 'react-native-searchbar';
@@ -105,9 +105,23 @@ export default class ManageUsersView extends Component {
     }
   }
 
+  showLoadBackArrow(){
+    if (Platform.OS == 'ios'){
+      return (
+        <Left>
+          <Button transparent onPress={() => Actions.pop()}>
+            <Icon name='ios-arrow-back-outline'/>
+          </Button>
+        </Left>
+    )}else{
+      return ( <Left></Left> )
+    }
+  }
+
   renderHeader= () =>{
     return(
       <Header>
+          {this.showLoadBackArrow()}
           <Left/>
           <Title style={{alignSelf: 'center'}}>
             {this.props.title}

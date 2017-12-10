@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, AlertIOS, AsyncStorage } from 'react-native';
+import { StyleSheet, View, AlertIOS, AsyncStorage, Platform } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import SearchBar from 'react-native-searchbar'
 import { Button, Icon, Text, Form, Item, Input, List, ListItem, Header, Right, Title, Body, Left, Label } from 'native-base';
@@ -145,16 +145,35 @@ export default class ManageOrdersView extends Component {
               <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{order.weight}</Text>
             </View>
           </Left>
+          <Right>
+            <View style={{flexDirection: 'column', flex:1}}>
+              <Text style={{fontWeight: 'bold', alignSelf:'flex-start', fontSize: 10 }}>{order.state}</Text>
+            </View>
+          </Right>
         </ListItem>
         }>
       </List>
     );
   }
 
+  showLoadBackArrow(){
+    if (Platform.OS == 'ios'){
+      return (
+        <Left>
+          <Button transparent onPress={() => Actions.pop()}>
+            <Icon name='ios-arrow-back-outline'/>
+          </Button>
+        </Left>
+    )}else{
+      return ( <Left></Left> )
+    }
+  }
+
   renderHeader= () =>{
+
     return(
       <Header>
-          <Left/>
+          {this.showLoadBackArrow()}
           <Title style={{alignSelf: 'center'}}>
             {this.props.title}
           </Title>

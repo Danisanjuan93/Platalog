@@ -9,6 +9,8 @@ import OrdersChartView from './OrdersChartView';
 import ManageUsersView from './ManageUsersView';
 import ManageOrdersView from './ManageOrdersView';
 import PendingOrderDetailsScreen from './PendingOrderDetailsScreen';
+import ActivitiesChartView from './ActivitiesChartView';
+import BenefitsChartView from './BenefitsChartView';
 
 export default class App extends Component {
   render() {
@@ -26,6 +28,8 @@ export default class App extends Component {
                     <Scene key='manageUsers' component={ManageUsersView} title='Gestionar Trabajadores' />
                     <Scene key='manageOrders' component={ManageOrdersView} title='Gestionar Pedidos' />
                     <Scene key='pendingOrderDetailsScreen' component={PendingOrderDetailsScreen}/>
+                    <Scene key='activitiesChart' component={ActivitiesChartView} title='Actividades - Tiempo'  />
+                    <Scene key='benefitsChart' component={BenefitsChartView} title='Ingresos - Tiempo'  />
                   </Scene>
               </Scene>
       </Router>
