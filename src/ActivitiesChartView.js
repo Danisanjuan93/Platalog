@@ -74,7 +74,7 @@ export default class ActivitiesChartView extends Component {
     const token = await AsyncStorage.getItem(STORAGE_KEY);
     axios({
       method: 'get',
-      url: 'http://127.0.0.1:8000/api/activities/finished',
+      url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/activities/finished',
       headers :{
         'Authorization': 'Bearer ' + token,
       }

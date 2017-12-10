@@ -59,7 +59,7 @@ export default class ManageUsersView extends Component {
     const map = self.state.fincas.map((finca) =>
       axios({
         method: 'get',
-        url: 'http://127.0.0.1:8000/api/users/' + finca.finca.id + '/workers',
+        url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/users/' + finca.finca.id + '/workers',
         headers :{
           'Authorization': 'Bearer ' + token,
         }
@@ -206,7 +206,7 @@ export default class ManageUsersView extends Component {
       const token = await AsyncStorage.getItem(STORAGE_KEY);
       axios({
         method: 'post',
-        url: 'http://127.0.0.1:8000/api/users/registers',
+        url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/users/registers',
         headers :{
           'Authorization': 'Bearer ' + token,
           'Content-Type': 'application/json'
@@ -233,7 +233,7 @@ export default class ManageUsersView extends Component {
       const token = await AsyncStorage.getItem(STORAGE_KEY);
       axios({
         method: 'patch',
-        url: 'http://127.0.0.1:8000/api/users/' + finca + '/fincas/' + worker,
+        url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/users/' + finca + '/fincas/' + worker,
         headers :{
           'Authorization': 'Bearer ' + token,
           'Content-Type': 'application/json'

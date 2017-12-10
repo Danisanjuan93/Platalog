@@ -74,7 +74,7 @@ export default class OrdersChartView extends Component {
     const token = await AsyncStorage.getItem(STORAGE_KEY);
     axios({
       method: 'get',
-      url: 'http://127.0.0.1:8000/api/orders/graphic',
+      url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/orders/graphic',
       headers :{
         'Authorization': 'Bearer ' + token,
       }
@@ -84,7 +84,7 @@ export default class OrdersChartView extends Component {
       self.countOrders();
     })
     .catch(function (error) {
-      AlertIOS.alert("Error", JSON.stringify(error))
+      AlertIOS.alert("No hay datos que mostrar")
     })
   }
 

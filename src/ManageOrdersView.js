@@ -56,7 +56,7 @@ export default class ManageOrdersView extends Component {
     const map = self.state.fincas.map((finca) =>
       axios({
         method: 'get',
-        url: 'http://127.0.0.1:8000/api/orders/' + finca.finca.id,
+        url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/orders/' + finca.finca.id,
         headers :{
           'Authorization': 'Bearer ' + token,
         }
@@ -76,7 +76,7 @@ export default class ManageOrdersView extends Component {
     const token = await AsyncStorage.getItem(STORAGE_KEY);
     axios({
       method: 'post',
-      url: 'http://127.0.0.1:8000/api/orders',
+      url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/orders',
       headers :{
         'Authorization': 'Bearer ' + token,
       },

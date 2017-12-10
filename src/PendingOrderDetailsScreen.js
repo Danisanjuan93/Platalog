@@ -23,7 +23,7 @@ export default class pendingOrderDetailsScreen extends Component {
     const token = await AsyncStorage.getItem(STORAGE_KEY);
     axios({
       method: 'patch',
-      url: 'http://127.0.0.1:8000/api/orders/' + JSON.stringify(this.props.order.id) + '/states/' + self.state.benefits,
+      url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/orders/' + JSON.stringify(this.props.order.id) + '/states/' + self.state.benefits,
       headers :{
         'Authorization': 'Bearer ' + token,
       }

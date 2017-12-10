@@ -27,17 +27,17 @@ export default class LoginScreen extends Component {
   checkuser(){
     var self = this;
     const user = {
-      username: 'dani.sanjuan.93',
-      password: 'dani.sanjuan.93',
-      client_id: '1_4w6d1xmib56okkco0w0oogoscsccoggk48cgsss404ccs4ksow',
-      client_secret: '5re0as1q8so4ks4k0kww844o0c0gk8g0k0k4wkkss8k844cw4w',
+      username: this.state.username,
+      password: this.state.password,
+      client_id: '1_5k4pwoqg8wsg0gogw080ocs40g80go404gsk4kc04kk4wo440c',
+      client_secret: '4jobvaz1juw40ks048gskw8oo0c0kgww04w8408go4s4g4ccs8',
       grant_type: 'password'
     }
     this.createLoginForm(user);
 
     axios({
       method: 'post',
-      url: 'http://127.0.0.1:8000/oauth/v2/token',
+      url: 'http://bender.singularfactory.com/sf_platalog_bo/web/oauth/v2/token',
       headers :{
         'Content-Type': 'application/x-www-form-urlencoded',
       },
@@ -72,7 +72,7 @@ export default class LoginScreen extends Component {
   async getUserData(self, token){
     axios({
       method: 'get',
-      url: 'http://127.0.0.1:8000/api/users',
+      url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/users',
       headers :{
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token,

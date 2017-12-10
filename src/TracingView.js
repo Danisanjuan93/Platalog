@@ -32,7 +32,7 @@ export default class TracingView extends Component {
     const user = JSON.parse(await AsyncStorage.getItem(STORAGE_USER));
     axios({
       method: 'get',
-      url: 'http://127.0.0.1:8000/api/fincas/' + user.User.id,
+      url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/fincas/' + user.User.id,
       headers :{
         'Authorization': 'Bearer ' + token,
       }
@@ -63,7 +63,7 @@ export default class TracingView extends Component {
     const user = JSON.parse(await AsyncStorage.getItem(STORAGE_USER));
     axios({
       method: 'patch',
-      url: 'http://127.0.0.1:8000/api/fincas/' + fincaID + '/limitdates/' + date,
+      url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/fincas/' + fincaID + '/limitdates/' + date,
       headers :{
         'Authorization': 'Bearer ' + token,
       }
