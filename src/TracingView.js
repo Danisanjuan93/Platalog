@@ -210,8 +210,13 @@ export default class TracingView extends Component {
         <List dataArray={this.state.fincas} renderRow={(finca) =>
           <ListItem onPress={() => { }}>
             <View style={{ flex: 1, flexDirection: 'row' }}>
+              <View style={{ flex: 1, flexDirection: 'row'}}>
+                <View style={{ flex: 1, flexDirection: 'column' }}>
+                  <Progress.Circle size={75} progress={40 / 100} showsText={true} formatText={() => 40 + '%'} color='#29A55E'/>
+                  <Text style={{ alignSelf: 'flex-start',   fontWeight: 'bold', fontSize: 14, marginLeft: 15 }} >{finca.finca.finca_name}</Text>
+                </View>
+              </View>
               <View style={{ flex: 2, flexDirection: 'column' }}>
-              <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{finca.finca.finca_name}</Text>
                 <MapView
                   initialRegion={this.state.region}
                   onPress={(e) => this.onMapPress(e)}
