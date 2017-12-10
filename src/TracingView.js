@@ -3,6 +3,7 @@ import {StyleSheet, View, AlertIOS, AsyncStorage } from 'react-native';
 import {Actions} from 'react-native-router-flux';
 import { Button, Icon, Text, Form, Item, Input, List, ListItem, Right, Left, Label } from 'native-base';
 import DialogManager, { SlideAnimation, DialogContent, DialogButton } from 'react-native-dialog-component';
+import ActionButton from 'react-native-action-button';
 import DatePicker from 'react-native-datepicker';
 import * as Progress from 'react-native-progress';
 import axios from 'axios';
@@ -18,7 +19,15 @@ export default class TracingView extends Component {
     this.state={
       fincas: [],
       ids: [],
-      date: new Date()
+      date: new Date(),
+      reload: false
+    }
+  }
+
+  async componentDidUpdate(){
+    if (this.state.reload){
+      this.setState({reload:false})
+      this.getFincas();
     }
   }
 
@@ -75,6 +84,75 @@ export default class TracingView extends Component {
     .catch(function (error) {
     })
   }
+
+  showAddFincaDialog(){
+    DialogManager.show({
+    title: 'Nueva Finca',
+    titleTextStyle: styles.colorTitle,
+    titleAlign: 'center',
+    animationDuration: 200,
+    height: 420,
+    dialogStyle: styles.colorToModal,
+    dialogAnimation: new SlideAnimation({slideFrom: 'bottom'}),
+    children: (
+      <View style={{flex: 1, backgroundColor: '#e6ffff'}}>
+        <View>
+          <Item floatingLabel>
+            <Label style={{padding: '2%'}}>Tipo de Finca</Label>
+            <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({estateType: text})}}/>
+          </Item>
+          <Item floatingLabel>
+            <Label style={{padding: '2%'}}>Tipo de Riego</Label>
+            <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({irrigationType: text})}}/>
+          </Item>
+          <Item floatingLabel>
+            <Label style={{padding: '2%'}}>Tipo de Planta</Label>
+            <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({plantVariety: text})}}/>
+          </Item>
+          <Item floatingLabel>
+            <Label style={{padding: '2%'}}>Localizacion</Label>
+            <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({location: text})}}/>
+          </Item>
+          <Item floatingLabel>
+            <Label style={{padding: '2%'}}>Nombre</Label>
+            <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({fincaName: text})}}/>
+          </Item>
+        </View>
+        <DialogButton text='Aceptar' onPress={() => {this.postFincaRequest()}}/>
+      </View>
+      )
+    });
+  }
+
+  async postFincaRequest(){
+    var self = this;
+    const token = await AsyncStorage.getItem(STORAGE_KEY);
+    const user = await AsyncStorage.getItem(STORAGE_USER);
+    axios({
+      method: 'post',
+      url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/fincas',
+      headers :{
+        'Authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      },
+      data: {
+        estateType: this.state.estateType,
+        irrigationType: this.state.irrigationType,
+        plantVariety: this.state.plantVariety,
+        location: this.state.location,
+        fincaName: this.state.fincaName
+      }
+    })
+    .then(function (response) {
+      self.storageValues('fincaID', JSON.stringify(response.data.fincaID));
+      self.setState({reload: true});
+      DialogManager.dismiss();
+    })
+    .catch(function (error) {
+      console.log(error);
+    })
+  }
+
 
   showDialog(finca){
     DialogManager.show({
@@ -140,8 +218,9 @@ export default class TracingView extends Component {
 
   render() {
     return (
-      <View>
+      <View style={{flex: 1}}>
         {this.mapFincas()}
+        <ActionButton buttonColor="blue" onPress={() => {this.showAddFincaDialog()}}/>
       </View>
     );
   }
