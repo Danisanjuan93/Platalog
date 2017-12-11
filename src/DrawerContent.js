@@ -8,10 +8,13 @@ export default class DrawerContent extends Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
-        <View style={{ flex: 1, backgroundColor: '#197741' }}>
-          <Text style={{ flex: 1 }}>Prueba</Text>
+        <View style={{backgroundColor: '#008080' }}>
+          <Image
+            style={styles.stretch}
+            source={require('./PlatalogLogo.png')}
+          />
         </View>
-        <View style={{ flex: 2, backgroundColor: '#2FBF6D' }}>
+        <View style={{ flex: 2, backgroundColor: '#59ACAC' }}>
           <Button transparent style={styles.firstBtn} onPress={() => { Actions.manageActivities() }}>
             <View style={{ flex: 1, flexDirection: 'row' }}>
               <Icon name='menu' style={styles.btnIcon} />
@@ -57,5 +60,9 @@ const styles = StyleSheet.create({
   btnIcon: {
     alignSelf: 'flex-start',
     color: 'white'
+  },
+  stretch: {
+    width: 300,
+    height: 300
   }
 });

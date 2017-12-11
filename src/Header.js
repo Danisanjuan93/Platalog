@@ -9,7 +9,7 @@ export default class MyHeader extends Component {
       return(
         <Left>
           <Button transparent onPress={this.props.showMenu}>
-            <Icon style={{color: "black"}} name='menu'/>
+            <Icon style={{color: "white"}} name='menu'/>
           </Button>
         </Left>
       )
@@ -17,7 +17,7 @@ export default class MyHeader extends Component {
       return (
         <Left>
           <Button transparent onPress={() => Actions.pop({refresh: {reload: Math.random(), results: [], activities: []}})}>
-            <Icon name='ios-arrow-back-outline'/>
+            <Icon style={{color: 'white'}} name='ios-arrow-back-outline'/>
           </Button>
         </Left>
       )
@@ -25,7 +25,7 @@ export default class MyHeader extends Component {
       return (
         <Left>
           <Button transparent>
-            <Icon name='logo-apple'/>
+            <Icon style={{color: 'white'}} name='logo-apple'/>
           </Button>
         </Left>
       )
@@ -39,10 +39,10 @@ export default class MyHeader extends Component {
 
   render() {
     return (
-      <Header style={this.props.doShadow ? styles.container_shadow : styles.container}>
+      <Header style={{backgroundColor: '#008080'}}>
         {this.renderLeftIcon()}
         <Body>
-          <Title>{this.props.title}</Title>
+          <Title style={{color: 'white'}}>{this.props.title}</Title>
         </Body>
         {this.renderRightIcon()}
       </Header>

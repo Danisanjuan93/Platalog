@@ -127,10 +127,10 @@ export default class ManageActivitiesView extends Component {
       <Header style={{backgroundColor: '#008080'}}>
         <Left>
           <Button transparent onPress={() => Actions.pop({refresh: {reload: true}})}>
-            <Icon name='ios-arrow-back-outline'/>
+            <Icon style={{color: 'white'}} name='ios-arrow-back-outline'/>
           </Button>
         </Left>
-          <Title style={{alignSelf: 'center'}}>
+          <Title style={{alignSelf: 'center', color: 'white'}}>
             {this.props.title}
           </Title>
           <SearchBar
@@ -144,7 +144,7 @@ export default class ManageActivitiesView extends Component {
           />
         <Right>
           <Button transparent onPress={()=> this.searchBar.show()}>
-            <Icon name='search'/>
+            <Icon style={{color: 'white'}} name='search'/>
           </Button>
         </Right>
       </Header>
@@ -226,11 +226,15 @@ export default class ManageActivitiesView extends Component {
         <ListItem onPress={()=>{}}>
           <Left>
             <View style={{flexDirection: 'column', flex:1}}>
-              <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{activity.name}</Text>
-              <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{activity.state}</Text>
-              <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{activity.worker.username}</Text>
+              <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{activity.worker.username + ' tiene que ' + activity.name}</Text>
+              <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>Localización: {activity.location}</Text>
             </View>
           </Left>
+          <Right>
+            <View style={{flexDirection: 'column', flex:1}}>
+              <Text style={{fontWeight: 'bold', alignSelf:'flex-start', fontSize: 10, color: 'rgba(0, 122, 255, 1)' }}>{activity.state}</Text>
+            </View>
+          </Right>
         </ListItem>
         }>
       </List>
@@ -242,7 +246,7 @@ export default class ManageActivitiesView extends Component {
       <View style={{flex: 1}}>
         {this.renderHeader()}
         {this.mapActivities()}
-        <ActionButton buttonColor="blue" onPress={()=>{this.showAddActivityDialog()}}/>
+        <ActionButton buttonColor="#59ACAC" onPress={()=>{this.showAddActivityDialog()}}/>
       </View>
     );
   }

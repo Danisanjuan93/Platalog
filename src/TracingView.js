@@ -44,6 +44,7 @@ export default class TracingView extends Component {
 
   async componentDidUpdate(){
     if (this.state.reload){
+      DialogManager.dismiss();
       this.setState({reload:false})
       this.getFincas();
     }
@@ -112,7 +113,7 @@ export default class TracingView extends Component {
     dialogStyle: styles.colorToModal,
     dialogAnimation: new SlideAnimation({slideFrom: 'bottom'}),
     children: (
-      <View style={{flex: 1, backgroundColor: '#e6ffff'}}>
+      <View style={{flex: 1, backgroundColor: '#E6F2F2'}}>
         <View>
           <Item floatingLabel>
             <Label style={{padding: '2%'}}>Tipo de Finca</Label>
@@ -163,13 +164,19 @@ export default class TracingView extends Component {
     .then(function (response) {
       self.storageValues('fincaID', JSON.stringify(response.data.fincaID));
       self.setState({reload: true});
-      DialogManager.dismiss();
     })
     .catch(function (error) {
       console.log(error);
     })
   }
 
+  async storageValues(item, selectedValue){
+    try  {
+      await AsyncStorage.setItem(item, selectedValue);
+    } catch (error) {
+      console.log('AsyncStorage error: ' + error.message);
+    }
+  }
 
   showDialog(finca){
     DialogManager.show({
@@ -243,23 +250,24 @@ export default class TracingView extends Component {
     }else{
       let one_day=1000*60*60*24;
       let startDate = new Date();
-      let endDate = new Date();
-      endDate.setMonth(startDate.getMonth() + 9);
-      let untilDate = ((endDate.getTime() - startDate.getTime())/one_day) - ((endDate.getTime() - startDate.getTime())/one_day) + 1;
-      let totalDays = ((endDate.getTime() - startDate.getTime())/one_day) + 1;
+      // let endDate = new Date();
+      // endDate.setMonth(startDate.getMonth() + 9);
+      // let untilDate = ((endDate.getTime() - startDate.getTime())/one_day) - ((endDate.getTime() - startDate.getTime())/one_day) + 1;
+      // let totalDays = ((endDate.getTime() - startDate.getTime())/one_day) + 1;
         return(
           <List dataArray={this.state.fincas} renderRow={(finca) =>
             <ListItem onLongPress={()=>{this.showDialog(finca)}}>
               <Left>
                 <View style={{flexDirection: 'column', flex:1}}>
                   <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{finca.finca.finca_name}</Text>
+                  <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{finca.finca.location}</Text>
                 </View>
               </Left>
               <Right>
                 <View style={{flex: 1}}>
                   <Progress.Circle size={50} progress={1/(((new Date(finca.finca.limit_date.split('T')[0]).setMonth(new Date(finca.finca.limit_date.split('T')[0]).getMonth() + 9) - startDate.getTime())/one_day) + 1)} showsText={true}
                   formatText={()=>((1*100)/(((new Date(finca.finca.limit_date.split('T')[0]).setMonth(new Date(finca.finca.limit_date.split('T')[0]).getMonth() + 9) - startDate.getTime())/one_day) + 1)).toFixed(2)+'%'}
-                  valueFormatter= '#'/>
+                  />
                 </View>
               </Right>
             </ListItem>
@@ -273,7 +281,7 @@ export default class TracingView extends Component {
     return (
       <View style={{flex: 1}}>
         {this.mapFincas()}
-        <ActionButton buttonColor="blue" onPress={() => {this.showAddFincaDialog()}}/>
+        <ActionButton buttonColor="#59ACAC" onPress={() => {this.showAddFincaDialog()}}/>
       </View>
     );
   }
@@ -287,5 +295,12 @@ const styles = StyleSheet.create({
   map: {
     width: '100%',
     height: '100%'
+  },
+  colorToModal:{
+    backgroundColor: '#008080',
+  },
+  colorTitle:{
+    color: 'white',
+    fontWeight: 'bold'
   }
 });

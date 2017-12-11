@@ -98,11 +98,11 @@ export default class LoginScreen extends Component {
     return (
     <View style={{flex: 1}}>
     <StatusBar hidden={true} />
-      <Header title={this.props.title} doShadow/>
+      <Header title={this.props.title} logo/>
       <View style={{flex:1}}>
         <Image
-          style={{flex:1}}
-          source={{uri: 'https://facebook.github.io/react/img/logo_og.png'}}
+          style={styles.stretch}
+          source={require('./PlatalogLogo.png')}
         />
       </View>
       <Form style={{flex: 2, padding: 20}}>
@@ -124,9 +124,13 @@ const styles = StyleSheet.create({
   loginBtn:{
     marginHorizontal: 5,
     marginVertical: 10,
-    backgroundColor: '#29A55E',
+    backgroundColor: '#73B9B9',
     alignContent: 'center',
     justifyContent: 'center',
     width: '100%'
+  },
+  stretch: {
+    width: 300,
+    height: 300
   }
 });

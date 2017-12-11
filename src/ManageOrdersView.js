@@ -13,7 +13,7 @@ const STORAGE_KEY = 'access_token';
 const STORAGE_USER = 'user_data';
 const STORAGE_FINCAS_USER = 'fincas_user';
 let FINCAS = [];
-
+let NAMES = [];
 export default class ManageOrdersView extends Component {
 
 
@@ -100,6 +100,10 @@ export default class ManageOrdersView extends Component {
     const mapFinca = this.state.fincas.map((finca) =>
       FINCAS = FINCAS.concat(finca.finca.id)
     )
+    NAMES = [];
+    const mapNames = this.state.fincas.map((finca) =>
+      NAMES = NAMES.concat(finca.finca.finca_name)
+    )
   }
 
   onClickOrder(order){
@@ -111,22 +115,25 @@ export default class ManageOrdersView extends Component {
     DialogManager.show({
     title: 'Nuevo Pedido',
     titleAlign: 'center',
+    titleTextStyle: styles.font,
     animationDuration: 200,
-    height: 420,
+    titleStyle: styles.dialogStyle,
+    height: 250,
     dialogAnimation: new SlideAnimation({slideFrom: 'bottom'}),
     children: (
-      <View style={{flex: 1}}>
+      <View style={{flex: 1, backgroundColor: '#E6F2F2'}}>
         <View>
-          <Item floatingLabel>
-            <Label style={{padding: '2%'}}>Ordenante</Label>
+          <Item inlinelabel>
+            <Label>Ordenante</Label>
             <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({receiver: text})}}/>
           </Item>
-          <Item floatingLabel>
-            <Label style={{padding: '2%'}}>Kg</Label>
+          <Item inlinelabel>
+            <Label>Kg</Label>
             <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({weight: text})}}/>
           </Item>
-          <Item>
-            <ModalDropdown textStyle={{fontSize:15}}  style={{marginVertical: 10, marginHorizontal: 17 }} options={FINCAS} defaultValue='Finca...' onSelect={(idx,value)=>{asignedFinca = value}}/>
+          <Item style={{paddingTop: '5%'}} inlinelabel>
+            <Label>Finca:</Label>
+            <ModalDropdown textStyle={{fontSize:15}}  style={{paddingTop: '1%', marginHorizontal: 40 }} options={NAMES} defaultValue='Clic to choose finca' onSelect={(idx,value)=>{asignedFinca = FINCAS[idx]}}/>
           </Item>
         </View>
         <DialogButton text='Aceptar' onPress={() => {this.postOrders(asignedFinca)}}/>
@@ -161,7 +168,7 @@ export default class ManageOrdersView extends Component {
       return (
         <Left>
           <Button transparent onPress={() => Actions.pop()}>
-            <Icon name='ios-arrow-back-outline'/>
+            <Icon style={{color: 'black'}} name='ios-arrow-back-outline'/>
           </Button>
         </Left>
     )}else{
@@ -174,7 +181,7 @@ export default class ManageOrdersView extends Component {
     return(
       <Header style={{backgroundColor: '#008080'}}>
           {this.showLoadBackArrow()}
-          <Title style={{alignSelf: 'center'}}>
+          <Title style={{alignSelf: 'center', fontWeight: 'bold'}}>
             {this.props.title}
           </Title>
         <SearchBar
@@ -188,7 +195,7 @@ export default class ManageOrdersView extends Component {
         />
       <Right>
         <Button transparent onPress={()=> this.searchBar.show()}>
-          <Icon name='search'/>
+          <Icon style={{color: 'black'}} name='search'/>
         </Button>
       </Right>
       </Header>
@@ -205,3 +212,28 @@ export default class ManageOrdersView extends Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  finishedActivity: {
+    backgroundColor: 'green',
+    flex: 1,
+    height: '100%',
+    width: '100%',
+    alignContent: 'center',
+    justifyContent: 'center'
+  },
+  pendingActivity:{
+    backgroundColor: 'orange',
+    flex: 1,
+    height: '100%',
+    width: '100%',
+    alignContent: 'center',
+    justifyContent: 'center'
+  },
+  dialogStyle:{
+    backgroundColor: '#008080'
+  },
+  font:{
+    color: 'black'
+  }
+});

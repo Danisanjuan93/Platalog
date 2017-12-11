@@ -62,7 +62,7 @@ export default class MainAdminView extends Component {
       <StatusBar hidden={true} />
       <View style={{flex: 1}}>
         <Header title={this.props.title} menu showMenu={()=>this.openDrawer()}/>
-        <ScrollableTabView tabBarBackgroundColor='#2FBF6D' tabBarActiveTextColor='white' tabBarInactiveTextColor='white' tabBarUnderlineStyle={{backgroundColor: 'white'}}>
+        <ScrollableTabView tabBarBackgroundColor='#59ACAC' tabBarActiveTextColor='white' tabBarInactiveTextColor='white' tabBarUnderlineStyle={{backgroundColor: 'white'}}>
           <TracingView tabLabel='Seguimiento'/>
           <AnalysisView tabLabel='Analisis'/>
           <HistoricView tabLabel='Historial'/>
