@@ -34,7 +34,7 @@ export default class DrawerContent extends Component {
             </View>
           </Button>
           <View style={{borderBottomColor: 'black', borderBottomWidth: 1}}/>
-          <Button transparent style={styles.btn} onPress={() => { Actions.root() }}>
+          <Button transparent style={styles.btn} onPress={() => { Actions.login() }}>
             <View style={{ flex: 1, flexDirection: 'row' }}>
               <Icon name='menu' style={styles.btnIcon} />
               <Text style={styles.btnText}>Log Out</Text>

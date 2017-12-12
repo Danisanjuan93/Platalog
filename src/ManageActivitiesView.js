@@ -40,7 +40,7 @@ export default class ManageActivitiesView extends Component {
     if (this.state.reload){
       WORKERS = [];
       WORKERSID = [];
-      this.setState({reload:false, activities: []})
+      this.setState({reload:false, activities: [], results: []})
       this.getActivities();
     }
   }
@@ -138,7 +138,6 @@ export default class ManageActivitiesView extends Component {
             data={this.state.activities}
             handleResults={this._handleResults}
             allDataOnEmptySearch
-            autoCapitalize
             placeholder='Localización, actividad, estado...'
             style={{flex: 1}}
           />
@@ -158,11 +157,13 @@ export default class ManageActivitiesView extends Component {
     DialogManager.show({
       title: 'Asignar actividad',
       titleAlign: 'center',
+      titleTextStyle: styles.font,
       animationDuration: 200,
+      dialogStyle: styles.dialogStyle,
       height: 200,
       dialogAnimation: new SlideAnimation({slideFrom: 'bottom'}),
       children: (
-        <View style={{flex: 1}}>
+        <View style={{flex: 1, backgroundColor: '#E6F2F2'}}>
           <View style={{flexDirection:'row',alignSelf:'center', marginVertical: 5}}>
             <Text>Actividad: </Text>
             <ModalDropdown textStyle={{fontSize:15}} style={{marginHorizontal: 5}} options={this.state.activitiesOptions} defaultValue='Actividad...' onSelect={(idx,value)=>{asignedActivity = value}}/>
@@ -192,11 +193,13 @@ export default class ManageActivitiesView extends Component {
     DialogManager.show({
       title: 'Asignar actividad',
       titleAlign: 'center',
+      titleTextStyle: styles.font,
       animationDuration: 200,
+      titleStyle: styles.dialogStyle,
       height: 200,
       dialogAnimation: new SlideAnimation({slideFrom: 'bottom'}),
       children: (
-        <View style={{flex: 1}}>
+        <View style={{flex: 1, backgroundColor: '#E6F2F2'}}>
           <View style={{flexDirection:'row', alignSelf:'center', marginVertical:5}}>
             <Text>Trabajador: </Text>
             <ModalDropdown textStyle={{fontSize:15}}  style={{marginHorizontal: 5}} options={WORKERS} defaultValue='Trabajador...' onSelect={(idx,value)=>{asignedWorker = WORKERSID[idx]}}/>
@@ -267,5 +270,12 @@ const styles = StyleSheet.create({
     width: '100%',
     alignContent: 'center',
     justifyContent: 'center'
+  },
+  dialogStyle:{
+    backgroundColor: '#008080'
+  },
+  font:{
+    color: 'white',
+    fontWeight: 'bold'
   }
 });

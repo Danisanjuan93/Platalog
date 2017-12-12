@@ -19,7 +19,7 @@ export default class App extends Component {
       <Router hideNavBar>
               <Scene key="modal" modal>
                   <Scene key='root' hideNavBar>
-                    <Scene key='login' component={LoginScreen} title='Login' />
+                    <Scene key='login' type='replace' component={LoginScreen} title='Login' />
                     <Scene key='mainWorker' type='replace' component={MainWorkerView} title='Pendiente'  />
                     <Scene key='mainAdmin' type='replace' component={MainAdminView} title='Admin'  />
                     <Scene key='ordersChart' component={OrdersChartView} title='Pedidos'  />

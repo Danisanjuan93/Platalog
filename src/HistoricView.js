@@ -14,7 +14,9 @@ export default class HistoricView extends Component {
         historic: []
     }
   }
-
+  alerta(Tab){
+    AlertIOS.alert("Titulo2", JSON.stringify(Tab))
+  }
   componentWillMount(){
     this.getActivities();
   }

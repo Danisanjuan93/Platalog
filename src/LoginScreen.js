@@ -48,6 +48,7 @@ export default class LoginScreen extends Component {
       self.getUserData(self, response.data.access_token);
     })
     .catch(function (error) {
+      formBody = [];
       console.log(error);
     })
   }

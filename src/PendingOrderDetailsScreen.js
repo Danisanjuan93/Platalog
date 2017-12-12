@@ -72,9 +72,9 @@ export default class pendingOrderDetailsScreen extends Component {
     }else{
       return (
         <View style={{flexDirection: 'row', marginVertical: 10}}>
-          <Button onPress={()=> this.showDialog()} success style={{flex:1, marginHorizontal: 7, justifyContent: 'center'}}>
-            <Text>Finalizar</Text>
-          </Button>
+        <Button rounded onPress={()=> (this.finishActivity())} style={{flex:1, marginHorizontal: 7, justifyContent: 'center', backgroundColor: '#73B9B9'}}>
+          <Text style={{color: 'white'}}>Finalizar</Text>
+        </Button>
         </View>
       )
     }

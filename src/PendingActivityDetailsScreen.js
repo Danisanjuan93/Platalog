@@ -14,7 +14,7 @@ export default class pendingActivityDetailsScreen extends Component {
     const token = await AsyncStorage.getItem(STORAGE_KEY);
     axios({
       method: 'patch',
-      url: 'http://127.0.0.1:8000/api/activities/' + JSON.stringify(this.props.activity.id) + '/state',
+      url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/activities/' + JSON.stringify(this.props.activity.id) + '/state',
       headers :{
         'Authorization': 'Bearer ' + token,
       }
@@ -31,14 +31,11 @@ export default class pendingActivityDetailsScreen extends Component {
     <View style={{flex: 1, justifyContent: 'center', alignContent: 'center'}}>
       <Header backArrow title={this.props.activity.name}/>
         <View style={{flex: 1, marginVertical: 20}}>
-          <Text style={{marginHorizontal: 10}}>Actividad: {this.props.activity.name}</Text>
-          <Text style={{marginHorizontal: 10}}>Zona: {this.props.activity.location}</Text>
+          <Text style={{marginHorizontal: 10, alignSelf: 'center'}}>Zona: {this.props.activity.location}</Text>
+          <Text style={{marginHorizontal: 10, alignSelf: 'center'}}>Actividad: {this.props.activity.name}</Text>
           <View style={{flexDirection: 'row', marginVertical: 10}}>
-            <Button onPress={()=> (this.finishActivity())} success style={{flex:1, marginHorizontal: 7, justifyContent: 'center'}}>
-              <Text>Finalizar</Text>
-            </Button>
-            <Button danger style={{flex:1, marginHorizontal: 7, justifyContent: 'center'}}>
-              <Text>Incidencia</Text>
+            <Button rounded onPress={()=> (this.finishActivity())} style={{flex:1, marginHorizontal: 7, justifyContent: 'center', backgroundColor: '#73B9B9'}}>
+              <Text style={{color: 'white'}}>Finalizar</Text>
             </Button>
           </View>
         </View>

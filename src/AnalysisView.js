@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
       marginVertical: 15
     },
     textBold: {
-      fontWeight: 'bold'
+      fontWeight: 'bold',
+      color: 'rgba(0, 122, 255, 1)'
     }
 });

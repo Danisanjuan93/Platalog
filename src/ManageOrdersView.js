@@ -117,8 +117,8 @@ export default class ManageOrdersView extends Component {
     titleAlign: 'center',
     titleTextStyle: styles.font,
     animationDuration: 200,
-    titleStyle: styles.dialogStyle,
-    height: 250,
+    dialogStyle: styles.dialogStyle,
+    height: 280,
     dialogAnimation: new SlideAnimation({slideFrom: 'bottom'}),
     children: (
       <View style={{flex: 1, backgroundColor: '#E6F2F2'}}>
@@ -142,19 +142,28 @@ export default class ManageOrdersView extends Component {
     });
   }
 
+  renderOrderState(order){
+    if (order.state != 'Entregado'){
+      return (
+        <Text style={{fontWeight: 'bold', alignSelf:'flex-start', fontSize: 12, backgroundColor: 'rgba(0, 122, 255, 1)', color: 'white' }}>{order.state}</Text>
+      )
+    }else{
+      return (
+        <Text style={{fontWeight: 'bold', alignSelf:'flex-start', fontSize: 12, backgroundColor: 'rgba(255, 148, 2, 1)', color: 'white' }}>{order.state}</Text>
+      )
+    }
+  }
+
   mapOrders(){
     return(
       <List dataArray={this.state.results} renderRow={(order) =>
         <ListItem onPress={() => {this.onClickOrder(order)}}>
-          <Left>
             <View style={{flexDirection: 'column', flex:1}}>
-              <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{order.receiver}</Text>
-              <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{order.weight}</Text>
+              <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{'Pedido para ' + order.receiver + ' de '  + order.weight + ' kg'}</Text>
             </View>
-          </Left>
           <Right>
             <View style={{flexDirection: 'column', flex:1}}>
-              <Text style={{fontWeight: 'bold', alignSelf:'flex-start', fontSize: 10 }}>{order.state}</Text>
+              {this.renderOrderState(order)}
             </View>
           </Right>
         </ListItem>
@@ -168,7 +177,7 @@ export default class ManageOrdersView extends Component {
       return (
         <Left>
           <Button transparent onPress={() => Actions.pop()}>
-            <Icon style={{color: 'black'}} name='ios-arrow-back-outline'/>
+            <Icon style={{color: 'white'}} name='ios-arrow-back-outline'/>
           </Button>
         </Left>
     )}else{
@@ -177,11 +186,10 @@ export default class ManageOrdersView extends Component {
   }
 
   renderHeader= () =>{
-
     return(
       <Header style={{backgroundColor: '#008080'}}>
           {this.showLoadBackArrow()}
-          <Title style={{alignSelf: 'center', fontWeight: 'bold'}}>
+          <Title style={{alignSelf: 'center', fontWeight: 'bold', color: 'white'}}>
             {this.props.title}
           </Title>
         <SearchBar
@@ -189,13 +197,12 @@ export default class ManageOrdersView extends Component {
           data={this.state.orders}
           handleResults={this._handleResults}
           allDataOnEmptySearch
-          autoCapitalize = 'none'
           placeholder='Localización, actividad...'
           style={{flex: 1}}
         />
       <Right>
         <Button transparent onPress={()=> this.searchBar.show()}>
-          <Icon style={{color: 'black'}} name='search'/>
+          <Icon style={{color: 'white'}} name='search'/>
         </Button>
       </Right>
       </Header>
@@ -207,7 +214,7 @@ export default class ManageOrdersView extends Component {
     <View style={{flex: 1}}>
       {this.renderHeader()}
       {this.mapOrders()}
-      <ActionButton buttonColor="blue" onPress={()=>{this.showAddOrderDialog()}}/>
+      <ActionButton buttonColor="#59ACAC" onPress={()=>{this.showAddOrderDialog()}}/>
     </View>
     );
   }
@@ -234,6 +241,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#008080'
   },
   font:{
-    color: 'black'
+    color: 'white',
+    fontWeight: 'bold'
   }
 });

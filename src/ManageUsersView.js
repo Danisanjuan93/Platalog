@@ -110,7 +110,7 @@ export default class ManageUsersView extends Component {
       return (
         <Left>
           <Button transparent onPress={() => Actions.pop()}>
-            <Icon name='ios-arrow-back-outline'/>
+            <Icon style={{color: 'white'}} name='ios-arrow-back-outline'/>
           </Button>
         </Left>
     )}else{
@@ -122,8 +122,7 @@ export default class ManageUsersView extends Component {
     return(
       <Header style={{backgroundColor: '#008080'}}>
           {this.showLoadBackArrow()}
-          <Left/>
-          <Title style={{alignSelf: 'center'}}>
+          <Title style={{alignSelf: 'center', fontWeight: 'bold', color: 'white'}}>
             {this.props.title}
           </Title>
         <SearchBar
@@ -131,13 +130,12 @@ export default class ManageUsersView extends Component {
           data={this.state.workerList}
           handleResults={this._handleResults}
           allDataOnEmptySearch
-          autoCapitalize
           placeholder='Localización,trabajador...'
           style={{flex: 1}}
         />
       <Right>
         <Button transparent onPress={()=> this.searchBar.show()}>
-          <Icon name='search'/>
+          <Icon style={{color: 'white'}} name='search'/>
         </Button>
       </Right>
       </Header>
@@ -169,11 +167,13 @@ export default class ManageUsersView extends Component {
     DialogManager.show({
     title: 'Nuevo Trabajador',
     titleAlign: 'center',
+    titleTextStyle: styles.font,
+    dialogStyle: styles.dialogStyle,
     animationDuration: 200,
     height: 420,
     dialogAnimation: new SlideAnimation({slideFrom: 'bottom'}),
     children: (
-      <View style={{flex: 1}}>
+      <View style={{flex: 1, backgroundColor: '#E6F2F2'}}>
         <View>
           <Item floatingLabel>
             <Label style={{padding: '2%'}}>Nombre</Label>
@@ -192,7 +192,8 @@ export default class ManageUsersView extends Component {
             <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({password: text})}}/>
           </Item>
           <Item>
-            <ModalDropdown textStyle={{fontSize:15}}  style={{marginVertical: 10, marginHorizontal: 17 }} options={FINCAS} defaultValue='Zona...' onSelect={(idx,value)=>{asignedFinca = value}}/>
+            <Label>Finca:</Label>
+            <ModalDropdown textStyle={{fontSize:15}}  style={{paddingTop: '5%', marginHorizontal: 40 }} options={LOCATIONS} defaultValue='Zona...' onSelect={(idx,value)=>{asignedFinca = FINCAS[idx]}}/>
           </Item>
         </View>
         <DialogButton text='Aceptar' onPress={() => {this.newWorker(asignedFinca)}}/>
@@ -202,8 +203,8 @@ export default class ManageUsersView extends Component {
   }
 
   async newWorker(finca){
-      var self = this;
-      const token = await AsyncStorage.getItem(STORAGE_KEY);
+    var self = this;
+    const token = await AsyncStorage.getItem(STORAGE_KEY);
       axios({
         method: 'post',
         url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/users/registers',
@@ -228,35 +229,35 @@ export default class ManageUsersView extends Component {
       })
     }
 
-    async patchFinca(finca, worker){
-      var self = this;
-      const token = await AsyncStorage.getItem(STORAGE_KEY);
-      axios({
-        method: 'patch',
-        url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/users/' + finca + '/fincas/' + worker,
-        headers :{
-          'Authorization': 'Bearer ' + token,
-          'Content-Type': 'application/json'
-        },
-      })
-      .then(function (response) {
-        self.setState({reload: true});
-        DialogManager.dismiss();
-      })
-      .catch(function (error) {
-        console.log(error);
-      })
-      }
-
-    render() {
-      return (
-        <View style={{flex: 1}}>
-          {this.renderHeader()}
-          {this.mapWorkers()}
-          <ActionButton buttonColor="blue" onPress={()=>{this.showAddWorkerDialog()}}/>
-        </View>
-      );
+  async patchFinca(finca, worker){
+    var self = this;
+    const token = await AsyncStorage.getItem(STORAGE_KEY);
+    axios({
+      method: 'patch',
+      url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/users/' + finca + '/fincas/' + worker,
+      headers :{
+        'Authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      },
+    })
+    .then(function (response) {
+      self.setState({reload: true});
+      DialogManager.dismiss();
+    })
+    .catch(function (error) {
+      console.log(error);
+    })
     }
+
+  render() {
+    return (
+      <View style={{flex: 1}}>
+        {this.renderHeader()}
+        {this.mapWorkers()}
+        <ActionButton buttonColor="#59ACAC" onPress={()=>{this.showAddWorkerDialog()}}/>
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -275,5 +276,12 @@ const styles = StyleSheet.create({
     width: '100%',
     alignContent: 'center',
     justifyContent: 'center'
+  },
+  dialogStyle:{
+    backgroundColor: '#008080'
+  },
+  font:{
+    color: 'white',
+    fontWeight: 'bold'
   }
 });

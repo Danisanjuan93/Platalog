@@ -45,14 +45,6 @@ export default class MainAdminView extends Component {
     this.drawer._root.open()
   };
 
-  async storageValues(item, selectedValue){
-    try  {
-      await AsyncStorage.setItem(item, selectedValue);
-    } catch (error) {
-      console.log('AsyncStorage error: ' + error.message);
-    }
-  }
-
   render() {
     return (
     <Drawer

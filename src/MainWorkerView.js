@@ -62,12 +62,12 @@ export default class MainWorkerView extends Component {
     return(
       <List dataArray={this.state.results} renderRow={(activity) =>
         <ListItem onPress={() => {this.onClickActivity(activity)}}>
-          <Left>
-            <View style={{flexDirection: 'column', flex:1}}>
-              <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{activity.name}</Text>
-              <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{activity.location}</Text>
-            </View>
-          </Left>
+          <View style={{flexDirection: 'column', flex:1}}>
+            <Text style={{fontWeight: 'bold', alignSelf:'center', fontSize: 20, paddingLeft: '20%' }}>{activity.name}</Text>
+          </View>
+          <Right>
+            <Icon style={{color: 'black', fontSize: 30}} name='ios-arrow-forward-outline'/>
+          </Right>
         </ListItem>
         }>
       </List>
@@ -76,9 +76,11 @@ export default class MainWorkerView extends Component {
 
   renderHeader= () =>{
     return(
-      <Header>
-          <Left/>
-          <Title style={{alignSelf: 'center'}}>
+      <Header style={{backgroundColor: '#008080'}}>
+        <Left>
+          <Icon onPress={() => { Actions.login() }} style={{color: 'white'}} name='ios-log-out'/>
+        </Left>
+          <Title style={{alignSelf: 'center', color: 'white'}}>
             {this.props.title}
           </Title>
         <SearchBar
@@ -92,7 +94,7 @@ export default class MainWorkerView extends Component {
         />
       <Right>
         <Button transparent onPress={()=> this.searchBar.show()}>
-          <Icon name='search'/>
+          <Icon style={{color: 'white'}}name='search'/>
         </Button>
       </Right>
       </Header>
