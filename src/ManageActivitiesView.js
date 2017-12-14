@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, ScrollView, AsyncStorage, AlertIOS } from 'react-native';
 import { Actions } from 'react-native-router-flux';
-import { Button, Icon, Text, Form, Item, Input, List, ListItem, Drawer, Right, Left, Title, Header } from 'native-base';
+import { Button, Icon, Text, Form, Item, Input, List, ListItem, Drawer, Right, Left, Title, Header, Label } from 'native-base';
 import SearchBar from 'react-native-searchbar'
 import ActionButton from 'react-native-action-button';
 import ModalDropdown from 'react-native-modal-dropdown';
@@ -14,6 +14,7 @@ let WORKERS = [];
 let WORKERSID = [];
 let FINCAS = [];
 let LOCATIONS = [];
+let NAMES = [];
 
 export default class ManageActivitiesView extends Component {
 
@@ -126,7 +127,7 @@ export default class ManageActivitiesView extends Component {
     return(
       <Header style={{backgroundColor: '#008080'}}>
         <Left>
-          <Button transparent onPress={() => Actions.pop({refresh: {reload: true}})}>
+          <Button transparent onPress={() => Actions.pop({refresh: {reload: Math.random()}})}>
             <Icon style={{color: 'white'}} name='ios-arrow-back-outline'/>
           </Button>
         </Left>
@@ -164,14 +165,14 @@ export default class ManageActivitiesView extends Component {
       dialogAnimation: new SlideAnimation({slideFrom: 'bottom'}),
       children: (
         <View style={{flex: 1, backgroundColor: '#E6F2F2'}}>
-          <View style={{flexDirection:'row',alignSelf:'center', marginVertical: 5}}>
-            <Text>Actividad: </Text>
-            <ModalDropdown textStyle={{fontSize:15}} style={{marginHorizontal: 5}} options={this.state.activitiesOptions} defaultValue='Actividad...' onSelect={(idx,value)=>{asignedActivity = value}}/>
-          </View>
-          <View style={{flexDirection:'row',alignSelf:'center', marginVertical: 5}}>
-            <Text>Finca: </Text>
-            <ModalDropdown textStyle={{fontSize:15}} style={{marginHorizontal: 5}} options={FINCAS} defaultValue='Finca...' onSelect={(idx,value)=>{asignedFinca = value, asignedLocation=LOCATIONS[idx]}}/>
-          </View>
+          <Item style={{paddingTop: '4%'}} inlinelabel>
+            <Label>Actividad:</Label>
+            <ModalDropdown textStyle={{fontSize:15}}  style={{paddingTop: '1%', marginHorizontal: 40 }} options={this.state.activitiesOptions} defaultValue='Clic para elegir finca' onSelect={(idx,value)=>{asignedActivity = value}}/>
+          </Item>
+          <Item style={{paddingTop: '4%'}} inlinelabel>
+            <Label>Finca:</Label>
+            <ModalDropdown textStyle={{fontSize:15}}  style={{paddingTop: '1%', marginHorizontal: 40 }} options={NAMES} defaultValue='Clic para elegir finca' onSelect={(idx,value)=>{asignedFinca = FINCAS[idx], asignedLocation = LOCATIONS[idx]}}/>
+          </Item>
           <DialogButton text='Aceptar' onPress={()=>{
               this.getWorkers(asignedFinca, asignedLocation, asignedActivity); DialogManager.dismiss()
               }}/>
@@ -195,15 +196,15 @@ export default class ManageActivitiesView extends Component {
       titleAlign: 'center',
       titleTextStyle: styles.font,
       animationDuration: 200,
-      titleStyle: styles.dialogStyle,
-      height: 200,
+      dialogStyle: styles.dialogStyle,
+      height: 150,
       dialogAnimation: new SlideAnimation({slideFrom: 'bottom'}),
       children: (
         <View style={{flex: 1, backgroundColor: '#E6F2F2'}}>
-          <View style={{flexDirection:'row', alignSelf:'center', marginVertical:5}}>
-            <Text>Trabajador: </Text>
-            <ModalDropdown textStyle={{fontSize:15}}  style={{marginHorizontal: 5}} options={WORKERS} defaultValue='Trabajador...' onSelect={(idx,value)=>{asignedWorker = WORKERSID[idx]}}/>
-          </View>
+        <Item style={{paddingTop: '4%'}} inlinelabel>
+          <Label>Trabajador:</Label>
+          <ModalDropdown textStyle={{fontSize:15}}  style={{paddingTop: '1%', marginHorizontal: 40 }} options={WORKERS} defaultValue='Clic para elegir trabajador' onSelect={(idx,value)=>{asignedWorker = WORKERSID[idx]}}/>
+        </Item>
           <DialogButton text='Aceptar' onPress={()=>{
               this.asignActivity(asignedWorker, asignedActivity, asignedFinca, asignedLocation)
               }}/>
@@ -212,6 +213,18 @@ export default class ManageActivitiesView extends Component {
     }, () => {
     console.log('callback - show');
     });
+  }
+
+  renderActivityState(activity){
+    if (activity.state != 'Finalizada'){
+      return (
+        <Text style={{fontWeight: 'bold', alignSelf:'flex-start', fontSize: 12, backgroundColor: 'rgba(0, 122, 255, 1)', color: 'white' }}>{activity.state}</Text>
+      )
+    }else{
+      return (
+        <Text style={{fontWeight: 'bold', alignSelf:'flex-start', fontSize: 12, backgroundColor: 'rgba(255, 148, 2, 1)', color: 'white' }}>{activity.state}</Text>
+      )
+    }
   }
 
   mapActivities(){
@@ -224,6 +237,11 @@ export default class ManageActivitiesView extends Component {
       LOCATIONS = LOCATIONS.concat(finca.finca.location)
     )
 
+    const mapNames = this.state.fincas.map((finca) =>
+      NAMES = NAMES.concat(finca.finca.finca_name)
+    )
+
+
     return(
       <List dataArray={this.state.results} renderRow={(activity) =>
         <ListItem onPress={()=>{}}>
@@ -235,7 +253,7 @@ export default class ManageActivitiesView extends Component {
           </Left>
           <Right>
             <View style={{flexDirection: 'column', flex:1}}>
-              <Text style={{fontWeight: 'bold', alignSelf:'flex-start', fontSize: 10, color: 'rgba(0, 122, 255, 1)' }}>{activity.state}</Text>
+              {this.renderActivityState(activity)}
             </View>
           </Right>
         </ListItem>

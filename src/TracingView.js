@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {StyleSheet, View, AlertIOS, AsyncStorage, Dimensions, Platform } from 'react-native';
+import {StyleSheet, View, AlertIOS, AsyncStorage, Dimensions, Platform, RefreshControl } from 'react-native';
 import {Actions} from 'react-native-router-flux';
 import { Button, Icon, Text, Form, Item, Input, List, ListItem, Right, Left, Label } from 'native-base';
 import DialogManager, { SlideAnimation, DialogContent, DialogButton } from 'react-native-dialog-component';
@@ -38,7 +38,8 @@ export default class TracingView extends Component {
       markers: [{ latitude: LATITUDE, longitude: LONGITUDE, key: 1 }],
       ids: [],
       date: new Date(),
-      reload: false
+      reload: false,
+      refreshing: false
     }
   }
 
@@ -52,123 +53,6 @@ export default class TracingView extends Component {
 
   async componentWillMount() {
     this.getFincas();
-  }
-
-  async getFincas() {
-    const self = this;
-    const token = await AsyncStorage.getItem(STORAGE_KEY);
-    const user = JSON.parse(await AsyncStorage.getItem(STORAGE_USER));
-    axios({
-      method: 'get',
-      url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/fincas/' + user.User.id,
-      headers :{
-        'Authorization': 'Bearer ' + token,
-      }
-    })
-      .then(function (response) {
-        self.setState({ fincas: response.data })
-        self.storageValues(STORAGE_FINCAS_USER, JSON.stringify(response.data));
-      })
-      .catch(function (error) {
-        AlertIOS.alert(
-          "Error",
-          JSON.stringify(error)
-        )
-      })
-  }
-  onMapPress(e) {
-    var newMarker = [{
-      latitude: e.nativeEvent.coordinate.latitude,
-      longitude: e.nativeEvent.coordinate.longitude,
-      key: Date.now()
-    }];
-    this.setState({ markers: newMarker });
-  }
-
-  async onDateChange(date, fincaID){
-    const self = this;
-    const token = await AsyncStorage.getItem(STORAGE_KEY);
-    const user = JSON.parse(await AsyncStorage.getItem(STORAGE_USER));
-    axios({
-      method: 'patch',
-      url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/fincas/' + fincaID + '/limitdates/' + date,
-      headers :{
-        'Authorization': 'Bearer ' + token,
-      }
-    })
-    .then(function (response) {
-      self.getFincas();
-      DialogManager.dismiss();
-    })
-    .catch(function (error) {
-    })
-  }
-
-  showAddFincaDialog(){
-    DialogManager.show({
-    title: 'Nueva Finca',
-    titleTextStyle: styles.colorTitle,
-    titleAlign: 'center',
-    animationDuration: 200,
-    height: 420,
-    dialogStyle: styles.colorToModal,
-    dialogAnimation: new SlideAnimation({slideFrom: 'bottom'}),
-    children: (
-      <View style={{flex: 1, backgroundColor: '#E6F2F2'}}>
-        <View>
-          <Item floatingLabel>
-            <Label style={{padding: '2%'}}>Tipo de Finca</Label>
-            <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({estateType: text})}}/>
-          </Item>
-          <Item floatingLabel>
-            <Label style={{padding: '2%'}}>Tipo de Riego</Label>
-            <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({irrigationType: text})}}/>
-          </Item>
-          <Item floatingLabel>
-            <Label style={{padding: '2%'}}>Tipo de Planta</Label>
-            <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({plantVariety: text})}}/>
-          </Item>
-          <Item floatingLabel>
-            <Label style={{padding: '2%'}}>Localizacion</Label>
-            <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({location: text})}}/>
-          </Item>
-          <Item floatingLabel>
-            <Label style={{padding: '2%'}}>Nombre</Label>
-            <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({fincaName: text})}}/>
-          </Item>
-        </View>
-        <DialogButton text='Aceptar' onPress={() => {this.postFincaRequest()}}/>
-      </View>
-      )
-    });
-  }
-
-  async postFincaRequest(){
-    var self = this;
-    const token = await AsyncStorage.getItem(STORAGE_KEY);
-    const user = await AsyncStorage.getItem(STORAGE_USER);
-    axios({
-      method: 'post',
-      url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/fincas',
-      headers :{
-        'Authorization': 'Bearer ' + token,
-        'Content-Type': 'application/json'
-      },
-      data: {
-        estateType: this.state.estateType,
-        irrigationType: this.state.irrigationType,
-        plantVariety: this.state.plantVariety,
-        location: this.state.location,
-        fincaName: this.state.fincaName
-      }
-    })
-    .then(function (response) {
-      self.storageValues('fincaID', JSON.stringify(response.data.fincaID));
-      self.setState({reload: true});
-    })
-    .catch(function (error) {
-      console.log(error);
-    })
   }
 
   async storageValues(item, selectedValue){
@@ -212,6 +96,146 @@ export default class TracingView extends Component {
     });
   }
 
+  _onRefresh() {
+    this.setState({refreshing: true});
+    this.getFincas().then(() => {
+      this.setState({refreshing: false});
+    });
+  }
+
+  onMapPress(e) {
+    var newMarker = [{
+      latitude: e.nativeEvent.coordinate.latitude,
+      longitude: e.nativeEvent.coordinate.longitude,
+      key: Date.now()
+    }];
+    this.setState({ markers: newMarker });
+  }
+
+  showAddFincaDialog(){
+    DialogManager.show({
+    title: 'Nueva Finca',
+    titleTextStyle: styles.colorTitle,
+    titleAlign: 'center',
+    animationDuration: 200,
+    height: 420,
+    dialogStyle: styles.colorToModal,
+    dialogAnimation: new SlideAnimation({slideFrom: 'bottom'}),
+    children: (
+      <View style={{flex: 1, backgroundColor: '#E6F2F2'}}>
+        <View>
+          <Item floatingLabel>
+            <Label style={{padding: '2%'}}>Tipo de Finca</Label>
+            <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({estateType: text})}}/>
+          </Item>
+          <Item floatingLabel>
+            <Label style={{padding: '2%'}}>Tipo de Riego</Label>
+            <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({irrigationType: text})}}/>
+          </Item>
+          <Item floatingLabel>
+            <Label style={{padding: '2%'}}>Tipo de Planta</Label>
+            <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({plantVariety: text})}}/>
+          </Item>
+          <Item floatingLabel>
+            <Label style={{padding: '2%'}}>Localizacion</Label>
+            <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({location: text})}}/>
+          </Item>
+          <Item floatingLabel>
+            <Label style={{padding: '2%'}}>Nombre</Label>
+            <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({fincaName: text})}}/>
+          </Item>
+        </View>
+        <DialogButton text='Aceptar' onPress={() => {this.postFincaRequest()}}/>
+      </View>
+      )
+    });
+  }
+
+  async getFincas() {
+    const self = this;
+    const token = await AsyncStorage.getItem(STORAGE_KEY);
+    const user = JSON.parse(await AsyncStorage.getItem(STORAGE_USER));
+    axios({
+      method: 'get',
+      url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/fincas/' + user.User.id,
+      headers :{
+        'Authorization': 'Bearer ' + token,
+      }
+    })
+      .then(function (response) {
+        self.setState({ fincas: response.data })
+        self.storageValues(STORAGE_FINCAS_USER, JSON.stringify(response.data));
+      })
+      .catch(function (error) {
+        AlertIOS.alert(
+          "Error",
+          JSON.stringify(error)
+        )
+      })
+  }
+
+  async onDateChange(date, fincaID){
+    const self = this;
+    const token = await AsyncStorage.getItem(STORAGE_KEY);
+    const user = JSON.parse(await AsyncStorage.getItem(STORAGE_USER));
+    axios({
+      method: 'patch',
+      url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/fincas/' + fincaID + '/limitdates/' + date,
+      headers :{
+        'Authorization': 'Bearer ' + token,
+      }
+    })
+    .then(function (response) {
+      self.getFincas();
+      DialogManager.dismiss();
+    })
+    .catch(function (error) {
+    })
+  }
+
+  async postFincaRequest(){
+    var self = this;
+    const token = await AsyncStorage.getItem(STORAGE_KEY);
+    const user = await AsyncStorage.getItem(STORAGE_USER);
+    axios({
+      method: 'post',
+      url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/fincas',
+      headers :{
+        'Authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      },
+      data: {
+        estateType: this.state.estateType,
+        irrigationType: this.state.irrigationType,
+        plantVariety: this.state.plantVariety,
+        location: this.state.location,
+        fincaName: this.state.fincaName
+      }
+    })
+    .then(function (response) {
+      self.storageValues('fincaID', JSON.stringify(response.data.fincaID));
+      self.setState({reload: true});
+    })
+    .catch(function (error) {
+      console.log(error);
+    })
+  }
+
+
+  renderProgress(finca){
+    let one_day=1000*60*60*24;
+    let startDate = new Date();
+    let endDate = new Date(finca.finca.limit_date.split('T')[0]);
+    endDate.setMonth(endDate.getMonth() + 9);
+    let untilDate = ((endDate.getTime() - startDate.getTime())/one_day) - ((endDate.getTime() - startDate.getTime())/one_day) + 1;
+    let totalDays = ((endDate.getTime() - startDate.getTime())/one_day) + 1;
+    return (
+      <Progress.Circle size={50} progress={untilDate/totalDays} showsText={true}
+      formatText={()=>((untilDate*100)/totalDays).toFixed(2)+'%'}
+      />
+    )
+  }
+
   mapFincas(){
     if (Platform.OS != 'ios'){
       return (
@@ -249,12 +273,7 @@ export default class TracingView extends Component {
         </List>
       );
     }else{
-      let one_day=1000*60*60*24;
-      let startDate = new Date();
-      // let endDate = new Date();
-      // endDate.setMonth(startDate.getMonth() + 9);
-      // let untilDate = ((endDate.getTime() - startDate.getTime())/one_day) - ((endDate.getTime() - startDate.getTime())/one_day) + 1;
-      // let totalDays = ((endDate.getTime() - startDate.getTime())/one_day) + 1;
+
         return(
           <List dataArray={this.state.fincas} renderRow={(finca) =>
             <ListItem onLongPress={()=>{this.showDialog(finca)}}>
@@ -266,13 +285,16 @@ export default class TracingView extends Component {
               </Left>
               <Right>
                 <View style={{flex: 1}}>
-                  <Progress.Circle size={50} progress={1/(((new Date(finca.finca.limit_date.split('T')[0]).setMonth(new Date(finca.finca.limit_date.split('T')[0]).getMonth() + 9) - startDate.getTime())/one_day) + 1)} showsText={true}
-                  formatText={()=>((1*100)/(((new Date(finca.finca.limit_date.split('T')[0]).setMonth(new Date(finca.finca.limit_date.split('T')[0]).getMonth() + 9) - startDate.getTime())/one_day) + 1)).toFixed(2)+'%'}
-                  />
+                  {this.renderProgress(finca)}
                 </View>
               </Right>
             </ListItem>
-            }>
+            }
+            refreshControl={
+                <RefreshControl
+                  refreshing={this.state.refreshing}
+                  onRefresh={this._onRefresh.bind(this)}/>}
+            >
           </List>
         );
       }

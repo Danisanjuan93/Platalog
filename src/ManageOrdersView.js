@@ -131,9 +131,9 @@ export default class ManageOrdersView extends Component {
             <Label>Kg</Label>
             <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({weight: text})}}/>
           </Item>
-          <Item style={{paddingTop: '5%'}} inlinelabel>
+          <Item style={{paddingTop: '4%'}} inlinelabel>
             <Label>Finca:</Label>
-            <ModalDropdown textStyle={{fontSize:15}}  style={{paddingTop: '1%', marginHorizontal: 40 }} options={NAMES} defaultValue='Clic to choose finca' onSelect={(idx,value)=>{asignedFinca = FINCAS[idx]}}/>
+            <ModalDropdown textStyle={{fontSize:15}}  style={{paddingTop: '1%', marginHorizontal: 40 }} options={NAMES} defaultValue='Clic para elegir finca' onSelect={(idx,value)=>{asignedFinca = FINCAS[idx]}}/>
           </Item>
         </View>
         <DialogButton text='Aceptar' onPress={() => {this.postOrders(asignedFinca)}}/>
@@ -176,7 +176,7 @@ export default class ManageOrdersView extends Component {
     if (Platform.OS == 'ios'){
       return (
         <Left>
-          <Button transparent onPress={() => Actions.pop()}>
+          <Button transparent onPress={() => Actions.pop({refresh: {reload: Math.random()}})}>
             <Icon style={{color: 'white'}} name='ios-arrow-back-outline'/>
           </Button>
         </Left>

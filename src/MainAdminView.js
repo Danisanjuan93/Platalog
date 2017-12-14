@@ -37,6 +37,10 @@ export default class MainAdminView extends Component {
     }
   }
 
+  componentWillReceiveProps(nextProps){
+    this.closeDrawer();
+  }
+
   closeDrawer = () => {
     this.drawer._root.close()
   };

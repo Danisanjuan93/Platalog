@@ -109,7 +109,7 @@ export default class ManageUsersView extends Component {
     if (Platform.OS == 'ios'){
       return (
         <Left>
-          <Button transparent onPress={() => Actions.pop()}>
+          <Button transparent onPress={() => Actions.pop({refresh: {reload: Math.random()}})}>
             <Icon style={{color: 'white'}} name='ios-arrow-back-outline'/>
           </Button>
         </Left>

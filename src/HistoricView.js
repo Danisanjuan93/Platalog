@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {StyleSheet, View, AsyncStorage} from 'react-native';
+import {StyleSheet, View, AsyncStorage, RefreshControl } from 'react-native';
 import {Actions} from 'react-native-router-flux';
 import { Button,Text, List, ListItem } from 'native-base';
 import axios from 'axios';
@@ -11,7 +11,8 @@ export default class HistoricView extends Component {
   constructor(props){
     super(props)
     this.state={
-        historic: []
+        historic: [],
+        refreshing: false
     }
   }
   alerta(Tab){
@@ -20,6 +21,14 @@ export default class HistoricView extends Component {
   componentWillMount(){
     this.getActivities();
   }
+
+  _onRefresh() {
+    this.setState({refreshing: true});
+    this.getActivities().then(() => {
+      this.setState({refreshing: false});
+    });
+  }
+
 
   async getActivities(){
     const self = this;
@@ -46,7 +55,12 @@ export default class HistoricView extends Component {
             <Text style={{alignSelf:'flex-start'}}>{activity.finca.finca_name + ': ' + activity.worker.username + ' realizó la tarea ' + activity.name + ' el ' + activity.deleted_at.split('T')[0]}</Text>
           </View>
         </ListItem>
-        }>
+        }
+        refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this._onRefresh.bind(this)}/>}
+              >
       </List>
     );
   }
