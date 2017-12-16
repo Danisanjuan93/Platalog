@@ -8,6 +8,8 @@ import MyHeader from './Header';
 import ActionButton from 'react-native-action-button';
 import DialogManager, { SlideAnimation, DialogContent, DialogButton } from 'react-native-dialog-component';
 import ModalDropdown from 'react-native-modal-dropdown';
+import { MenuContext } from 'react-native-popup-menu';
+import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 
 const STORAGE_KEY = 'access_token';
 const STORAGE_USER = 'user_data';
@@ -213,22 +215,33 @@ export default class ManageOrdersView extends Component {
           placeholder='Localización, actividad...'
           style={{flex: 1}}
         />
-      <Right>
-        <Button transparent onPress={()=> this.searchBar.show()}>
-          <Icon style={{color: 'white'}} name='search'/>
-        </Button>
-      </Right>
+        <Right>
+        <Menu style={{height: 24}}>
+          <MenuTrigger>
+            <Icon style={{color: 'white'}} name='ios-apps-outline'/>
+          </MenuTrigger>
+          <MenuOptions style={{backgroundColor: '#59ACAC'}}>
+            <MenuOption onSelect={()=> this.searchBar.show()}>
+              <Text style={{color: 'white'}}><Icon style={{color: 'white'}} name='search'/>{' Buscar Pedido'}</Text>
+            </MenuOption>
+            <MenuOption onSelect={()=> this.showAddOrderDialog()}>
+              <Text style={{color: 'white'}}><Icon style={{color: 'white'}} name='ios-add-circle-outline'/>{' Nuevo Pedido'}</Text>
+            </MenuOption>
+          </MenuOptions>
+        </Menu>
+        </Right>
       </Header>
     )
   }
 
   render() {
     return (
-    <View style={{flex: 1}}>
-      {this.renderHeader()}
-      {this.mapOrders()}
-      <ActionButton buttonColor="#59ACAC" onPress={()=>{this.showAddOrderDialog()}}/>
-    </View>
+      <MenuContext>
+        <View style={{flex: 1}}>
+          {this.renderHeader()}
+          {this.mapOrders()}
+        </View>
+    </MenuContext>
     );
   }
 }

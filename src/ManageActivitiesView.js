@@ -160,10 +160,10 @@ export default class ManageActivitiesView extends Component {
             <Icon style={{color: 'white'}} name='ios-apps-outline'/>
           </MenuTrigger>
           <MenuOptions style={{backgroundColor: '#59ACAC'}}>
-          <MenuOption>
+          <MenuOption onSelect={()=> this.searchBar.show()}>
             <Text style={{color: 'white'}}><Icon style={{color: 'white'}} name='search'/>{' Buscar Actividad'}</Text>
           </MenuOption>
-            <MenuOption>
+            <MenuOption onSelect={()=> this.showAddActivityDialog()}>
               <Text style={{color: 'white'}}><Icon style={{color: 'white'}} name='ios-add-circle-outline'/>{' Nueva Actividad'}</Text>
             </MenuOption>
           </MenuOptions>

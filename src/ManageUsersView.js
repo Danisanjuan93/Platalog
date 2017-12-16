@@ -7,6 +7,8 @@ import ActionButton from 'react-native-action-button';
 import ModalDropdown from 'react-native-modal-dropdown';
 import DialogManager, { SlideAnimation, DialogContent, DialogButton } from 'react-native-dialog-component';
 import axios from 'axios';
+import { MenuContext } from 'react-native-popup-menu';
+import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 
 const STORAGE_KEY = 'access_token';
 const STORAGE_FINCAS_USER = 'fincas_user';
@@ -133,11 +135,21 @@ export default class ManageUsersView extends Component {
           placeholder='Localización,trabajador...'
           style={{flex: 1}}
         />
-      <Right>
-        <Button transparent onPress={()=> this.searchBar.show()}>
-          <Icon style={{color: 'white'}} name='search'/>
-        </Button>
-      </Right>
+        <Right>
+        <Menu style={{height: 24}}>
+          <MenuTrigger>
+            <Icon style={{color: 'white'}} name='ios-apps-outline'/>
+          </MenuTrigger>
+          <MenuOptions style={{backgroundColor: '#59ACAC'}}>
+          <MenuOption onSelect={()=> this.searchBar.show()}>
+            <Text style={{color: 'white'}}><Icon style={{color: 'white'}} name='search'/>{' Buscar Usuario'}</Text>
+          </MenuOption>
+            <MenuOption onSelect={()=> this.showAddWorkerDialog()}>
+              <Text style={{color: 'white'}}><Icon style={{color: 'white'}} name='ios-add-circle-outline'/>{' Nuevo Usuario'}</Text>
+            </MenuOption>
+          </MenuOptions>
+        </Menu>
+        </Right>
       </Header>
       )
   }
@@ -251,11 +263,12 @@ export default class ManageUsersView extends Component {
 
   render() {
     return (
-      <View style={{flex: 1}}>
-        {this.renderHeader()}
-        {this.mapWorkers()}
-        <ActionButton buttonColor="#59ACAC" onPress={()=>{this.showAddWorkerDialog()}}/>
-      </View>
+      <MenuContext>
+        <View style={{flex: 1}}>
+          {this.renderHeader()}
+          {this.mapWorkers()}
+        </View>
+      </MenuContext>
     );
   }
 }
