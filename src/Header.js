@@ -34,7 +34,20 @@ export default class MyHeader extends Component {
   }
 
   renderRightIcon(){
-    return <Right/>;
+    if(this.props.add){
+      return(
+        <Right>
+          <Button transparent onPress={this.props.showDialog}>
+            <Icon style={{color: 'white'}} name='ios-add-circle-outline'/>
+          </Button>
+        </Right>
+      )
+    }else{
+      return (
+        <Right></Right>
+      )
+    }
+
   }
 
   render() {

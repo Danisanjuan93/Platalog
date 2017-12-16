@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {StyleSheet, View, AlertIOS, AsyncStorage, StatusBar, TouchableOpacity } from 'react-native';
+import {StyleSheet, View, AlertIOS, AsyncStorage, StatusBar, TouchableOpacity, Animated } from 'react-native';
 import {Actions} from 'react-native-router-flux';
 import { Button, Icon, Text, Form, Item, Input, List, ListItem, Drawer, Label, Footer, FooterTab } from 'native-base';
 import Header from './Header';
@@ -58,6 +58,21 @@ export default class FacebookTabBar extends Component {
   }
 
   render() {
+    const containerWidth = this.props.containerWidth;
+    const numberOfTabs = this.props.tabs.length;
+    const tabUnderlineStyle = {
+      position: 'absolute',
+      width: containerWidth / numberOfTabs,
+      height: 4,
+      backgroundColor: 'white',
+      top: 0,
+    };
+
+    const translateX = this.props.scrollValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0,  containerWidth / numberOfTabs],
+    });
+
     return <View style={styles.tabs}>
       {this.props.tabs.map((tab, i) => {
         return <TouchableOpacity key={tab} onPress={() => this.props.goToPage(i)} style={styles.tab}>
@@ -70,6 +85,17 @@ export default class FacebookTabBar extends Component {
           <Text style={{color: 'white'}} ref={(text) => {this.text[i] = text;}}>{tab.split('+')[1]}</Text>
         </TouchableOpacity>;
       })}
+      <Animated.View
+         style={[
+           tabUnderlineStyle,
+           {
+             transform: [
+               { translateX },
+             ]
+           },
+           this.props.underlineStyle,
+         ]}
+       />
     </View>;
   }
 }

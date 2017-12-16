@@ -38,6 +38,13 @@ export default class MainAdminView extends Component {
     }
   }
 
+  async componentDidUpdate(){
+    if (this.state.reload){
+      DialogManager.dismiss();
+      this.setState({reload:false})
+    }
+  }
+
   componentWillReceiveProps(nextProps){
     this.closeDrawer();
   }
@@ -50,6 +57,81 @@ export default class MainAdminView extends Component {
     this.drawer._root.open()
   };
 
+  async storageValues(item, selectedValue){
+    try  {
+      await AsyncStorage.setItem(item, selectedValue);
+    } catch (error) {
+      console.log('AsyncStorage error: ' + error.message);
+    }
+  }
+
+  async postFincaRequest(){
+    var self = this;
+    const token = await AsyncStorage.getItem(STORAGE_KEY);
+    const user = await AsyncStorage.getItem(STORAGE_USER);
+    axios({
+      method: 'post',
+      url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/fincas',
+      headers :{
+        'Authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      },
+      data: {
+        estateType: this.state.estateType,
+        irrigationType: this.state.irrigationType,
+        plantVariety: this.state.plantVariety,
+        location: this.state.location,
+        fincaName: this.state.fincaName
+      }
+    })
+    .then(function (response) {
+      self.storageValues('fincaID', JSON.stringify(response.data.fincaID));
+      self.setState({reload: true});
+    })
+    .catch(function (error) {
+      console.log(error);
+    })
+  }
+
+  showAddFincaDialog(){
+    DialogManager.show({
+    title: 'Nueva Finca',
+    titleTextStyle: styles.colorTitle,
+    titleAlign: 'center',
+    animationDuration: 200,
+    height: 420,
+    dialogStyle: styles.colorToModal,
+    dialogAnimation: new SlideAnimation({slideFrom: 'bottom'}),
+    children: (
+      <View style={{flex: 1, backgroundColor: '#E6F2F2'}}>
+        <View>
+          <Item floatingLabel>
+            <Label style={{padding: '2%'}}>Tipo de Finca</Label>
+            <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({estateType: text})}}/>
+          </Item>
+          <Item floatingLabel>
+            <Label style={{padding: '2%'}}>Tipo de Riego</Label>
+            <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({irrigationType: text})}}/>
+          </Item>
+          <Item floatingLabel>
+            <Label style={{padding: '2%'}}>Tipo de Planta</Label>
+            <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({plantVariety: text})}}/>
+          </Item>
+          <Item floatingLabel>
+            <Label style={{padding: '2%'}}>Localizacion</Label>
+            <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({location: text})}}/>
+          </Item>
+          <Item floatingLabel>
+            <Label style={{padding: '2%'}}>Nombre</Label>
+            <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({fincaName: text})}}/>
+          </Item>
+        </View>
+        <DialogButton text='Aceptar' onPress={() => {this.postFincaRequest()}}/>
+      </View>
+      )
+    });
+  }
+
   render() {
     return (
     <Drawer
@@ -58,7 +140,7 @@ export default class MainAdminView extends Component {
       onClose={() => this.closeDrawer()}>
       <StatusBar hidden={true} />
       <View style={{flex: 1}}>
-        <Header title={this.props.title} menu showMenu={()=>this.openDrawer()}/>
+        <Header title={this.props.title} menu add showDialog={() => this.showAddFincaDialog()} showMenu={()=>this.openDrawer()}/>
         <ScrollableTabView tabBarBackgroundColor='#59ACAC' tabBarInactiveTextColor='white' tabBarPosition='bottom' renderTabBar={() => <Proof/>}>
           <TracingView tabLabel='ios-home-outline+Seguimiento'/>
           <AnalysisView tabLabel='ios-stats-outline+Análisis'/>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, ScrollView, AsyncStorage, AlertIOS, RefreshControl } from 'react-native';
+import { StyleSheet, View, ScrollView, AsyncStorage, AlertIOS, RefreshControl, StatusBar } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { Button, Icon, Text, Form, Item, Input, List, ListItem, Drawer, Right, Left, Title, Header, Label } from 'native-base';
 import SearchBar from 'react-native-searchbar'
@@ -7,9 +7,12 @@ import ActionButton from 'react-native-action-button';
 import ModalDropdown from 'react-native-modal-dropdown';
 import DialogManager, { SlideAnimation, DialogContent, DialogButton } from 'react-native-dialog-component';
 import axios from 'axios';
+import { MenuContext } from 'react-native-popup-menu';
+import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 
 const STORAGE_KEY = 'access_token';
 const STORAGE_FINCAS_USER = 'fincas_user';
+const STORAGE_USER = 'user_data';
 let WORKERS = [];
 let WORKERSID = [];
 let FINCAS = [];
@@ -17,6 +20,8 @@ let LOCATIONS = [];
 let NAMES = [];
 
 export default class ManageActivitiesView extends Component {
+
+
 
   constructor(props){
     super(props)
@@ -27,13 +32,16 @@ export default class ManageActivitiesView extends Component {
       results: [],
       fincas: [],
       activitiesOptions: ['Regar','Sembrar','Recoger','Deshijar'],
-      refreshing: false
+      refreshing: false,
+      user: [],
+      disabled: false
     }
   }
 
   async componentWillMount(){
     this.setState({
-      fincas: JSON.parse(await AsyncStorage.getItem(STORAGE_FINCAS_USER))
+      fincas: JSON.parse(await AsyncStorage.getItem(STORAGE_FINCAS_USER)),
+      user: JSON.parse(await AsyncStorage.getItem(STORAGE_USER))
     })
     this.getActivities();
   }
@@ -73,39 +81,38 @@ export default class ManageActivitiesView extends Component {
       self.showChooseWorkerDialog(finca, location, activity);
     })
     .catch(function (error) {
-      AlertIOS.alert(
-        "Error",
-        JSON.stringify(error)
-      )
+      AlertIOS.alert("Error", JSON.stringify(error))
     })
   }
 
   async asignActivity(asignedWorker, asignedActivity, asignedFinca, asignedLocation){
-    const self = this;
-    const token = await AsyncStorage.getItem(STORAGE_KEY);
-    axios({
-      method: 'post',
-      url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/activities',
-      headers :{
-        'Authorization': 'Bearer ' + token,
-      },
-      data: {
-        name: asignedActivity,
-        location: asignedLocation,
-        worker: asignedWorker,
-        finca: asignedFinca,
-      }
-    })
-    .then(function (response) {
-      self.setState({reload: true});
-      DialogManager.dismiss();
-    })
-    .catch(function (error) {
-      AlertIOS.alert(
-        "Error",
-        JSON.stringify(error)
-      )
-    })
+    AlertIOS.alert("Titulo", JSON.stringify(this.state.disabled) + JSON.stringify(asignedWorker) + JSON.stringify(asignedActivity) + JSON.stringify(asignedLocation))
+    if (!this.state.disabled){
+      const self = this;
+      const token = await AsyncStorage.getItem(STORAGE_KEY);
+      axios({
+        method: 'post',
+        url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/activities',
+        headers :{
+          'Authorization': 'Bearer ' + token,
+        },
+        data: {
+          name: asignedActivity,
+          location: asignedLocation,
+          worker: asignedWorker,
+          finca: asignedFinca,
+        }
+      })
+      .then(function (response) {
+        self.setState({reload: true});
+        DialogManager.dismiss();
+      })
+      .catch(function (error) {
+        AlertIOS.alert("Error",
+          JSON.stringify(error)
+        )
+      })
+    }
   }
 
   async getActivities(){
@@ -148,9 +155,19 @@ export default class ManageActivitiesView extends Component {
             style={{flex: 1}}
           />
         <Right>
-          <Button transparent onPress={()=> this.searchBar.show()}>
-            <Icon style={{color: 'white'}} name='search'/>
-          </Button>
+        <Menu style={{height: 24}}>
+          <MenuTrigger>
+            <Icon style={{color: 'white'}} name='ios-apps-outline'/>
+          </MenuTrigger>
+          <MenuOptions style={{backgroundColor: '#59ACAC'}}>
+          <MenuOption>
+            <Text style={{color: 'white'}}><Icon style={{color: 'white'}} name='search'/>{' Buscar Actividad'}</Text>
+          </MenuOption>
+            <MenuOption>
+              <Text style={{color: 'white'}}><Icon style={{color: 'white'}} name='ios-add-circle-outline'/>{' Nueva Actividad'}</Text>
+            </MenuOption>
+          </MenuOptions>
+        </Menu>
         </Right>
       </Header>
       )
@@ -172,7 +189,7 @@ export default class ManageActivitiesView extends Component {
         <View style={{flex: 1, backgroundColor: '#E6F2F2'}}>
           <Item style={{paddingTop: '4%'}} inlinelabel>
             <Label>Actividad:</Label>
-            <ModalDropdown textStyle={{fontSize:15}}  style={{paddingTop: '1%', marginHorizontal: 40 }} options={this.state.activitiesOptions} defaultValue='Clic para elegir finca' onSelect={(idx,value)=>{asignedActivity = value}}/>
+            <ModalDropdown textStyle={{fontSize:15}}  style={{paddingTop: '1%', marginHorizontal: 40 }} options={this.state.activitiesOptions} defaultValue='Clic para elegir actividad' onSelect={(idx,value)=>{asignedActivity = value}}/>
           </Item>
           <Item style={{paddingTop: '4%'}} inlinelabel>
             <Label>Finca:</Label>
@@ -188,14 +205,49 @@ export default class ManageActivitiesView extends Component {
     });
   }
 
-  showChooseWorkerDialog(asignedFinca, asignedLocation, asignedActivity){
-    let asignedWorker;
-    const mapWorker = this.state.workers.map((worker) =>
+  setWorkers(worker){
+    if (this.state.user.User.email != worker.users.email){
       WORKERS = WORKERS.concat(worker.users.username)
-    )
-    const mapWorkerID = this.state.workers.map((worker) =>
       WORKERSID = WORKERSID.concat(worker.users.id)
+    }
+  }
+
+  setModalDropDown(asignedFinca, asignedLocation, asignedActivity){
+    let asignedWorker;
+    if (this.state.disabled){
+      return (
+        <View style={{flex: 1, backgroundColor: '#E6F2F2'}}>
+          <Item style={{paddingTop: '4%'}} inlinelabel>
+            <Label>Trabajador:</Label>
+            <ModalDropdown disabled={this.state.disabled} textStyle={{fontSize:15}} style={{paddingTop: '1%', marginHorizontal: 40 }} options={WORKERS} defaultValue="No hay trabajadores" onSelect={(idx,value)=>{asignedWorker = WORKERSID[idx]}}/>
+          </Item>
+          <DialogButton text='Cancelar' onPress={()=>{DialogManager.dismiss()}}/>
+        </View>
+      )
+    }else{
+      return (
+        <View style={{flex: 1, backgroundColor: '#E6F2F2'}}>
+          <Item style={{paddingTop: '4%'}} inlinelabel>
+            <Label>Trabajador:</Label>
+            <ModalDropdown disabled={this.state.disabled} textStyle={{fontSize:15}} style={{paddingTop: '1%', marginHorizontal: 40 }} options={WORKERS} onSelect={(idx,value)=>{asignedWorker = WORKERSID[idx]}}/>
+          </Item>
+          <DialogButton text='Aceptar' onPress={()=>{this.asignActivity(asignedWorker, asignedActivity, asignedFinca, asignedLocation)}}/>
+        </View>
+      )
+    }
+  }
+
+  showChooseWorkerDialog(asignedFinca, asignedLocation, asignedActivity){
+    WORKERS = [];
+    WORKERSID = [];
+    const mapWorker = this.state.workers.map((worker) =>
+      {this.setWorkers(worker)}
     )
+
+    if (WORKERS.length <= 0){
+      this.setState({disabled: true})
+    }
+
     DialogManager.show({
       title: 'Asignar actividad',
       titleAlign: 'center',
@@ -205,15 +257,7 @@ export default class ManageActivitiesView extends Component {
       height: 150,
       dialogAnimation: new SlideAnimation({slideFrom: 'bottom'}),
       children: (
-        <View style={{flex: 1, backgroundColor: '#E6F2F2'}}>
-        <Item style={{paddingTop: '4%'}} inlinelabel>
-          <Label>Trabajador:</Label>
-          <ModalDropdown textStyle={{fontSize:15}}  style={{paddingTop: '1%', marginHorizontal: 40 }} options={WORKERS} defaultValue='Clic para elegir trabajador' onSelect={(idx,value)=>{asignedWorker = WORKERSID[idx]}}/>
-        </Item>
-          <DialogButton text='Aceptar' onPress={()=>{
-              this.asignActivity(asignedWorker, asignedActivity, asignedFinca, asignedLocation)
-              }}/>
-        </View>
+        this.setModalDropDown(asignedFinca, asignedLocation, asignedActivity)
       ),
     }, () => {
     console.log('callback - show');
@@ -233,6 +277,9 @@ export default class ManageActivitiesView extends Component {
   }
 
   mapActivities(){
+    FINCAS = [];
+    LOCATIONS = [];
+    NAMES = [];
     const mapFinca = this.state.fincas.map((finca) =>
       FINCAS = FINCAS.concat(finca.finca.id)
     )
@@ -245,7 +292,6 @@ export default class ManageActivitiesView extends Component {
     const mapNames = this.state.fincas.map((finca) =>
       NAMES = NAMES.concat(finca.finca.finca_name)
     )
-
 
     return(
       <List dataArray={this.state.results} renderRow={(activity) =>
@@ -274,14 +320,16 @@ export default class ManageActivitiesView extends Component {
 
   render() {
     return (
-      <View style={{flex: 1}}>
-        {this.renderHeader()}
-        {this.mapActivities()}
-        <ActionButton buttonColor="#59ACAC" onPress={()=>{this.showAddActivityDialog()}}/>
-      </View>
+      <MenuContext>
+        <View style={{flex: 1}}>
+          {this.renderHeader()}
+          {this.mapActivities()}
+        </View>
+      </MenuContext>
     );
   }
 }
+
 const styles = StyleSheet.create({
   finishedActivity: {
     backgroundColor: 'green',
