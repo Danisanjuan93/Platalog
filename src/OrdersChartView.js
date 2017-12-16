@@ -111,6 +111,8 @@ export default class OrdersChartView extends Component {
     return (
     <View style={{flex: 1}}>
       <Header backArrow title={this.props.title}/>
+      <Text style={{alignSelf: 'center', paddingTop: '5%', fontWeight: 'bold', fontSize: 20}}>Representación de los Pedidos</Text>
+      <Text style={{alignSelf: 'center', paddingTop: '2%', fontSize: 20}}>Pedidos - Tiempo</Text>
       <Bar data={this.state.graphic} options={this.state.options} accessorKey='v'/>
     </View>
     );

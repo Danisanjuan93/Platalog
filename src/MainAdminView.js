@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import {StyleSheet, View, AlertIOS, AsyncStorage, StatusBar} from 'react-native';
+import {StyleSheet, View, AlertIOS, AsyncStorage, StatusBar } from 'react-native';
 import {Actions} from 'react-native-router-flux';
-import { Button,Icon, Text, Form, Item, Input,List, ListItem, Drawer, Label } from 'native-base';
+import { Button, Icon, Text, Form, Item, Input, List, ListItem, Drawer, Label, Footer, FooterTab } from 'native-base';
 import Header from './Header';
 import TracingView from './TracingView';
 import AnalysisView from './AnalysisView';
@@ -12,6 +12,7 @@ import ActionButton from 'react-native-action-button';
 import DialogManager, { SlideAnimation, DialogContent, DialogButton } from 'react-native-dialog-component';
 import ModalDropdown from 'react-native-modal-dropdown';
 import axios from 'axios';
+import Proof from './proof';
 
 const STORAGE_FINCAID = 'fincaID';
 const STORAGE_KEY = 'access_token';
@@ -58,12 +59,11 @@ export default class MainAdminView extends Component {
       <StatusBar hidden={true} />
       <View style={{flex: 1}}>
         <Header title={this.props.title} menu showMenu={()=>this.openDrawer()}/>
-        <ScrollableTabView tabBarBackgroundColor='#59ACAC' tabBarActiveTextColor='white' tabBarInactiveTextColor='white' tabBarUnderlineStyle={{backgroundColor: 'white'}}>
-          <TracingView tabLabel='Seguimiento'/>
-          <AnalysisView tabLabel='Analisis'/>
-          <HistoricView tabLabel='Historial'/>
+        <ScrollableTabView tabBarBackgroundColor='#59ACAC' tabBarInactiveTextColor='white' tabBarPosition='bottom' renderTabBar={() => <Proof/>}>
+          <TracingView tabLabel='ios-home-outline+Seguimiento'/>
+          <AnalysisView tabLabel='ios-stats-outline+Análisis'/>
+          <HistoricView tabLabel='ios-book-outline+Historial'/>
         </ScrollableTabView>
-
       </View>
     </Drawer>
     );

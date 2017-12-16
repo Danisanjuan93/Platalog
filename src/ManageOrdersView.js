@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, AlertIOS, AsyncStorage, Platform } from 'react-native';
+import { StyleSheet, View, AlertIOS, AsyncStorage, Platform, RefreshControl } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import SearchBar from 'react-native-searchbar'
 import { Button, Icon, Text, Form, Item, Input, List, ListItem, Header, Right, Title, Body, Left, Label } from 'native-base';
@@ -22,7 +22,8 @@ export default class ManageOrdersView extends Component {
     this.state={
       results: [],
       orders: [],
-      reload: false
+      reload: false,
+      refreshing: false
     }
   }
 
@@ -44,6 +45,13 @@ export default class ManageOrdersView extends Component {
       this.setState({reload: false, orders: [], results: []})
       this.getOrders();
     }
+  }
+
+  _onRefresh() {
+    this.setState({refreshing: true});
+    this.getActivities().then(() => {
+      this.setState({refreshing: false});
+    });
   }
 
   _handleResults= (e) => {
@@ -167,7 +175,12 @@ export default class ManageOrdersView extends Component {
             </View>
           </Right>
         </ListItem>
-        }>
+        }
+        refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this._onRefresh.bind(this)}/>}
+        >
       </List>
     );
   }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, ScrollView, AsyncStorage, AlertIOS } from 'react-native';
+import { StyleSheet, View, ScrollView, AsyncStorage, AlertIOS, RefreshControl } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { Button, Icon, Text, Form, Item, Input, List, ListItem, Drawer, Right, Left, Title, Header, Label } from 'native-base';
 import SearchBar from 'react-native-searchbar'
@@ -26,7 +26,8 @@ export default class ManageActivitiesView extends Component {
       workers: [],
       results: [],
       fincas: [],
-      activitiesOptions: ['Regar','Sembrar','Recoger','Deshijar']
+      activitiesOptions: ['Regar','Sembrar','Recoger','Deshijar'],
+      refreshing: false
     }
   }
 
@@ -44,6 +45,13 @@ export default class ManageActivitiesView extends Component {
       this.setState({reload:false, activities: [], results: []})
       this.getActivities();
     }
+  }
+
+  _onRefresh() {
+    this.setState({refreshing: true, activities: [], results: []});
+    this.getActivities().then(() => {
+      this.setState({refreshing: false});
+    });
   }
 
   _handleResults= (e) => {
@@ -112,11 +120,8 @@ export default class ManageActivitiesView extends Component {
         }
       })
       .then(function (response) {
-        if (response.status == 200){
           self.setState({activities: self.state.activities.concat(response.data)})
           self.setState({results: self.state.results.concat(response.data)})
-        }else{
-        }
       })
       .catch(function (error) {
       })
@@ -244,7 +249,7 @@ export default class ManageActivitiesView extends Component {
 
     return(
       <List dataArray={this.state.results} renderRow={(activity) =>
-        <ListItem onPress={()=>{}}>
+        <ListItem disabled={true}>
           <Left>
             <View style={{flexDirection: 'column', flex:1}}>
               <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{activity.worker.username + ' tiene que ' + activity.name}</Text>
@@ -257,7 +262,12 @@ export default class ManageActivitiesView extends Component {
             </View>
           </Right>
         </ListItem>
-        }>
+        }
+        refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this._onRefresh.bind(this)}/>}
+        >
       </List>
     );
   }

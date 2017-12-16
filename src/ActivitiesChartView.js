@@ -26,7 +26,7 @@ export default class ActivitiesChartView extends Component {
           right: 20
         },
         color: '#2980B9',
-        gutter: 20,
+        gutter: 100,
         animate: {
           type: 'oneByOne',
           duration: 200,
@@ -111,6 +111,8 @@ export default class ActivitiesChartView extends Component {
     return (
     <View style={{flex: 1}}>
       <Header backArrow title={this.props.title}/>
+      <Text style={{alignSelf: 'center', paddingTop: '5%', fontWeight: 'bold', fontSize: 20}}>Representación de la Actividad Diaria</Text>
+      <Text style={{alignSelf: 'center', paddingTop: '2%', fontSize: 20}}>Actividad - Tiempo</Text>
       <Bar data={this.state.graphic} options={this.state.options} accessorKey='v'/>
     </View>
     );
