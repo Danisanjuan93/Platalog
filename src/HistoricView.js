@@ -50,7 +50,7 @@ export default class HistoricView extends Component {
       <List dataArray={this.state.historic} renderRow={(activity) =>
         <ListItem onPress={() => {}}>
           <View style={{flexDirection: 'column'}}>
-            <Text style={{alignSelf:'flex-start'}}>{activity.finca.finca_name + ': ' + activity.worker.username + ' realizó la tarea ' + activity.name + ' el ' + activity.deleted_at.split('T')[0]}</Text>
+            <Text style={{alignSelf:'flex-start'}}>{activity.finca.finca_name + ': ' + activity.worker.first_name + ' ' + activity.worker.last_name + ' realizó la tarea ' + activity.name + ' el ' + activity.deleted_at.split('T')[0]}</Text>
           </View>
         </ListItem>
         }

@@ -211,7 +211,7 @@ export default class ManageActivitiesView extends Component {
 
   setWorkers(worker){
     if (this.state.user.User.email != worker.users.email){
-      WORKERS = WORKERS.concat(worker.users.username)
+      WORKERS = WORKERS.concat(worker.users.first_name + ' ' + worker.users.last_name)
       WORKERSID = WORKERSID.concat(worker.users.id)
     }
   }

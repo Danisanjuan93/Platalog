@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {StyleSheet, View, Image, Platform, AsyncStorage, AlertIOS,StatusBar} from 'react-native';
+import {StyleSheet, View, Image, Platform, AsyncStorage, AlertIOS, StatusBar} from 'react-native';
 import {Actions} from 'react-native-router-flux';
 import { Button,Icon, Text, Form, Item, Input } from 'native-base';
 import Header from './Header';
@@ -25,32 +25,37 @@ export default class LoginScreen extends Component {
   }
 
   checkuser(){
-    var self = this;
-    const user = {
-      username: this.state.username,
-      password: this.state.password,
-      client_id: '1_5k4pwoqg8wsg0gogw080ocs40g80go404gsk4kc04kk4wo440c',
-      client_secret: '4jobvaz1juw40ks048gskw8oo0c0kgww04w8408go4s4g4ccs8',
-      grant_type: 'password'
-    }
-    this.createLoginForm(user);
+    if (this.state.username.length > 0 && this.state.password.length > 0){
+      var self = this;
+      const user = {
+        username: this.state.username,
+        password: this.state.password,
+        client_id: '1_5k4pwoqg8wsg0gogw080ocs40g80go404gsk4kc04kk4wo440c',
+        client_secret: '4jobvaz1juw40ks048gskw8oo0c0kgww04w8408go4s4g4ccs8',
+        grant_type: 'password'
+      }
+      this.createLoginForm(user);
 
-    axios({
-      method: 'post',
-      url: 'http://bender.singularfactory.com/sf_platalog_bo/web/oauth/v2/token',
-      headers :{
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      data: formBody,
-    })
-    .then(function (response) {
-      self.storageValues(STORAGE_KEY, response.data.access_token);
-      self.getUserData(self, response.data.access_token);
-    })
-    .catch(function (error) {
-      formBody = [];
-      console.log(error);
-    })
+      axios({
+        method: 'post',
+        url: 'http://bender.singularfactory.com/sf_platalog_bo/web/oauth/v2/token',
+        headers :{
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        data: formBody,
+      })
+      .then(function (response) {
+        self.storageValues(STORAGE_KEY, response.data.access_token);
+        self.getUserData(self, response.data.access_token);
+      })
+      .catch(function (error) {
+        formBody = [];
+        AlertIOS.alert("Usuario y/o Contraseña inválidos")
+        console.log(error);
+      })
+    }else{
+      AlertIOS.alert("Por favor, rellene todos los campos")
+    }
   }
 
   createLoginForm(form){
