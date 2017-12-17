@@ -41,7 +41,7 @@ export default class BenefitsChartView extends Component {
           orient: 'bottom',
           label: {
             fontFamily: 'Arial',
-            fontSize: 8,
+            fontSize: 10,
             fontWeight: true,
             fill: '#34495E'
           }
@@ -55,7 +55,7 @@ export default class BenefitsChartView extends Component {
           orient: 'left',
           label: {
             fontFamily: 'Arial',
-            fontSize: 8,
+            fontSize: 10,
             fontWeight: true,
             fill: '#34495E'
           }
