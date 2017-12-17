@@ -16,7 +16,7 @@ export default class MyHeader extends Component {
     }else if (this.props.backArrow && Platform.OS == 'ios'){
       return (
         <Left>
-          <Button transparent onPress={() => Actions.pop({refresh: {reload: Math.random(), results: [], activities: []}})}>
+          <Button transparent onPress={() => Actions.pop({refresh: {close: Math.random(), results: [], activities: []}})}>
             <Icon style={{color: 'white'}} name='ios-arrow-back-outline'/>
           </Button>
         </Left>
@@ -55,7 +55,7 @@ export default class MyHeader extends Component {
       <Header style={{backgroundColor: '#008080'}}>
         {this.renderLeftIcon()}
         <Body>
-          <Title style={{color: 'white'}}>{this.props.title}</Title>
+          <Title style={{color: 'white', width: 150}}>{this.props.title}</Title>
         </Body>
         {this.renderRightIcon()}
       </Header>

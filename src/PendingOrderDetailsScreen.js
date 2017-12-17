@@ -39,12 +39,14 @@ export default class pendingOrderDetailsScreen extends Component {
   showDialog(){
     DialogManager.show({
       title: 'Ingresos',
+      titleTextStyle: styles.colorTitle,
       titleAlign: 'center',
       animationDuration: 200,
-      height: 420,
+      height: 170,
+      dialogStyle: styles.colorToModal,
       dialogAnimation: new SlideAnimation({slideFrom: 'bottom'}),
       children: (
-        <View style={{flex: 1}}>
+        <View style={{flex: 1, backgroundColor: '#E6F2F2'}}>
           <View>
             <Item floatingLabel>
               <Label style={{padding: '2%'}}>Ingresos</Label>
@@ -72,7 +74,7 @@ export default class pendingOrderDetailsScreen extends Component {
     }else{
       return (
         <View style={{flexDirection: 'row', marginVertical: 10}}>
-        <Button rounded onPress={()=> (this.finishActivity())} style={{flex:1, marginHorizontal: 7, justifyContent: 'center', backgroundColor: '#73B9B9'}}>
+        <Button rounded onPress={()=> (this.showDialog())} style={{flex:1, marginHorizontal: 7, justifyContent: 'center', backgroundColor: '#73B9B9'}}>
           <Text style={{color: 'white'}}>Finalizar</Text>
         </Button>
         </View>
@@ -93,3 +95,12 @@ export default class pendingOrderDetailsScreen extends Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  colorToModal:{
+    backgroundColor: '#008080',
+  },
+  colorTitle:{
+    color: 'black'
+  }
+});

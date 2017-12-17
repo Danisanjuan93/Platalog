@@ -20,8 +20,8 @@ export default class App extends Component {
               <Scene key="modal" modal>
                   <Scene key='root' hideNavBar>
                     <Scene key='login' type='replace' component={LoginScreen} title='Login' />
-                    <Scene key='mainWorker' type='replace' component={MainWorkerView} title='Pendiente'  />
-                    <Scene key='mainAdmin' type='replace' component={MainAdminView} title='Admin'  />
+                    <Scene key='mainWorker' type='replace' component={MainWorkerView} title='Página Principal'  />
+                    <Scene key='mainAdmin' type='replace' component={MainAdminView} title='Página Principal'  />
                     <Scene key='ordersChart' component={OrdersChartView} title='Pedidos'  />
                     <Scene key='manageActivities' component={ManageActivitiesView} title='Gestionar actividades'  />
                     <Scene key='pendingActivityDetails' component={PendingActivityDetailsScreen}/>

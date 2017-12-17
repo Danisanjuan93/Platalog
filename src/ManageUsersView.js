@@ -51,7 +51,7 @@ export default class ManageUsersView extends Component {
   }
 
   _handleResults= (e) => {
-      this.setState({results: e }, ()=>{console.log(this.state.results)});
+      this.setState({results: e }, ()=>{console.log(EMPLOYEES)});
 
   }
 
@@ -68,7 +68,6 @@ export default class ManageUsersView extends Component {
       })
       .then(function (response) {
         self.setState({workerList: self.state.workerList.concat(response.data)})
-        self.setState({results: self.state.results.concat(response.data)})
         self.setState({locations: self.state.locations.concat(response.data)})
         self.setData();
       })
@@ -105,6 +104,7 @@ export default class ManageUsersView extends Component {
     for (let i = 0; i < WORKERS.length; i++){
       EMPLOYEES = EMPLOYEES.concat({id: WORKERSID[i], name: WORKERS[i], location: LOCATIONS[i]})
     }
+    this.setState({results: EMPLOYEES});
   }
 
   showLoadBackArrow(){
@@ -129,7 +129,7 @@ export default class ManageUsersView extends Component {
           </Title>
         <SearchBar
           ref={(ref) => this.searchBar = ref}
-          data={this.state.workerList}
+          data={EMPLOYEES}
           handleResults={this._handleResults}
           allDataOnEmptySearch
           placeholder='Localización,trabajador...'
@@ -156,7 +156,7 @@ export default class ManageUsersView extends Component {
 
   mapWorkers(){
     return(
-      <List dataArray={EMPLOYEES} renderRow={(worker) =>
+      <List dataArray={this.state.results} renderRow={(worker) =>
         <ListItem onPress={()=>{}}>
           <Left>
             <View style={{flexDirection: 'column', flex:1}}>
@@ -203,9 +203,9 @@ export default class ManageUsersView extends Component {
             <Label style={{padding: '2%'}}>Contraseña</Label>
             <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({password: text})}}/>
           </Item>
-          <Item>
-            <Label>Finca:</Label>
-            <ModalDropdown textStyle={{fontSize:15}}  style={{paddingTop: '5%', marginHorizontal: 40 }} options={LOCATIONS} defaultValue='Zona...' onSelect={(idx,value)=>{asignedFinca = FINCAS[idx]}}/>
+          <Item inlinelabel>
+            <Label style={{paddingTop: '1%'}}>Finca:</Label>
+            <ModalDropdown textStyle={{fontSize:15}}  style={{paddingTop: '4%', marginHorizontal: 40 }} options={LOCATIONS} defaultValue='Zona...' onSelect={(idx,value)=>{asignedFinca = FINCAS[idx]}}/>
           </Item>
         </View>
         <DialogButton text='Aceptar' onPress={() => {this.newWorker(asignedFinca)}}/>

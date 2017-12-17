@@ -25,15 +25,18 @@ export default class ManageOrdersView extends Component {
       results: [],
       orders: [],
       reload: false,
-      refreshing: false
+      refreshing: false,
+      benefits: 0
     }
   }
 
-  componentWillReceiveProps(nextProps){
-    this.setState({reload: false, orders: [], results: []})
-    this.setData();
-    this.getOrders();
-  }
+  // componentWillReceiveProps(nextProps){
+  //   if (nextProps.navigation.state.params.reload >= 0){
+  //     this.setState({reload: false, orders: [], results: []})
+  //     this.setData();
+  //     this.getOrders();
+  //   }
+  // }
 
   async componentWillMount(){
     this.setState({ fincas: JSON.parse(await AsyncStorage.getItem(STORAGE_FINCAS_USER)) })
@@ -50,8 +53,8 @@ export default class ManageOrdersView extends Component {
   }
 
   _onRefresh() {
-    this.setState({refreshing: true});
-    this.getActivities().then(() => {
+    this.setState({refreshing: true, reload: false, order:[], results: []});
+    this.getOrders().then(() => {
       this.setState({refreshing: false});
     });
   }
@@ -81,28 +84,55 @@ export default class ManageOrdersView extends Component {
     );
   }
 
-  async postOrders(finca){
-    const self = this;
-    const token = await AsyncStorage.getItem(STORAGE_KEY);
-    axios({
-      method: 'post',
-      url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/orders',
-      headers :{
-        'Authorization': 'Bearer ' + token,
-      },
-      data: {
-        weight: this.state.weight,
-        receiver: this.state.receiver,
-        finca: finca
-      },
-    })
-    .then(function (response) {
-      self.setState({reload: !self.state.reload})
+  async finishOrder(order){
+    if (this.state.benefits <= 0){
+      AlertIOS.alert("Debe introducir sus ingresos")
+    }else{
       DialogManager.dismiss();
-    })
-    .catch(function (error) {
+        const self = this;
+        const token = await AsyncStorage.getItem(STORAGE_KEY);
+        axios({
+          method: 'patch',
+          url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/orders/' + JSON.stringify(order.id) + '/states/' + self.state.benefits,
+          headers :{
+            'Authorization': 'Bearer ' + token,
+          }
+        })
+        .then(function (response) {
+          DialogManager.dismiss();
+          self.setState({reload: true, orders: [], results: []})
+        })
+        .catch(function (error) {
+      })
+    }
+  }
 
-    })
+  async postOrders(finca){
+    if (this.state.receiver != null && this.state.weight != null && finca != null){
+      const self = this;
+      const token = await AsyncStorage.getItem(STORAGE_KEY);
+      axios({
+        method: 'post',
+        url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/orders',
+        headers :{
+          'Authorization': 'Bearer ' + token,
+        },
+        data: {
+          weight: this.state.weight,
+          receiver: this.state.receiver,
+          finca: finca
+        },
+      })
+      .then(function (response) {
+        self.setState({reload: !self.state.reload})
+        DialogManager.dismiss();
+      })
+      .catch(function (error) {
+
+      })
+    }else{
+      AlertIOS.alert("Por favor, rellene todos los campos")
+    }
   }
 
   setData(){
@@ -116,8 +146,31 @@ export default class ManageOrdersView extends Component {
     )
   }
 
+  showBenefitsDialog(order){
+    DialogManager.show({
+      title: 'Ingresos',
+      titleTextStyle: styles.font,
+      titleAlign: 'center',
+      animationDuration: 200,
+      height: 170,
+      dialogStyle: styles.dialogStyle,
+      dialogAnimation: new SlideAnimation({slideFrom: 'bottom'}),
+      children: (
+        <View style={{flex: 1, backgroundColor: '#E6F2F2'}}>
+          <View>
+            <Item floatingLabel>
+              <Label style={{padding: '2%'}}>Ingresos</Label>
+              <Input keyboardType='numeric' onChangeText={(text)=>{this.setState({benefits: text})}}/>
+            </Item>
+          </View>
+          <DialogButton text='Aceptar' onPress={() => {this.finishOrder(order)}}/>
+        </View>
+        )
+    });
+  }
+
   onClickOrder(order){
-    Actions.pendingOrderDetailsScreen({order: order})
+    {this.renderDialogByOrderState(order)};
   }
 
   showAddOrderDialog(){
@@ -139,7 +192,7 @@ export default class ManageOrdersView extends Component {
           </Item>
           <Item inlinelabel>
             <Label>Kg</Label>
-            <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({weight: text})}}/>
+            <Input keyboardType='numeric' onChangeText={(text)=>{this.setState({weight: text})}}/>
           </Item>
           <Item style={{paddingTop: '4%'}} inlinelabel>
             <Label>Finca:</Label>
@@ -152,14 +205,77 @@ export default class ManageOrdersView extends Component {
     });
   }
 
-  renderOrderState(order){
-    if (order.state != 'Entregado'){
+  renderDialogByOrderState(order){
+    if (order.benefits == null){
       return (
-        <Text style={{fontWeight: 'bold', alignSelf:'flex-start', fontSize: 12, backgroundColor: 'rgba(0, 122, 255, 1)', color: 'white' }}>{order.state}</Text>
+        DialogManager.show({
+        title: 'Finalizar',
+        titleAlign: 'center',
+        titleTextStyle: styles.font,
+        animationDuration: 200,
+        dialogStyle: styles.dialogStyle,
+        height: 170,
+        dialogAnimation: new SlideAnimation({slideFrom: 'bottom'}),
+        children: (
+          <View style={{flex: 1, backgroundColor: '#E6F2F2'}}>
+            <View>
+              <Item inlinelabel>
+                <Label style={{fontSize: 17, padding: '2%'}}>¿Desea marcar este pedido como finalizado?</Label>
+              </Item>
+            </View>
+            <View style={{flex:1, flexDirection: 'row', justifyContent:'center'}}>
+              <DialogButton text='Aceptar' onPress={() => this.showBenefitsDialog(order)}/>
+              <DialogButton text='Cancelar' onPress={() => DialogManager.dismiss()}/>
+            </View>
+          </View>
+          )
+        })
       )
     }else{
       return (
-        <Text style={{fontWeight: 'bold', alignSelf:'flex-start', fontSize: 12, backgroundColor: 'rgba(255, 148, 2, 1)', color: 'white' }}>{order.state}</Text>
+        DialogManager.show({
+        title: 'Finalizado',
+        titleAlign: 'center',
+        titleTextStyle: styles.font,
+        animationDuration: 200,
+        dialogStyle: styles.dialogStyle,
+        height: 200,
+        dialogAnimation: new SlideAnimation({slideFrom: 'bottom'}),
+        children: (
+          <View style={{flex: 1, backgroundColor: '#E6F2F2'}}>
+            <View>
+              <Item inlinelabel>
+                <Label style={{fontSize: 17, padding: '2%', fontWeight: 'bold'}}>Destinatario:</Label>
+                <Label style={{fontSize: 17, padding: '2%', fontWeight: 'bold'}}>{order.receiver}</Label>
+              </Item>
+              <Item inlinelabel>
+                <Label style={{fontSize: 17, padding: '2%', fontWeight: 'bold'}}>Finca:</Label>
+                <Label style={{fontSize: 17, padding: '2%', fontWeight: 'bold'}}>{order.finca.finca_name}</Label>
+              </Item>
+              <Item inlinelabel>
+                <Label style={{fontSize: 17, padding: '2%', fontWeight: 'bold'}}>Ingresos(€):</Label>
+                <Label style={{fontSize: 17, padding: '2%', fontWeight: 'bold'}}>{order.benefits}</Label>
+              </Item>
+            </View>
+          </View>
+          )
+        })
+      )
+    }
+  }
+
+  renderOrderState(order){
+    if (order.state != 'Entregado'){
+      return (
+        <View style={[styles.pendingOrder, styles.ovalPending]}>
+          <Text style={{fontWeight: 'bold', alignSelf:'center', fontSize: 12, color: 'white'}}>{order.state}</Text>
+        </View>
+      )
+    }else{
+      return (
+        <View style={[styles.pendingOrder, styles.ovalFinished]}>
+          <Text style={{fontWeight: 'bold', alignSelf:'center', fontSize: 12, color: 'white'}}>{order.state}</Text>
+        </View>
       )
     }
   }
@@ -172,9 +288,7 @@ export default class ManageOrdersView extends Component {
               <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{'Pedido para ' + order.receiver + ' de '  + order.weight + ' kg'}</Text>
             </View>
           <Right>
-            <View style={{flexDirection: 'column', flex:1}}>
-              {this.renderOrderState(order)}
-            </View>
+            {this.renderOrderState(order)}
           </Right>
         </ListItem>
         }
@@ -255,19 +369,31 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     justifyContent: 'center'
   },
-  pendingActivity:{
-    backgroundColor: 'orange',
-    flex: 1,
-    height: '100%',
-    width: '100%',
-    alignContent: 'center',
-    justifyContent: 'center'
-  },
   dialogStyle:{
     backgroundColor: '#008080'
   },
   font:{
     color: 'white',
     fontWeight: 'bold'
+  },
+  pendingOrder:{
+    flex: 1,
+    alignContent: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column'
+  },
+  ovalFinished:{
+    borderRadius: 50,
+    width: '120%',
+    height: '130%',
+    backgroundColor: 'orange',
+    overflow: 'hidden'
+  },
+  ovalPending:{
+    borderRadius: 50,
+    width: '120%',
+    height: '130%',
+    backgroundColor: 'rgba(0, 122, 255, 1)',
+    overflow: 'hidden'
   }
 });

@@ -67,27 +67,31 @@ export default class ManageActivitiesView extends Component {
   }
 
   async getWorkers(finca, location, activity){
-    const self = this;
-    const token = await AsyncStorage.getItem(STORAGE_KEY);
-    axios({
-      method: 'get',
-      url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/users/' + finca + '/workers',
-      headers :{
-        'Authorization': 'Bearer ' + token,
-      }
-    })
-    .then(function (response) {
-      self.setState({workers: response.data})
-      self.showChooseWorkerDialog(finca, location, activity);
-    })
-    .catch(function (error) {
-      AlertIOS.alert("Error", JSON.stringify(error))
-    })
+    if(finca != null && location != null && activity != null){
+      DialogManager.dismiss();
+      const self = this;
+      const token = await AsyncStorage.getItem(STORAGE_KEY);
+      axios({
+        method: 'get',
+        url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/users/' + finca + '/workers',
+        headers :{
+          'Authorization': 'Bearer ' + token,
+        }
+      })
+      .then(function (response) {
+        self.setState({workers: response.data})
+        self.showChooseWorkerDialog(finca, location, activity);
+      })
+      .catch(function (error) {
+        AlertIOS.alert("Error", JSON.stringify(error))
+      })
+    }else{
+      AlertIOS.alert("Por favor, rellene todos los campos")
+    }
   }
 
   async asignActivity(asignedWorker, asignedActivity, asignedFinca, asignedLocation){
-    AlertIOS.alert("Titulo", JSON.stringify(this.state.disabled) + JSON.stringify(asignedWorker) + JSON.stringify(asignedActivity) + JSON.stringify(asignedLocation))
-    if (!this.state.disabled){
+    if (!this.state.disabled && asignedWorker != null){
       const self = this;
       const token = await AsyncStorage.getItem(STORAGE_KEY);
       axios({
@@ -112,6 +116,8 @@ export default class ManageActivitiesView extends Component {
           JSON.stringify(error)
         )
       })
+    }else{
+      AlertIOS.alert("Debe elegir un trabajador")
     }
   }
 
@@ -187,17 +193,15 @@ export default class ManageActivitiesView extends Component {
       dialogAnimation: new SlideAnimation({slideFrom: 'bottom'}),
       children: (
         <View style={{flex: 1, backgroundColor: '#E6F2F2'}}>
-          <Item style={{paddingTop: '4%'}} inlinelabel>
-            <Label>Actividad:</Label>
-            <ModalDropdown textStyle={{fontSize:15}}  style={{paddingTop: '1%', marginHorizontal: 40 }} options={this.state.activitiesOptions} defaultValue='Clic para elegir actividad' onSelect={(idx,value)=>{asignedActivity = value}}/>
+          <Item inlinelabel>
+            <Label style={{paddingTop: '2%'}}>Actividad:</Label>
+            <ModalDropdown textStyle={{fontSize:15}}  style={{paddingTop: '4%', marginHorizontal: 40 }} options={this.state.activitiesOptions} defaultValue='Clic para elegir actividad' onSelect={(idx,value)=>{asignedActivity = value}}/>
           </Item>
-          <Item style={{paddingTop: '4%'}} inlinelabel>
-            <Label>Finca:</Label>
-            <ModalDropdown textStyle={{fontSize:15}}  style={{paddingTop: '1%', marginHorizontal: 40 }} options={NAMES} defaultValue='Clic para elegir finca' onSelect={(idx,value)=>{asignedFinca = FINCAS[idx], asignedLocation = LOCATIONS[idx]}}/>
+          <Item inlinelabel>
+            <Label style={{paddingTop: '2%'}}>Finca:</Label>
+            <ModalDropdown textStyle={{fontSize:15}}  style={{paddingTop: '4%', marginHorizontal: 40 }} options={NAMES} defaultValue='Clic para elegir finca' onSelect={(idx,value)=>{asignedFinca = FINCAS[idx], asignedLocation = LOCATIONS[idx]}}/>
           </Item>
-          <DialogButton text='Aceptar' onPress={()=>{
-              this.getWorkers(asignedFinca, asignedLocation, asignedActivity); DialogManager.dismiss()
-              }}/>
+          <DialogButton text='Aceptar' onPress={()=>{this.getWorkers(asignedFinca, asignedLocation, asignedActivity)}}/>
         </View>
       ),
     }, () => {
@@ -214,14 +218,14 @@ export default class ManageActivitiesView extends Component {
 
   setModalDropDown(asignedFinca, asignedLocation, asignedActivity){
     let asignedWorker;
-    if (this.state.disabled){
+    if (!this.state.disabled){
       return (
         <View style={{flex: 1, backgroundColor: '#E6F2F2'}}>
           <Item style={{paddingTop: '4%'}} inlinelabel>
             <Label>Trabajador:</Label>
-            <ModalDropdown disabled={this.state.disabled} textStyle={{fontSize:15}} style={{paddingTop: '1%', marginHorizontal: 40 }} options={WORKERS} defaultValue="No hay trabajadores" onSelect={(idx,value)=>{asignedWorker = WORKERSID[idx]}}/>
+            <ModalDropdown disabled={this.state.disabled} textStyle={{fontSize:15}} style={{paddingTop: '1%', marginHorizontal: 40 }} options={WORKERS} defaultValue={"Clic para elegir trabajador"} onSelect={(idx,value)=>{asignedWorker = WORKERSID[idx]}}/>
           </Item>
-          <DialogButton text='Cancelar' onPress={()=>{DialogManager.dismiss()}}/>
+          <DialogButton text='Aceptar' onPress={()=>{this.asignActivity(asignedWorker, asignedActivity, asignedFinca, asignedLocation)}}/>
         </View>
       )
     }else{
@@ -229,9 +233,9 @@ export default class ManageActivitiesView extends Component {
         <View style={{flex: 1, backgroundColor: '#E6F2F2'}}>
           <Item style={{paddingTop: '4%'}} inlinelabel>
             <Label>Trabajador:</Label>
-            <ModalDropdown disabled={this.state.disabled} textStyle={{fontSize:15}} style={{paddingTop: '1%', marginHorizontal: 40 }} options={WORKERS} onSelect={(idx,value)=>{asignedWorker = WORKERSID[idx]}}/>
+            <ModalDropdown disabled={this.state.disabled} textStyle={{fontSize:15}} style={{paddingTop: '1%', marginHorizontal: 40 }} options={WORKERS} defaultValue="No hay trabajadores" onSelect={(idx,value)=>{asignedWorker = WORKERSID[idx]}}/>
           </Item>
-          <DialogButton text='Aceptar' onPress={()=>{this.asignActivity(asignedWorker, asignedActivity, asignedFinca, asignedLocation)}}/>
+          <DialogButton text='Cancelar' onPress={()=>{DialogManager.dismiss()}}/>
         </View>
       )
     }
@@ -267,11 +271,15 @@ export default class ManageActivitiesView extends Component {
   renderActivityState(activity){
     if (activity.state != 'Finalizada'){
       return (
-        <Text style={{fontWeight: 'bold', alignSelf:'flex-start', fontSize: 12, backgroundColor: 'rgba(0, 122, 255, 1)', color: 'white' }}>{activity.state}</Text>
+        <View style={[styles.pendingActivity, styles.ovalPending]}>
+          <Text style={{fontWeight: 'bold', alignSelf:'center', fontSize: 12, color: 'white' }}>{activity.state}</Text>
+        </View>
       )
     }else{
       return (
-        <Text style={{fontWeight: 'bold', alignSelf:'flex-start', fontSize: 12, backgroundColor: 'rgba(255, 148, 2, 1)', color: 'white' }}>{activity.state}</Text>
+        <View style={[styles.pendingActivity, styles.ovalFinished]}>
+          <Text style={{fontWeight: 'bold', alignSelf:'center', fontSize: 12, color: 'white' }}>{activity.state}</Text>
+        </View>
       )
     }
   }
@@ -298,14 +306,12 @@ export default class ManageActivitiesView extends Component {
         <ListItem disabled={true}>
           <Left>
             <View style={{flexDirection: 'column', flex:1}}>
-              <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{activity.worker.username + ' tiene que ' + activity.name}</Text>
-              <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>Localización: {activity.location}</Text>
+              <Text style={{fontWeight: 'bold', alignSelf:'flex-start', fontSize: 13 }}>{'Trabajador: ' + activity.worker.first_name + ' ' + activity.worker.last_name}</Text>
+              <Text style={{fontWeight: 'bold', alignSelf:'flex-start', fontSize: 13 }}>{'Tarea: ' + activity.name + ' en ' + activity.location}</Text>
             </View>
           </Left>
           <Right>
-            <View style={{flexDirection: 'column', flex:1}}>
-              {this.renderActivityState(activity)}
-            </View>
+            {this.renderActivityState(activity)}
           </Right>
         </ListItem>
         }
@@ -339,19 +345,31 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     justifyContent: 'center'
   },
-  pendingActivity:{
-    backgroundColor: 'orange',
-    flex: 1,
-    height: '100%',
-    width: '100%',
-    alignContent: 'center',
-    justifyContent: 'center'
-  },
   dialogStyle:{
     backgroundColor: '#008080'
   },
   font:{
     color: 'white',
     fontWeight: 'bold'
+  },
+  pendingActivity:{
+    flex: 1,
+    alignContent: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
+  },
+  ovalFinished:{
+    borderRadius: 50,
+    width: '120%',
+    height: '130%',
+    backgroundColor: 'orange',
+    overflow: 'hidden'
+  },
+  ovalPending:{
+    borderRadius: 50,
+    width: '120%',
+    height: '130%',
+    backgroundColor: 'rgba(0, 122, 255, 1)',
+    overflow: 'hidden'
   }
 });

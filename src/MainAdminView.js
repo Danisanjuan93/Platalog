@@ -34,14 +34,14 @@ export default class MainAdminView extends Component {
       plantVariety: '',
       location: '',
       fincaName: '',
-      reload: false
+      close: false
     }
   }
 
   async componentDidUpdate(){
-    if (this.state.reload){
+    if (this.state.close){
       DialogManager.dismiss();
-      this.setState({reload:false})
+      this.setState({close:false})
     }
   }
 
@@ -86,7 +86,7 @@ export default class MainAdminView extends Component {
     })
     .then(function (response) {
       self.storageValues('fincaID', JSON.stringify(response.data.fincaID));
-      self.setState({reload: true});
+      self.setState({close: true});
     })
     .catch(function (error) {
       console.log(error);
