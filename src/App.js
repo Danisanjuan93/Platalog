@@ -11,6 +11,7 @@ import ManageOrdersView from './ManageOrdersView';
 import PendingOrderDetailsScreen from './PendingOrderDetailsScreen';
 import ActivitiesChartView from './ActivitiesChartView';
 import BenefitsChartView from './BenefitsChartView';
+import MapView from './MapView';
 
 export default class App extends Component {
   render() {
@@ -30,6 +31,7 @@ export default class App extends Component {
                     <Scene key='pendingOrderDetailsScreen' component={PendingOrderDetailsScreen}/>
                     <Scene key='activitiesChart' component={ActivitiesChartView} title='Actividades'  />
                     <Scene key='benefitsChart' component={BenefitsChartView} title='Ingresos'  />
+                    <Scene key='mapView' component={MapView} title='Mapa'  />
                   </Scene>
               </Scene>
       </Router>

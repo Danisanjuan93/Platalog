@@ -17,7 +17,7 @@ const STORAGE_FINCAID = 'fincaID';
 const STORAGE_KEY = 'access_token';
 const STORAGE_USER = 'user_data';
 
-export default class FacebookTabBar extends Component {
+export default class CustomTab extends Component {
   icons = [];
   text = [];
   constructor(props) {

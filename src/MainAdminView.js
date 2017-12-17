@@ -12,7 +12,7 @@ import ActionButton from 'react-native-action-button';
 import DialogManager, { SlideAnimation, DialogContent, DialogButton } from 'react-native-dialog-component';
 import ModalDropdown from 'react-native-modal-dropdown';
 import axios from 'axios';
-import Proof from './proof';
+import CustomTab from './CustomTab';
 
 const STORAGE_FINCAID = 'fincaID';
 const STORAGE_KEY = 'access_token';
@@ -141,7 +141,7 @@ export default class MainAdminView extends Component {
       <StatusBar hidden={true} />
       <View style={{flex: 1}}>
         <Header title={this.props.title} menu add showDialog={() => this.showAddFincaDialog()} showMenu={()=>this.openDrawer()}/>
-        <ScrollableTabView tabBarBackgroundColor='#59ACAC' tabBarInactiveTextColor='white' tabBarPosition='bottom' renderTabBar={() => <Proof/>}>
+        <ScrollableTabView tabBarBackgroundColor='#59ACAC' tabBarInactiveTextColor='white' tabBarPosition='bottom' renderTabBar={() => <CustomTab/>}>
           <TracingView tabLabel='ios-home-outline+Seguimiento'/>
           <AnalysisView tabLabel='ios-stats-outline+Análisis'/>
           <HistoricView tabLabel='ios-book-outline+Historial'/>

@@ -26,7 +26,7 @@ export default class ActivitiesChartView extends Component {
           right: 20
         },
         color: '#2980B9',
-        gutter: 100,
+        gutter: 20,
         animate: {
           type: 'oneByOne',
           duration: 200,

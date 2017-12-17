@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import {StyleSheet, View, AlertIOS, AsyncStorage} from 'react-native';
 import {Actions} from 'react-native-router-flux';
 import SearchBar from 'react-native-searchbar'
-import { Button,Icon, Text, Form, Item, Input,List, ListItem,Header, Right, Title, Body,Left } from 'native-base';
+import { Button,Icon, Text, Form, Item, Input,List, ListItem,Header, Right, Title, Body, Left, Label } from 'native-base';
+import DialogManager, { SlideAnimation, DialogContent, DialogButton } from 'react-native-dialog-component';
 import axios from 'axios';
 import MyHeader from './Header';
 
@@ -22,9 +23,17 @@ export default class MainWorkerView extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps){
-    this.setState({activities: [], results: []});
-    this.getActivities();
+  // componentWillReceiveProps(nextProps){
+  //   this.setState({activities: [], results: []});
+  //   this.getActivities();
+  // }
+
+  async componentDidUpdate(){
+    if (this.state.reload){
+      DialogManager.dismiss();
+      this.setState({reload: false})
+      this.getActivities();
+    }
   }
 
   async componentWillMount(){
@@ -33,6 +42,23 @@ export default class MainWorkerView extends Component {
 
   _handleResults= (e) => {
       this.setState({results: e }, ()=>{console.log(this.state.results)});
+  }
+
+  async finishActivity(activity){
+    const self = this;
+    const token = await AsyncStorage.getItem(STORAGE_KEY);
+    axios({
+      method: 'patch',
+      url: 'http://bender.singularfactory.com/sf_platalog_bo/web/api/activities/' + JSON.stringify(activity.id) + '/state',
+      headers :{
+        'Authorization': 'Bearer ' + token,
+      }
+    })
+    .then(function (response) {
+      self.setState({reload: true, activities: [], results: []});
+    })
+    .catch(function (error) {
+    })
   }
 
   async getActivities(){
@@ -55,7 +81,32 @@ export default class MainWorkerView extends Component {
   }
 
   onClickActivity(activity){
-    Actions.pendingActivityDetails({activity: activity})
+    DialogManager.show({
+    title: 'Actividad',
+    titleAlign: 'center',
+    titleTextStyle: styles.font,
+    animationDuration: 200,
+    dialogStyle: styles.dialogStyle,
+    height: 170,
+    dialogAnimation: new SlideAnimation({slideFrom: 'bottom'}),
+    children: (
+      <View style={{flex: 1, backgroundColor: '#E6F2F2'}}>
+        <View>
+          <Item inlinelabel>
+            <Label style={{fontSize: 17, padding: '2%', fontWeight: 'bold'}}>Actividad:</Label>
+            <Label style={{fontSize: 17, padding: '2%', fontWeight: 'bold'}}>{activity.name}</Label>
+          </Item>
+          <Item inlinelabel>
+            <Label style={{fontSize: 17, padding: '2%', fontWeight: 'bold'}}>Localización:</Label>
+            <Label style={{fontSize: 17, padding: '2%', fontWeight: 'bold'}}>{activity.location}</Label>
+          </Item>
+        </View>
+        <View style={{flex:1, flexDirection: 'row', justifyContent:'center'}}>
+          <DialogButton text='Finalizar' onPress={() => this.finishActivity(activity)}/>
+        </View>
+      </View>
+      )
+    })
   }
 
   mapActivities(){
@@ -110,3 +161,13 @@ export default class MainWorkerView extends Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  dialogStyle:{
+    backgroundColor: '#008080'
+  },
+  font:{
+    color: 'white',
+    fontWeight: 'bold'
+  }
+});

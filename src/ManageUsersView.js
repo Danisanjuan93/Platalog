@@ -164,8 +164,8 @@ export default class ManageUsersView extends Component {
             </View>
           </Left>
           <Right>
-            <View style={styles.pendingActivity}>
-              <Text style={{color: 'white', fontSize: 10, alignSelf: 'center'}}>{worker.location}</Text>
+            <View style={[styles.pendingActivity, styles.oval]}>
+              <Text style={{fontWeight: 'bold', alignSelf:'center', fontSize: 12, color: 'white' }}>{worker.location}</Text>
             </View>
           </Right>
         </ListItem>
@@ -201,7 +201,7 @@ export default class ManageUsersView extends Component {
           </Item>
           <Item floatingLabel>
             <Label style={{padding: '2%'}}>Contraseña</Label>
-            <Input autoCapitalize = 'none' onChangeText={(text)=>{this.setState({password: text})}}/>
+            <Input secureTextEntry autoCapitalize = 'none' onChangeText={(text)=>{this.setState({password: text})}}/>
           </Item>
           <Item inlinelabel>
             <Label style={{paddingTop: '1%'}}>Finca:</Label>
@@ -229,7 +229,7 @@ export default class ManageUsersView extends Component {
           lastName: this.state.lastname,
           password: this.state.password,
           email: this.state.email,
-          rol: "0"
+          rol: "1"
         }
       })
       .then(function (response) {
@@ -283,12 +283,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   pendingActivity:{
-    backgroundColor: 'orange',
     flex: 1,
-    height: '100%',
-    width: '100%',
     alignContent: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    flexDirection: 'column',
   },
   dialogStyle:{
     backgroundColor: '#008080'
@@ -296,5 +294,12 @@ const styles = StyleSheet.create({
   font:{
     color: 'white',
     fontWeight: 'bold'
+  },
+  oval:{
+    borderRadius: 50,
+    width: '120%',
+    height: '130%',
+    backgroundColor: '#73B9B9',
+    overflow: 'hidden'
   }
 });

@@ -285,7 +285,8 @@ export default class ManageOrdersView extends Component {
       <List dataArray={this.state.results} renderRow={(order) =>
         <ListItem onPress={() => {this.onClickOrder(order)}}>
             <View style={{flexDirection: 'column', flex:1}}>
-              <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{'Pedido para ' + order.receiver + ' de '  + order.weight + ' kg'}</Text>
+              <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{'Pedido para ' + order.receiver}</Text>
+              <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{'Cantidad: '  + order.weight + ' kg'}</Text>
             </View>
           <Right>
             {this.renderOrderState(order)}
@@ -393,7 +394,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     width: '120%',
     height: '130%',
-    backgroundColor: 'rgba(0, 122, 255, 1)',
+    backgroundColor: '#73B9B9',
     overflow: 'hidden'
   }
 });

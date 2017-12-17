@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {StyleSheet, View, AlertIOS, AsyncStorage, Dimensions, Platform, RefreshControl } from 'react-native';
+import {StyleSheet, View, AlertIOS, AsyncStorage, Dimensions, Platform, RefreshControl, TouchableOpacity } from 'react-native';
 import {Actions} from 'react-native-router-flux';
 import { Button, Icon, Text, Form, Item, Input, List, ListItem, Right, Left, Label } from 'native-base';
 import DialogManager, { SlideAnimation, DialogContent, DialogButton } from 'react-native-dialog-component';
@@ -64,18 +64,22 @@ export default class TracingView extends Component {
   }
 
   showDialog(finca){
+    let endDate = new Date(finca.finca.limit_date.split('T')[0]);
+    endDate.setMonth(endDate.getMonth() + 9);
     DialogManager.show({
-    title: 'Nueva Finca',
+    title: finca.finca.finca_name,
     titleAlign: 'center',
+    titleTextStyle: styles.font,
     animationDuration: 200,
-    height: 200,
+    dialogStyle: styles.dialogStyle,
+    height: 150,
     dialogAnimation: new SlideAnimation({slideFrom: 'bottom'}),
     children: (
-      <View style={{flex: 1}}>
+      <View style={{flex: 1, backgroundColor: '#E6F2F2'}}>
         <View>
           <Item inlineLabel>
             <Label style={{padding: '2%'}}>Finalizacion:</Label>
-            <Label style={{padding: '2%'}}>{finca.finca.limit_date.split('T')[0]}</Label>
+            <Label style={{padding: '2%'}}>{endDate.toDateString().split('T')[0]}</Label>
           </Item>
           <Item inlineLabel>
             <Label style={{padding: '2%'}}>Nueva Fecha:</Label>
@@ -128,10 +132,6 @@ export default class TracingView extends Component {
         self.storageValues(STORAGE_FINCAS_USER, JSON.stringify(response.data));
       })
       .catch(function (error) {
-        AlertIOS.alert(
-          "Error",
-          JSON.stringify(error)
-        )
       })
   }
 
@@ -155,82 +155,53 @@ export default class TracingView extends Component {
   }
 
   renderProgress(finca){
+    let percent;
     let one_day=1000*60*60*24;
     let startDate = new Date();
     let endDate = new Date(finca.finca.limit_date.split('T')[0]);
     endDate.setMonth(endDate.getMonth() + 9);
     let untilDate = ((endDate.getTime() - startDate.getTime())/one_day) - ((endDate.getTime() - startDate.getTime())/one_day) + 1;
     let totalDays = ((endDate.getTime() - startDate.getTime())/one_day) + 1;
+    if (((untilDate*100)/totalDays) >= 100){
+      percent = 100;
+    }else{
+      percent = ((untilDate*100)/totalDays);
+    }
     return (
       <Progress.Circle size={50} progress={untilDate/totalDays} showsText={true}
-      formatText={()=>((untilDate*100)/totalDays).toFixed(2)+'%'}
+      formatText={()=>percent.toFixed(2)+'%'}
       />
     )
   }
 
   mapFincas(){
-    if (Platform.OS != 'ios'){
-      return (
-        <List dataArray={this.state.fincas} renderRow={(finca) =>
-          <ListItem onPress={() => { }}>
-            <View style={{ flex: 1, flexDirection: 'row' }}>
-              <View style={{ flex: 1, flexDirection: 'row'}}>
-                <View style={{ flex: 1, flexDirection: 'column' }}>
-                  <Progress.Circle size={75} progress={40 / 100} showsText={true} formatText={() => 40 + '%'} color='#29A55E'/>
-                  <Text style={{ alignSelf: 'flex-start',   fontWeight: 'bold', fontSize: 14, marginLeft: 15 }} >{finca.finca.finca_name}</Text>
-                </View>
-              </View>
-              <View style={{ flex: 2, flexDirection: 'column' }}>
-                <MapView
-                  initialRegion={this.state.region}
-                  onPress={(e) => this.onMapPress(e)}
-                  style={styles.map}
-                >
-                  {this.state.markers.map(marker => (
-                    <MapView.Marker
-                      key={marker.key}
-                      coordinate={{
-                        latitude: LATITUDE,
-                        longitude: LONGITUDE
-                      }}
-                      centerOffset={{ x: -18, y: -60 }}
-                      anchor={{ x: 0.69, y: 1 }}
-                    />
-                  ))}
-                </MapView>
-              </View>
+    return(
+      <List dataArray={this.state.fincas} renderRow={(finca) =>
+        <ListItem onLongPress={()=>{this.showDialog(finca)}}>
+          <Left>
+            <View style={{flexDirection: 'column', flex:1}}>
+              <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{finca.finca.finca_name}</Text>
             </View>
-          </ListItem>
-        }>
-        </List>
-      );
-    }else{
-
-        return(
-          <List dataArray={this.state.fincas} renderRow={(finca) =>
-            <ListItem onLongPress={()=>{this.showDialog(finca)}}>
-              <Left>
-                <View style={{flexDirection: 'column', flex:1}}>
-                  <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{finca.finca.finca_name}</Text>
-                  <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{finca.finca.location}</Text>
-                </View>
-              </Left>
-              <Right>
-                <View style={{flex: 1}}>
-                  {this.renderProgress(finca)}
-                </View>
-              </Right>
-            </ListItem>
-            }
-            refreshControl={
-                <RefreshControl
-                  refreshing={this.state.refreshing}
-                  onRefresh={this._onRefresh.bind(this)}/>}
-            >
-          </List>
-        );
-      }
-    }
+          </Left>
+          <TouchableOpacity onPress={() => Actions.mapView({id: (finca.finca.id*2)/1000})}>
+            <Icon name='ios-map-outline' style={{fontWeight: 'bold', alignSelf:'center' }}/>
+            <Text style={{fontWeight: 'bold', fontSize: 10}}>Ver Mapa</Text>
+          </TouchableOpacity>
+          <Right>
+            <View style={{flex: 1}}>
+              {this.renderProgress(finca)}
+            </View>
+          </Right>
+        </ListItem>
+        }
+        refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this._onRefresh.bind(this)}/>}
+        >
+      </List>
+    );
+  }
 
   render() {
     return (
@@ -250,10 +221,10 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%'
   },
-  colorToModal:{
-    backgroundColor: '#008080',
+  dialogStyle:{
+    backgroundColor: '#008080'
   },
-  colorTitle:{
+  font:{
     color: 'white',
     fontWeight: 'bold'
   }

@@ -221,7 +221,7 @@ export default class ManageActivitiesView extends Component {
     if (!this.state.disabled){
       return (
         <View style={{flex: 1, backgroundColor: '#E6F2F2'}}>
-          <Item style={{paddingTop: '4%'}} inlinelabel>
+          <Item style={{paddingTop: '3%'}} inlinelabel>
             <Label>Trabajador:</Label>
             <ModalDropdown disabled={this.state.disabled} textStyle={{fontSize:15}} style={{paddingTop: '1%', marginHorizontal: 40 }} options={WORKERS} defaultValue={"Clic para elegir trabajador"} onSelect={(idx,value)=>{asignedWorker = WORKERSID[idx]}}/>
           </Item>
@@ -231,7 +231,7 @@ export default class ManageActivitiesView extends Component {
     }else{
       return (
         <View style={{flex: 1, backgroundColor: '#E6F2F2'}}>
-          <Item style={{paddingTop: '4%'}} inlinelabel>
+          <Item style={{paddingTop: '3%'}} inlinelabel>
             <Label>Trabajador:</Label>
             <ModalDropdown disabled={this.state.disabled} textStyle={{fontSize:15}} style={{paddingTop: '1%', marginHorizontal: 40 }} options={WORKERS} defaultValue="No hay trabajadores" onSelect={(idx,value)=>{asignedWorker = WORKERSID[idx]}}/>
           </Item>
@@ -369,7 +369,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     width: '120%',
     height: '130%',
-    backgroundColor: 'rgba(0, 122, 255, 1)',
+    backgroundColor: '#73B9B9',
     overflow: 'hidden'
   }
 });

@@ -27,8 +27,8 @@ export default class LoginScreen extends Component {
   checkuser(){
     var self = this;
     const user = {
-      username: 'worker',
-      password: 'worker',
+      username: this.state.username,
+      password: this.state.password,
       client_id: '1_5k4pwoqg8wsg0gogw080ocs40g80go404gsk4kc04kk4wo440c',
       client_secret: '4jobvaz1juw40ks048gskw8oo0c0kgww04w8408go4s4g4ccs8',
       grant_type: 'password'
@@ -103,7 +103,7 @@ export default class LoginScreen extends Component {
       <View style={{flex:1}}>
         <Image
           style={styles.stretch}
-          source={require('./PlatalogLogo.png')}
+          source={require('./PlatalogLogin.png')}
         />
       </View>
       <Form style={{flex: 2, padding: 20}}>
@@ -121,6 +121,7 @@ export default class LoginScreen extends Component {
     );
   }
 }
+
 const styles = StyleSheet.create({
   loginBtn:{
     marginHorizontal: 5,
@@ -131,7 +132,9 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   stretch: {
-    width: 300,
-    height: 300
+    bottom: '50%',
+    right: '5%',
+    width: 450,
+    height: 450
   }
 });
