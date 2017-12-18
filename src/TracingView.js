@@ -162,8 +162,10 @@ export default class TracingView extends Component {
     endDate.setMonth(endDate.getMonth() + 9);
     let untilDate = ((endDate.getTime() - startDate.getTime())/one_day) - ((endDate.getTime() - startDate.getTime())/one_day) + 1;
     let totalDays = ((endDate.getTime() - startDate.getTime())/one_day) + 1;
-    if (((untilDate*100)/totalDays) >= 100){
+    if (((untilDate*100)/totalDays) >= 100 || ((untilDate*100)/totalDays) < 0){
       percent = 100;
+      untilDate = 1;
+      totalDays = 1;
     }else{
       percent = ((untilDate*100)/totalDays);
     }
