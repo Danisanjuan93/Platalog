@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {StyleSheet, View, AlertIOS, AsyncStorage} from 'react-native';
+import {StyleSheet, View, AlertIOS, AsyncStorage, TouchableOpacity } from 'react-native';
 import {Actions} from 'react-native-router-flux';
 import SearchBar from 'react-native-searchbar'
 import { Button,Icon, Text, Form, Item, Input,List, ListItem,Header, Right, Title, Body, Left, Label } from 'native-base';
@@ -9,6 +9,7 @@ import MyHeader from './Header';
 
 const STORAGE_KEY = 'access_token';
 const STORAGE_USER = 'user_data';
+const SAY_HELLO = 'say_hello';
 
 export default class MainWorkerView extends Component {
 
@@ -97,8 +98,8 @@ export default class MainWorkerView extends Component {
             <Label style={{fontSize: 17, padding: '2%', fontWeight: 'bold'}}>{activity.name}</Label>
           </Item>
           <Item inlinelabel>
-            <Label style={{fontSize: 17, padding: '2%', fontWeight: 'bold'}}>Localización:</Label>
-            <Label style={{fontSize: 17, padding: '2%', fontWeight: 'bold'}}>{activity.location}</Label>
+            <Label style={{fontSize: 17, padding: '2%', fontWeight: 'bold'}}>Finca:</Label>
+            <Label style={{fontSize: 17, padding: '2%', fontWeight: 'bold'}}>{activity.finca.finca_name}</Label>
           </Item>
         </View>
         <View style={{flex:1, flexDirection: 'row', justifyContent:'center'}}>
@@ -116,6 +117,10 @@ export default class MainWorkerView extends Component {
           <View style={{flexDirection: 'column', flex:1}}>
             <Text style={{fontWeight: 'bold', alignSelf:'center', fontSize: 20, paddingLeft: '20%' }}>{activity.name}</Text>
           </View>
+          <TouchableOpacity onPress={() => Actions.mapView({id: (activity.id*2)/10000})}>
+            <Icon name='ios-map-outline' style={{fontWeight: 'bold', alignSelf:'center' }}/>
+            <Text style={{fontWeight: 'bold', fontSize: 10}}>Ver Mapa</Text>
+          </TouchableOpacity>
           <Right>
             <Icon style={{color: 'black', fontSize: 30}} name='ios-arrow-forward-outline'/>
           </Right>

@@ -196,7 +196,7 @@ export default class ManageOrdersView extends Component {
           </Item>
           <Item style={{paddingTop: '4%'}} inlinelabel>
             <Label>Finca:</Label>
-            <ModalDropdown textStyle={{fontSize:15}}  style={{paddingTop: '1%', marginHorizontal: 40 }} options={NAMES} defaultValue='Clic para elegir finca' onSelect={(idx,value)=>{asignedFinca = FINCAS[idx]}}/>
+            <ModalDropdown textStyle={{fontSize:15}}  dropdownTextStyle={{fontSize: 20, backgroundColor: '#E6F2F2', color: 'black'}} style={{paddingTop: '1%', marginHorizontal: 40 }} options={NAMES} defaultValue='Clic para elegir finca' onSelect={(idx,value)=>{asignedFinca = FINCAS[idx]}}/>
           </Item>
         </View>
         <DialogButton text='Aceptar' onPress={() => {this.postOrders(asignedFinca)}}/>
@@ -268,13 +268,13 @@ export default class ManageOrdersView extends Component {
     if (order.state != 'Entregado'){
       return (
         <View style={[styles.pendingOrder, styles.ovalPending]}>
-          <Text style={{fontWeight: 'bold', alignSelf:'center', fontSize: 12, color: 'white'}}>{order.state}</Text>
+          <Text style={{fontWeight: 'bold', alignSelf:'center', fontSize: 16, color: 'white'}}>{order.state}</Text>
         </View>
       )
     }else{
       return (
         <View style={[styles.pendingOrder, styles.ovalFinished]}>
-          <Text style={{fontWeight: 'bold', alignSelf:'center', fontSize: 12, color: 'white'}}>{order.state}</Text>
+          <Text style={{fontWeight: 'bold', alignSelf:'center', fontSize: 16, color: 'white'}}>{order.state}</Text>
         </View>
       )
     }
@@ -285,8 +285,8 @@ export default class ManageOrdersView extends Component {
       <List dataArray={this.state.results} renderRow={(order) =>
         <ListItem onPress={() => {this.onClickOrder(order)}}>
             <View style={{flexDirection: 'column', flex:1}}>
-              <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{'Pedido para ' + order.receiver}</Text>
-              <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{'Cantidad: '  + order.weight + ' kg'}</Text>
+              <Text style={{fontWeight: 'bold', alignSelf:'flex-start', fontSize: 20 }}>{'Pedido para ' + order.receiver}</Text>
+              <Text style={{fontWeight: 'bold', alignSelf:'flex-start', fontSize: 20 }}>{'Cantidad: '  + order.weight + ' kg'}</Text>
             </View>
           <Right>
             {this.renderOrderState(order)}

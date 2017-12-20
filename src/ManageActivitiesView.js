@@ -195,11 +195,11 @@ export default class ManageActivitiesView extends Component {
         <View style={{flex: 1, backgroundColor: '#E6F2F2'}}>
           <Item inlinelabel>
             <Label style={{paddingTop: '2%'}}>Actividad:</Label>
-            <ModalDropdown textStyle={{fontSize:15}}  style={{paddingTop: '4%', marginHorizontal: 40 }} options={this.state.activitiesOptions} defaultValue='Clic para elegir actividad' onSelect={(idx,value)=>{asignedActivity = value}}/>
+            <ModalDropdown textStyle={{fontSize:15}}  dropdownTextStyle={{fontSize: 20, backgroundColor: '#E6F2F2', color: 'black'}} style={{paddingTop: '4%', marginHorizontal: 40 }} options={this.state.activitiesOptions} defaultValue='Clic para elegir actividad' onSelect={(idx,value)=>{asignedActivity = value}}/>
           </Item>
           <Item inlinelabel>
             <Label style={{paddingTop: '2%'}}>Finca:</Label>
-            <ModalDropdown textStyle={{fontSize:15}}  style={{paddingTop: '4%', marginHorizontal: 40 }} options={NAMES} defaultValue='Clic para elegir finca' onSelect={(idx,value)=>{asignedFinca = FINCAS[idx], asignedLocation = LOCATIONS[idx]}}/>
+            <ModalDropdown textStyle={{fontSize:15}}  dropdownTextStyle={{fontSize: 20, backgroundColor: '#E6F2F2', color: 'black'}} style={{paddingTop: '4%', marginHorizontal: 40 }} options={NAMES} defaultValue='Clic para elegir finca' onSelect={(idx,value)=>{asignedFinca = FINCAS[idx], asignedLocation = LOCATIONS[idx]}}/>
           </Item>
           <DialogButton text='Aceptar' onPress={()=>{this.getWorkers(asignedFinca, asignedLocation, asignedActivity)}}/>
         </View>
@@ -223,7 +223,7 @@ export default class ManageActivitiesView extends Component {
         <View style={{flex: 1, backgroundColor: '#E6F2F2'}}>
           <Item style={{paddingTop: '3%'}} inlinelabel>
             <Label>Trabajador:</Label>
-            <ModalDropdown disabled={this.state.disabled} textStyle={{fontSize:15}} style={{paddingTop: '1%', marginHorizontal: 40 }} options={WORKERS} defaultValue={"Clic para elegir trabajador"} onSelect={(idx,value)=>{asignedWorker = WORKERSID[idx]}}/>
+            <ModalDropdown disabled={this.state.disabled} dropdownTextStyle={{fontSize: 20, backgroundColor: '#E6F2F2', color: 'black'}} textStyle={{fontSize:15}} style={{paddingTop: '1%', marginHorizontal: 40 }} options={WORKERS} defaultValue={"Clic para elegir trabajador"} onSelect={(idx,value)=>{asignedWorker = WORKERSID[idx]}}/>
           </Item>
           <DialogButton text='Aceptar' onPress={()=>{this.asignActivity(asignedWorker, asignedActivity, asignedFinca, asignedLocation)}}/>
         </View>
@@ -233,7 +233,7 @@ export default class ManageActivitiesView extends Component {
         <View style={{flex: 1, backgroundColor: '#E6F2F2'}}>
           <Item style={{paddingTop: '3%'}} inlinelabel>
             <Label>Trabajador:</Label>
-            <ModalDropdown disabled={this.state.disabled} textStyle={{fontSize:15}} style={{paddingTop: '1%', marginHorizontal: 40 }} options={WORKERS} defaultValue="No hay trabajadores" onSelect={(idx,value)=>{asignedWorker = WORKERSID[idx]}}/>
+            <ModalDropdown disabled={this.state.disabled} dropdownTextStyle={{fontSize: 20, backgroundColor: '#E6F2F2', color: 'black'}} textStyle={{fontSize:15}} style={{paddingTop: '1%', marginHorizontal: 40 }} options={WORKERS} defaultValue="No hay trabajadores" onSelect={(idx,value)=>{asignedWorker = WORKERSID[idx]}}/>
           </Item>
           <DialogButton text='Cancelar' onPress={()=>{DialogManager.dismiss()}}/>
         </View>
@@ -306,8 +306,8 @@ export default class ManageActivitiesView extends Component {
         <ListItem disabled={true}>
           <Left>
             <View style={{flexDirection: 'column', flex:1}}>
-              <Text style={{fontWeight: 'bold', alignSelf:'flex-start', fontSize: 13 }}>{'Trabajador: ' + activity.worker.first_name + ' ' + activity.worker.last_name}</Text>
-              <Text style={{fontWeight: 'bold', alignSelf:'flex-start', fontSize: 13 }}>{'Tarea: ' + activity.name + ' en ' + activity.location}</Text>
+              <Text style={{fontWeight: 'bold', alignSelf:'flex-start', fontSize: 20 }}>{activity.worker.first_name + ' ' + activity.worker.last_name}</Text>
+              <Text style={{fontWeight: 'bold', alignSelf:'flex-start', fontSize: 17 }}>{'Tarea: ' + activity.name + ' en ' + activity.finca.finca_name}</Text>
             </View>
           </Left>
           <Right>

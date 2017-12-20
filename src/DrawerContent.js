@@ -55,7 +55,9 @@ const styles = StyleSheet.create({
   btnText: {
     alignSelf: 'flex-start',
     color: 'white',
-    marginLeft: 20
+    marginTop: 6,
+    marginLeft: 20,
+    fontSize: 20
   },
   btnIcon: {
     alignSelf: 'flex-start',

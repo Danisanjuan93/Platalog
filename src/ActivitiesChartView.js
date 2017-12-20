@@ -41,7 +41,7 @@ export default class ActivitiesChartView extends Component {
           orient: 'bottom',
           label: {
             fontFamily: 'Arial',
-            fontSize: 10,
+            fontSize: 16,
             fontWeight: true,
             fill: '#34495E'
           }
@@ -55,7 +55,7 @@ export default class ActivitiesChartView extends Component {
           orient: 'left',
           label: {
             fontFamily: 'Arial',
-            fontSize: 10,
+            fontSize: 14,
             fontWeight: true,
             fill: '#34495E'
           }

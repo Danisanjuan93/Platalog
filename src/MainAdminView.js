@@ -161,6 +161,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#008080',
   },
   colorTitle:{
-    color: 'black'
+    color: 'white'
   }
 });

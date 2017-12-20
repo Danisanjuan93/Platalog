@@ -21,9 +21,9 @@ export default class OrdersChartView extends Component {
         height: 300,
         margin: {
           top: 20,
-          left: 25,
+          left: 40,
           bottom: 50,
-          right: 20
+          right: 0
         },
         color: '#2980B9',
         gutter: 20,
@@ -41,7 +41,7 @@ export default class OrdersChartView extends Component {
           orient: 'bottom',
           label: {
             fontFamily: 'Arial',
-            fontSize: 10,
+            fontSize: 16,
             fontWeight: true,
             fill: '#34495E'
           }
@@ -55,7 +55,7 @@ export default class OrdersChartView extends Component {
           orient: 'left',
           label: {
             fontFamily: 'Arial',
-            fontSize: 10,
+            fontSize: 14,
             fontWeight: true,
             fill: '#34495E'
           }

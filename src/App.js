@@ -15,7 +15,6 @@ import MapView from './MapView';
 
 export default class App extends Component {
   render() {
-
     return (
       <Router hideNavBar>
               <Scene key="modal" modal>

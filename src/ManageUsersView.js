@@ -17,6 +17,7 @@ let WORKERSID = [];
 let LOCATIONS = [];
 let EMPLOYEES = [];
 let FINCAS = [];
+let NAMES = [];
 
 export default class ManageUsersView extends Component {
 
@@ -82,6 +83,7 @@ export default class ManageUsersView extends Component {
     LOCATIONS = [];
     EMPLOYEES = [];
     FINCAS = [];
+    NAMES = [];
     const mapWorker = this.state.workerList.map((worker) =>
       WORKERS = WORKERS.concat(worker.users.username)
     )
@@ -101,8 +103,12 @@ export default class ManageUsersView extends Component {
       FINCAS = FINCAS.concat(finca.finca.id)
     )
 
+    const mapFincaNames = this.state.fincas.map((finca) =>
+      NAMES = NAMES.concat(finca.finca.finca_name)
+    )
+
     for (let i = 0; i < WORKERS.length; i++){
-      EMPLOYEES = EMPLOYEES.concat({id: WORKERSID[i], name: WORKERS[i], location: LOCATIONS[i]})
+      EMPLOYEES = EMPLOYEES.concat({id: WORKERSID[i], name: WORKERS[i], location: LOCATIONS[i], finca:NAMES[i]})
     }
     this.setState({results: EMPLOYEES});
   }
@@ -157,15 +163,15 @@ export default class ManageUsersView extends Component {
   mapWorkers(){
     return(
       <List dataArray={this.state.results} renderRow={(worker) =>
-        <ListItem onPress={()=>{}}>
+        <ListItem disabled={true}>
           <Left>
             <View style={{flexDirection: 'column', flex:1}}>
-              <Text style={{fontWeight: 'bold', alignSelf:'flex-start' }}>{worker.name}</Text>
+              <Text style={{fontWeight: 'bold', alignSelf:'flex-start', fontSize: 20 }}>{worker.name}</Text>
             </View>
           </Left>
           <Right>
             <View style={[styles.pendingActivity, styles.oval]}>
-              <Text style={{fontWeight: 'bold', alignSelf:'center', fontSize: 12, color: 'white' }}>{worker.location}</Text>
+              <Text style={{fontWeight: 'bold', alignSelf:'center', fontSize: 16, color: 'white' }}>{worker.finca}</Text>
             </View>
           </Right>
         </ListItem>
@@ -205,7 +211,7 @@ export default class ManageUsersView extends Component {
           </Item>
           <Item inlinelabel>
             <Label style={{paddingTop: '1%'}}>Finca:</Label>
-            <ModalDropdown textStyle={{fontSize:15}}  style={{paddingTop: '4%', marginHorizontal: 40 }} options={LOCATIONS} defaultValue='Zona...' onSelect={(idx,value)=>{asignedFinca = FINCAS[idx]}}/>
+            <ModalDropdown textStyle={{fontSize:15}}  dropdownTextStyle={{fontSize: 20, backgroundColor: '#E6F2F2', color: 'black'}} style={{paddingTop: '4%', marginHorizontal: 40 }} options={NAMES} defaultValue='Zona...' onSelect={(idx,value)=>{asignedFinca = FINCAS[idx]}}/>
           </Item>
         </View>
         <DialogButton text='Aceptar' onPress={() => {this.newWorker(asignedFinca)}}/>

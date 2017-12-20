@@ -47,6 +47,7 @@ export default class LoginScreen extends Component {
       .then(function (response) {
         self.storageValues(STORAGE_KEY, response.data.access_token);
         self.getUserData(self, response.data.access_token);
+
       })
       .catch(function (error) {
         formBody = [];
