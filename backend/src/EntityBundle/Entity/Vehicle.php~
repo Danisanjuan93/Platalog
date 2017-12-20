@@ -1,0 +1,262 @@
+<?php
+
+namespace EntityBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Expose;
+use JMS\Serializer\Annotation\Groups;
+/**
+ * Vehicle
+ *
+ * @ORM\Table(name="vehicle")
+ * @ORM\Entity(repositoryClass="EntityBundle\Repository\VehicleRepository")
+ */
+class Vehicle
+{
+    /**
+     * @var int
+     * @Groups({"api"})
+     * @Expose()
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     * @Groups({"api"})
+     * @Expose()
+     * @ORM\Column(name="name", type="string")
+     */
+    private $name;
+
+    /**
+     * @var string
+     * @Groups({"api"})
+     * @Expose()
+     * @ORM\Column(name="licensePlate", type="string")
+     */
+    private $licensePlate;
+
+    /**
+     * @var Finca
+     * @Groups({"api"})
+     * @Expose()
+     * @ORM\ManyToOne(targetEntity="EntityBundle\Entity\Finca", inversedBy="vehicle", cascade={"persist"})
+     */
+
+    private $finca;
+
+    /**
+     * @var \DateTime
+     * @Groups ({"api"})
+     * @Expose()
+     * @ORM\Column(name="deletedAt", type="datetime", nullable=true)
+     */
+    private $deletedAt;
+
+    /**
+     * @var int
+     * @Groups({"api"})
+     * @Expose()
+     * @ORM\Column(name="maxWeight", type="integer")
+     */
+    private $maxWeight;
+
+    /**
+     * @var string
+     * @Groups({"api"})
+     * @Expose()
+     * @ORM\Column(name="state", type="string", length=255)
+     */
+    private $state;
+
+    /**
+     * @var int
+     * @Groups({"api"})
+     * @Expose()
+     * @ORM\Column(name="orders", type="integer", nullable=true)
+     */
+    private $orders;
+
+
+    /**
+     * Get id
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set maxWeight
+     *
+     * @param integer $maxWeight
+     *
+     * @return Vehicle
+     */
+    public function setMaxWeight($maxWeight)
+    {
+        $this->maxWeight = $maxWeight;
+
+        return $this;
+    }
+
+    /**
+     * Get maxWeight
+     *
+     * @return int
+     */
+    public function getMaxWeight()
+    {
+        return $this->maxWeight;
+    }
+
+    /**
+     * Set state
+     *
+     * @param string $state
+     *
+     * @return Vehicle
+     */
+    public function setState($state)
+    {
+        $this->state = $state;
+
+        return $this;
+    }
+
+    /**
+     * Get state
+     *
+     * @return string
+     */
+    public function getState()
+    {
+        return $this->state;
+    }
+
+    /**
+     * Set orders
+     *
+     * @param integer $orders
+     *
+     * @return Vehicle
+     */
+    public function setOrders($orders)
+    {
+        $this->orders = $orders;
+
+        return $this;
+    }
+
+    /**
+     * Get orders
+     *
+     * @return int
+     */
+    public function getOrders()
+    {
+        return $this->orders;
+    }
+
+    /**
+     * Set finca
+     *
+     * @param \EntityBundle\Entity\Finca $finca
+     *
+     * @return Vehicle
+     */
+    public function setFinca(\EntityBundle\Entity\Finca $finca = null)
+    {
+        $this->finca = $finca;
+
+        return $this;
+    }
+
+    /**
+     * Get finca
+     *
+     * @return \EntityBundle\Entity\Finca
+     */
+    public function getFinca()
+    {
+        return $this->finca;
+    }
+
+
+    /**
+     * Set deletedAt
+     *
+     * @param \DateTime $deletedAt
+     *
+     * @return Vehicle
+     */
+    public function setDeletedAt($deletedAt)
+    {
+        $this->deletedAt = $deletedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get deletedAt
+     *
+     * @return \DateTime
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     *
+     * @return Vehicle
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set licensePlate
+     *
+     * @param string $licensePlate
+     *
+     * @return Vehicle
+     */
+    public function setLicensePlate($licensePlate)
+    {
+        $this->licensePlate = $licensePlate;
+    
+        return $this;
+    }
+
+    /**
+     * Get licensePlate
+     *
+     * @return string
+     */
+    public function getLicensePlate()
+    {
+        return $this->licensePlate;
+    }
+}

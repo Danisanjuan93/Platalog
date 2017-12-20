@@ -1,0 +1,116 @@
+<?php
+
+namespace EntityBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Expose;
+use JMS\Serializer\Annotation\Groups;
+/**
+ * Notebook
+ *
+ * @ORM\Table(name="notebook")
+ * @ORM\Entity(repositoryClass="EntityBundle\Repository\NotebookRepository")
+ */
+class Notebook
+{
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @Groups({"api"})
+     * @Expose()
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var Note
+     * @ORM\OneToMany(targetEntity="EntityBundle\Entity\Note", mappedBy="Notebook", cascade={"persist"})
+     */
+
+    private $note;
+
+    /**
+     * @var Parcel
+     * @ORM\OneToOne(targetEntity="EntityBundle\Entity\Parcel", inversedBy="notebook", cascade={"persist"})
+     */
+
+    private $parcel;
+
+    /**
+     * Get id
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->note = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add note
+     *
+     * @param \EntityBundle\Entity\Note $note
+     *
+     * @return Notebook
+     */
+    public function addNote(\EntityBundle\Entity\Note $note)
+    {
+        $this->note[] = $note;
+
+        return $this;
+    }
+
+    /**
+     * Remove note
+     *
+     * @param \EntityBundle\Entity\Note $note
+     */
+    public function removeNote(\EntityBundle\Entity\Note $note)
+    {
+        $this->note->removeElement($note);
+    }
+
+    /**
+     * Get note
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getNote()
+    {
+        return $this->note;
+    }
+
+    /**
+     * Set parcel
+     *
+     * @param \EntityBundle\Entity\Parcel $parcel
+     *
+     * @return Notebook
+     */
+    public function setParcel(\EntityBundle\Entity\Parcel $parcel = null)
+    {
+        $this->parcel = $parcel;
+    
+        return $this;
+    }
+
+    /**
+     * Get parcel
+     *
+     * @return \EntityBundle\Entity\Parcel
+     */
+    public function getParcel()
+    {
+        return $this->parcel;
+    }
+}

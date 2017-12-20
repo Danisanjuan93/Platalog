@@ -1,0 +1,229 @@
+<?php
+
+namespace EntityBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Expose;
+use JMS\Serializer\Annotation\Groups;
+
+/**
+ * Activity
+ *
+ * @ORM\Table(name="activity")
+ * @ORM\Entity(repositoryClass="EntityBundle\Repository\ActivityRepository")
+ */
+class Activity
+{
+    /**
+     * @var int
+     * @Groups({"api"})
+     * @Expose()
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var Finca
+     * @Groups({"api"})
+     * @Expose()
+     * @ORM\ManyToOne(targetEntity="EntityBundle\Entity\Finca", inversedBy="Activity", cascade={"persist"})
+     */
+
+    private $finca;
+
+    /**
+     * @var string
+     * @Groups({"api"})
+     * @Expose()
+     * @ORM\Column(name="state", type="string", length=255)
+     */
+    private $state;
+
+    /**
+     * @var string
+     * @Groups({"api"})
+     * @Expose()
+     * @ORM\Column(name="name", type="string", length=255)
+     */
+    private $name;
+
+    /**
+     * @var string
+     * @Groups({"api"})
+     * @Expose()
+     * @ORM\Column(name="location", type="string", length=255)
+     */
+    private $location;
+
+    /**
+     * @var Users
+     * @Groups({"api"})
+     * @Expose()
+     * @ORM\ManyToOne(targetEntity="EntityBundle\Entity\Users", inversedBy="activity", cascade={"persist", "refresh"})
+     */
+    private $worker;
+
+    /**
+     * @var \Date
+     * @Groups({"api"})
+     * @Expose()
+     * @ORM\Column(name="deletedAt", type="date", nullable=true)
+     */
+    private $deletedAt;
+
+    /**
+     * Get id
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set state
+     *
+     * @param string $state
+     *
+     * @return Activity
+     */
+    public function setState($state)
+    {
+        $this->state = $state;
+
+        return $this;
+    }
+
+    /**
+     * Get state
+     *
+     * @return string
+     */
+    public function getState()
+    {
+        return $this->state;
+    }
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     *
+     * @return Activity
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set deletedAt
+     *
+     * @param \DateTime $deletedAt
+     *
+     * @return Activity
+     */
+    public function setDeletedAt($deletedAt)
+    {
+        $this->deletedAt = $deletedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get deletedAt
+     *
+     * @return \DateTime
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+
+    /**
+     * Set finca
+     *
+     * @param \EntityBundle\Entity\Finca $finca
+     *
+     * @return Activity
+     */
+    public function setFinca(\EntityBundle\Entity\Finca $finca = null)
+    {
+        $this->finca = $finca;
+
+        return $this;
+    }
+
+    /**
+     * Get finca
+     *
+     * @return \EntityBundle\Entity\Finca
+     */
+    public function getFinca()
+    {
+        return $this->finca;
+    }
+
+    /**
+     * Set location
+     *
+     * @param string $location
+     *
+     * @return Activity
+     */
+    public function setLocation($location)
+    {
+        $this->location = $location;
+
+        return $this;
+    }
+
+    /**
+     * Get location
+     *
+     * @return string
+     */
+    public function getLocation()
+    {
+        return $this->location;
+    }
+
+
+    /**
+     * Set worker
+     *
+     * @param \EntityBundle\Entity\Users $worker
+     *
+     * @return Activity
+     */
+    public function setWorker(\EntityBundle\Entity\Users $worker = null)
+    {
+        $this->worker = $worker;
+
+        return $this;
+    }
+
+    /**
+     * Get worker
+     *
+     * @return \EntityBundle\Entity\Users
+     */
+    public function getWorker()
+    {
+        return $this->worker;
+    }
+}

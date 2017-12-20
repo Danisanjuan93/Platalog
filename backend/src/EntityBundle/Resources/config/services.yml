@@ -1,0 +1,65 @@
+services:
+#    entity.example:
+#        class: EntityBundle\Example
+#        arguments: ["@service_id", "plain_value", %parameter%]
+
+  entity_model_note:
+    class: EntityBundle\Model\NoteModel
+    arguments:
+      entityManager: "@doctrine.orm.entity_manager"
+
+  entity_model_activity:
+    class: EntityBundle\Model\ActivityModel
+    arguments:
+      entityManager: "@doctrine.orm.entity_manager"
+
+  entity_model_historic:
+    class: EntityBundle\Model\HistoricModel
+    arguments:
+      entityManager: "@doctrine.orm.entity_manager"
+
+  entity_model_parcel:
+    class: EntityBundle\Model\ParcelModel
+    arguments:
+      entityManager: "@doctrine.orm.entity_manager"
+
+  entity_model_orders:
+    class: EntityBundle\Model\OrdersModel
+    arguments:
+      entityManager: "@doctrine.orm.entity_manager"
+
+  entity_model_vehicle:
+    class: EntityBundle\Model\VehicleModel
+    arguments:
+      entityManager: "@doctrine.orm.entity_manager"
+
+  entity_model_finca:
+    class: EntityBundle\Model\FincaModel
+    arguments:
+      entityManager: "@doctrine.orm.entity_manager"
+
+  entity_model_activity:
+    class: EntityBundle\Model\ActivityModel
+    arguments:
+      entityManager: "@doctrine.orm.entity_manager"
+
+  entity_model_user_app:
+    class: EntityBundle\Model\UserAppModel
+    arguments:
+      entityManager: "@doctrine.orm.entity_manager"
+      fosUserManager: "@fos_user.user_manager"
+
+  app_user_registration:
+      class: EntityBundle\Form\RegistrationType
+      tags:
+          - { name: form.type, alias: app_user_registration }
+
+  entity_model_fincaRegister:
+    class: EntityBundle\Model\FincaRegisterModel
+    arguments:
+      entityManager: "@doctrine.orm.entity_manager"
+
+  entity_model_parcelRegister:
+    class: EntityBundle\Model\ParcelRegisterModel
+    arguments:
+      entityManager: "@doctrine.orm.entity_manager"

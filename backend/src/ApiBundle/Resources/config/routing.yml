@@ -1,0 +1,4 @@
+rest:
+    resource: "@ApiBundle/Resources/config/rest.yml"
+    type:     rest
+    name_prefix: api_

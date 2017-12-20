@@ -1,0 +1,27 @@
+note:
+    type:     rest
+    resource: ApiBundle\Controller\NoteController
+finca:
+    type:     rest
+    resource: ApiBundle\Controller\FincaController
+activity:
+    type:     rest
+    resource: ApiBundle\Controller\ActivityController
+historic:
+    type:     rest
+    resource: ApiBundle\Controller\HistoricController
+orders:
+    type:     rest
+    resource: ApiBundle\Controller\OrdersController
+parcel:
+    type:     rest
+    resource: ApiBundle\Controller\ParcelController
+users:
+    type:     rest
+    resource: ApiBundle\Controller\UsersController
+fincaRegister:
+    type:     rest
+    resource: ApiBundle\Controller\FincaRegisterController
+parcelRegister:
+    type:     rest
+    resource: ApiBundle\Controller\ParcelRegisterController
